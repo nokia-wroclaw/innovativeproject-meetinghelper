@@ -1,0 +1,32 @@
+Opiszę tutaj sposób uruchomienia cordovy (a.k.a. phonegap).
+
+Testowane tylko dla androida:
+Aby wszystko działało sprawnie, należy mieć ustawione zmienne środowiskowe na programy:
+	- JAVA jdk
+	- android SDK
+	- ANT
+	- GIT
+
+Kolejną rzeczą jest zainstalowanie nodejs (download ze strony http://nodejs.org/download/). Umożliwia on pobranie komendą npm frameworka cordova, co zobaczymy poniżej.
+
+Następny krok to postępowanie według dokumentacji cordovy: http://docs.phonegap.com/en/3.3.0/guide_cli_index.md.html#The%20Command-Line%20Interface, czyli:
+
+npm install -g cordova
+cd do/katalogu/gdzie/chcesz/miec/projekt/klienta (w naszym przypadku katalog client)
+cordova create meeting_helper com.meeting.helper MeetingHelper
+cd meeting_helper
+cordova platform add android (lub dla innych: wp7, wp8, etc.)
+cordova run android - uruchamia aplikację od razu na podłączonym telefonie, buduje i kompiluje [1]
+lub
+cordova build android - buduje *.apk w /meeting_helper/platforms/android/ant-build/MeetingHelper-debug.apk
+
+Obecnie wykorzystuję pluginy camera, file, file-transfer, BarcodeScanner oraz MacAddress:
+cordova plugin add org.apache.cordova.camera
+cordova plugin add org.apache.cordova.file
+cordova plugin add org.apache.cordova.file-transfer
+cordova plugin add https://github.com/wildabeast/BarcodeScanner.git
+cordova plugin add https://github.com/mohamed-salah/MacAddress.git
+
+Współdzielić będziemy jedynie folder www, bo tylko te elementy są dla nas wspólne po stronie mobilnej - reszta zależy od zainstalowanej platformy.
+
+[1]: Jeden komentarz: ja mam sdk starsze niż jest ustawiane domyślnie przez cordove - w tym przypadku musiałem zmienić w pliku AndroidManifest.xml wartość opcji minsdk=10 na 8.
