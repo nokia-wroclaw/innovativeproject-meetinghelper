@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.meeting.helper" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>MeetingHelper</name>
+    <description>
+        Application that broadcasting meeting materials.
+    </description>
+    <author email="config@pwr.edu.pl" href="/">
+        PWr Team
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+</widget>
