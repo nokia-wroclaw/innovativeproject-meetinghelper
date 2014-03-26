@@ -148,18 +148,6 @@ var connection = {
 		}
 	},
 
-	mac: {
-		get: function() {
-			window.MacAddress.getMacAddress(connection.mac.success, connection.mac.fail);
-		},
-		success: function(macAddress) {
-			connection._callback(macAddress);
-		},
-		fail: function(fail) {
-			connection._callback(fail);
-		}
-	},
-
 	socket: {
 		instance: undefined,
 

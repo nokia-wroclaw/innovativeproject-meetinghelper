@@ -73,5 +73,17 @@ var devices = {
 		fail: function(message) {
 			devices._callback('Failed because: ' + message);
 		}
+	},
+
+	mac: {
+		get: function() {
+			window.MacAddress.getMacAddress(connection.mac.success, connection.mac.fail);
+		},
+		success: function(macAddress) {
+			connection._callback(macAddress);
+		},
+		fail: function(fail) {
+			connection._callback(fail);
+		}
 	}
 };
