@@ -18,17 +18,27 @@
 	/**
 	 * Page to send file
 	 */
-	sendFile: 'sendFile',
+	uploadFile: 'sendFile',
 
 	/**
 	 * Page to show all files
 	 */
-	getPhotos: 'getPhotos',
+ 	get: {
+		photos: 'getPhotos',
 
-	/**
-	 * Get single photo
-	 */
-	getPhoto: 'user/'
+		/**
+		 * Get single photo
+		 */
+		photo: 'user/',
+		rooms: 'getRooms',
+		roomData: 'getRoomData'
+	},
+
+	post: {
+		mac: 'sendMac',
+		login: 'login',
+		register: 'register'
+	}
 };
 
 /**

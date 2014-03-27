@@ -16,10 +16,12 @@ var connection = {
 
 	setUrl: function(url) {
 		connection.url = url;
-		connection.socket.init(url);
+		try {
+			connection.socket.init(url);
+		} catch(e) {}
 	},
 
-	hello: function() {
+	/*hello: function() {
 		if (connection.url) {
 		    var xmlHttp = null;
 
@@ -30,6 +32,99 @@ var connection = {
 		    connection._callback(xmlHttp.responseText);
 		} else {
 			connection._callback('No url is set');
+		}
+	},*/
+
+	action: {
+		types: {
+			get: "GET",
+			post: "POST"
+		},
+
+		base: function(type, link, value, callb) {
+			if (connection.url) {
+			    var xmlHttp = null;
+
+			    xmlHttp = new XMLHttpRequest();
+			    xmlHttp.open( type, connection.url + link, false );
+			    xmlHttp.send( value );
+
+			    if (callb) {
+			    	callb(xmlHttp.responseText);
+			    } else {
+			    	connection._callback(xmlHttp.responseText);
+			    }
+			} else {
+				connection._callback('No url is set');
+			}
+		},
+		hello: function(callb) {
+			connection.action.base(
+				connection.action.types.get,
+				connectionLinks.hello,
+				null, callb);
+		},
+		mac: function(callb) {
+			if (connection.mac.value) {
+				connection.action.base(
+					connection.action.types.post,
+					connectionLinks.post.mac,
+					connection.mac.value, callb);
+			}
+		},
+		login: function(username, password, callb) {
+			connection.action.base(
+				connection.action.types.post,
+				connectionLinks.post.login,
+				{username: username, password: password},
+				connection.receive.onLogin(callb));
+		},
+		register: function(username, password, password2, callb) {
+			if (password === password2) {
+				connection.action.base(
+					connection.action.types.post,
+					connectionLinks.post.register,
+					{username: username, password: password},
+					connection.receive.onRegister(callb));
+			}
+		},
+		getRooms: function(callb) {
+			connection.action.base(
+				connection.action.types.get,
+				connectionLinks.get.rooms,
+				{config: {}},
+				connection.receive.onReceiveRooms(callb));
+		},
+		getRoomData: function(roomId, callb) {
+			connection.action.base(
+				connection.action.types.get,
+				connectionLinks.get.roomData,
+				{roomId: roomId},
+				connection.receive.onReceiveRoomData(callb));
+		}
+	},
+
+	receive: {
+		base: function(callb) {
+			return function(data) {
+				if (callb) {
+					callb(data);
+				} else {
+					connection._callback(data);
+				}
+			}
+		},
+		onLogin: function(callb) {
+			return connection.receive.base(callb);
+		},
+		onRegister: function(callb) {
+			return connection.receive.base(callb);
+		},
+		onReceiveRooms: function(callb) {
+			return connection.receive.base(callb);
+		},
+		onReceiveRoomData: function(callb) {
+			return connection.receive.base(callb);
 		}
 	},
 
@@ -53,7 +148,7 @@ var connection = {
 					ft.onprogress = connection.file.upload._onProgress;
 					ft.upload(
 						imageSrc,
-						connection.url + connectionLinks.sendFile,
+						connection.url + connectionLinks.uploadFile,
 						connection.file.upload._success,
 						connection.file.upload.fail,
 						options);
@@ -163,25 +258,34 @@ var connection = {
 
 			connection.socket.state = connection.socket.states.open;
 
-			connection.socket.instance.on(webSocketBroadcast.newPhoto, connection.socket._onNewPhoto);
+			connection.socket.instance.on(webSocketBroadcast.newPhoto, connection.socket.receive._onNewPhoto);
 		},
 
 		send: function(event, object) {
 			if (connection.socket.state === connection.socket.states.open) {
 				connection.socket.instance.emit(event, object);
+			} else {
+				connection._callback('Socket is in closed state');
 			}
 		},
 
-		onNewPhoto: undefined,
+		testSend: function(message) {
+			connection.socket.send(webSocketSend.test, message);
+		},
 
-		/**
-		 * In data.message is received message.
-		 */
-		_onNewPhoto: function (data) {
-			connection._callback(JSON.stringify(data));
+		receive: {
+			onNewPhoto: undefined,
 
-			if (connection.socket.onNewPhoto) {
-				connection.socket.onNewPhoto(data.message, data);
+			/**
+			 * In data.message is received message.
+			 */
+			_onNewPhoto: function (data) {
+				connection._callback(JSON.stringify(data));
+
+				if (connection.socket.onNewPhoto) {
+					connection.socket.onNewPhoto(
+						connection.url + connectionLinks.getPhoto + data.message, data);
+				}
 			}
 		}
 	}
