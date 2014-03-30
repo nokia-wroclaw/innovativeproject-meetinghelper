@@ -1,6 +1,27 @@
 /**
  * Part of application responsible for connection.
  */
+
+/**
+ * Przykład wywołania funkcji, której argumentem jest callb, co będzie uznawane jako
+ * nazwa innej funkcji - callbacku ( devices.qrCode.scan(callb) ).
+ *
+ * devices.qrCode.scan(function(result) {
+ *     alert(result);
+ * });
+ *
+ * Taka funkcja, po wykonaniu skanowania, uruchomi z argumentem (u nas result) funkcję
+ * podaną jako argument.
+ */
+
+/**
+ * Przykład użycia funkcji wywoływanej podczas przyjścia wiadomości ze strony serwera.
+ *
+ * connection.socket.receive.onNewPhoto = function(data) {};
+ *
+ * Polega to na przypisaniu nowej funkcji, wywoływanej przy danej akcji.
+ */
+
 var connection = {
 	url: undefined,
 
@@ -21,27 +42,13 @@ var connection = {
 		} catch(e) {}
 	},
 
-	/*hello: function() {
-		if (connection.url) {
-		    var xmlHttp = null;
-
-		    xmlHttp = new XMLHttpRequest();
-		    xmlHttp.open( "GET", connection.url + connectionLinks.hello, false );
-		    xmlHttp.send( null );
-
-		    connection._callback(xmlHttp.responseText);
-		} else {
-			connection._callback('No url is set');
-		}
-	},*/
-
 	action: {
 		types: {
 			get: "GET",
 			post: "POST"
 		},
 
-		base: function(type, link, value, callb) {
+		_base: function(type, link, value, callb) {
 			if (connection.url) {
 			    var xmlHttp = null;
 
@@ -59,21 +66,21 @@ var connection = {
 			}
 		},
 		hello: function(callb) {
-			connection.action.base(
+			connection.action._base(
 				connection.action.types.get,
 				connectionLinks.hello,
 				null, callb);
 		},
 		mac: function(callb) {
 			if (connection.mac.value) {
-				connection.action.base(
+				connection.action._base(
 					connection.action.types.post,
 					connectionLinks.post.mac,
 					connection.mac.value, callb);
 			}
 		},
 		login: function(username, password, callb) {
-			connection.action.base(
+			connection.action._base(
 				connection.action.types.post,
 				connectionLinks.post.login,
 				{username: username, password: password},
@@ -81,7 +88,7 @@ var connection = {
 		},
 		register: function(username, password, password2, callb) {
 			if (password === password2) {
-				connection.action.base(
+				connection.action._base(
 					connection.action.types.post,
 					connectionLinks.post.register,
 					{username: username, password: password},
@@ -89,14 +96,14 @@ var connection = {
 			}
 		},
 		getRooms: function(callb) {
-			connection.action.base(
+			connection.action._base(
 				connection.action.types.get,
 				connectionLinks.get.rooms,
 				{config: {}},
 				connection.receive.onReceiveRooms(callb));
 		},
 		getRoomData: function(roomId, callb) {
-			connection.action.base(
+			connection.action._base(
 				connection.action.types.get,
 				connectionLinks.get.roomData,
 				{roomId: roomId},
@@ -105,7 +112,7 @@ var connection = {
 	},
 
 	receive: {
-		base: function(callb) {
+		_base: function(callb) {
 			return function(data) {
 				if (callb) {
 					callb(data);
@@ -115,16 +122,16 @@ var connection = {
 			}
 		},
 		onLogin: function(callb) {
-			return connection.receive.base(callb);
+			return connection.receive._base(callb);
 		},
 		onRegister: function(callb) {
-			return connection.receive.base(callb);
+			return connection.receive._base(callb);
 		},
 		onReceiveRooms: function(callb) {
-			return connection.receive.base(callb);
+			return connection.receive._base(callb);
 		},
 		onReceiveRoomData: function(callb) {
-			return connection.receive.base(callb);
+			return connection.receive._base(callb);
 		}
 	},
 

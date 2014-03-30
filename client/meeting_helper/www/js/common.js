@@ -30,14 +30,17 @@
 		 * Get single photo
 		 */
 		photo: 'user/',
-		rooms: 'getRooms',
+		rooms: 'rooms/list',
 		roomData: 'getRoomData'
 	},
 
 	post: {
 		mac: 'sendMac',
 		login: 'login',
-		register: 'register'
+		register: 'register',
+		rooms: {
+			create: 'rooms/create/' // /room_name -> OK
+		}
 	}
 };
 
