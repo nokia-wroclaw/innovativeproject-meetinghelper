@@ -47,6 +47,24 @@ var main = {
 		devices.mac.get(function(result) {
 			alert(result);
 		});
+	},
+
+	/**
+	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
+	 */
+	login: function(login, password) {
+		connection.action.login(login, password, function(received) {
+			alert(received);
+		});
+	},
+
+	/**
+	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
+	 */
+	register: function(login, password, password2) {
+		connection.action.register(login, password, password2, function(received) {
+			alert(received);
+		});
 	}
 };
 

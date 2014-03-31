@@ -37,8 +37,8 @@
 
 	post: {
 		mac: 'sendMac',
-		login: 'login',
-		register: 'register',
+		login: 'users/login',
+		register: 'users/register',
 		rooms: {
 			create: 'rooms/create/' // /room_name -> OK
 		}

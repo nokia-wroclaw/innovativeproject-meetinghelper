@@ -49,20 +49,41 @@ var connection = {
 		},
 
 		_base: function(type, link, value, callb) {
-			if (connection.url) {
-			    var xmlHttp = null;
+			try {
+				if (connection.url) {
+				    var xmlHttp = null;
 
-			    xmlHttp = new XMLHttpRequest();
-			    xmlHttp.open( type, connection.url + link, false );
-			    xmlHttp.send( value );
+				    xmlHttp = new XMLHttpRequest();
 
+				    xmlHttp.onreadystatechange = function() {
+						if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+						    if (callb) {
+						    	callb(xmlHttp.responseText);
+						    } else {
+						    	connection._callback(xmlHttp.responseText);
+						    }
+						}
+					}
+
+				    xmlHttp.open( type, connection.url + link, true );
+
+				    if (type === connection.action.types.post) {
+						value = JSON.stringify(value);
+						xmlHttp.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+					}
+				    xmlHttp.send( value );
+
+				} else {
+					connection._callback('No url is set');
+				}
+			} catch(e) {
 			    if (callb) {
-			    	callb(xmlHttp.responseText);
+					callb("an error occured");
+					callb(e);
 			    } else {
-			    	connection._callback(xmlHttp.responseText);
+					connection._callback("an error occured");
+					connection._callback(e);
 			    }
-			} else {
-				connection._callback('No url is set');
 			}
 		},
 		hello: function(callb) {
@@ -79,20 +100,22 @@ var connection = {
 					connection.mac.value, callb);
 			}
 		},
-		login: function(username, password, callb) {
+		login: function(login, password, callb) {
 			connection.action._base(
 				connection.action.types.post,
 				connectionLinks.post.login,
-				{username: username, password: password},
+				{login: login, password: password},
 				connection.receive.onLogin(callb));
 		},
-		register: function(username, password, password2, callb) {
+		register: function(login, password, password2, callb) {
 			if (password === password2) {
 				connection.action._base(
 					connection.action.types.post,
 					connectionLinks.post.register,
-					{username: username, password: password},
+					{login: login, password: password},
 					connection.receive.onRegister(callb));
+			} else {
+				callb("passwords are not equal");
 			}
 		},
 		getRooms: function(callb) {

@@ -72,6 +72,19 @@
         <button onclick="main.scanAnyQrCode()">scanAnyQrCode</button>
         <br>
         <button onclick="connection.socket.testSend({'something': 'sth'})">send</button>
+        <br>
+        <input type="text" id="login" value="unamenamename"/>
+        <input type="text" id="password" value="passss"/>
+        <input type="text" id="password2" value="passss"/>
+        <button
+            onclick="main.login(document.getElementById('login').value, document.getElementById('password').value)">
+                login
+        </button>
+        <br>
+        <button
+            onclick="main.register(document.getElementById('login').value, document.getElementById('password').value, document.getElementById('password2').value)">
+                register
+        </button>
 
         <br/><br/><br/><br/><br/><br/>
         <img style="display:none;width:100px;height:100px;" id="received"/>
