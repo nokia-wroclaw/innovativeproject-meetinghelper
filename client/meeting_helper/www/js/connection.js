@@ -137,7 +137,7 @@ var connection = {
 
 	file: {
 		upload: {
-			photo: function(imageSrc) {
+			photo: function(imageSrc, onProgress) {
 				if (connection.url) {
 					var options = new FileUploadOptions();
 					options.fileKey="file";
@@ -152,7 +152,14 @@ var connection = {
 
 					var ft = new FileTransfer();
 
-					ft.onprogress = connection.file.upload._onProgress;
+					if (onProgress) {
+						ft.onprogress = function(progressEvent) {
+							onProgress(progressEvent);
+							connection.file.upload._onProgress(progressEvent);
+						};
+					} else {
+						ft.onprogress = connection.file.upload._onProgress;
+					}
 					ft.upload(
 						imageSrc,
 						connection.url + connectionLinks.uploadFile,
@@ -170,6 +177,7 @@ var connection = {
 				if (connection.file.upload.onProgress) {
 					connection.file.upload.onProgress(progressEvent);
 				} else {
+					//old part of progress; to be moved to function docs
 					//On Android an iOS, lengthComputable is false for downloads that use gzip encoding.
 					/*if (progressEvent.lengthComputable) {
 						loadingStatus.setPercentage(progressEvent.loaded / progressEvent.total);
