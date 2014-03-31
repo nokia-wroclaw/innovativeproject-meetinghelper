@@ -50,6 +50,11 @@ var main = {
 	}
 };
 
+/**
+ * Pobranie początkowego adresu MAC.
+ */
+devices.mac.get(function(result) {}, true);
+
 
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:

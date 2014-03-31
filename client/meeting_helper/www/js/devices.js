@@ -92,21 +92,24 @@ var devices = {
 	mac: {
 		value: undefined,
 
-		get: function(userCallback) {
-			window.MacAddress.getMacAddress(devices.mac._success(userCallback), devices.mac.fail);
+		get: function(userCallback, ifSaveMac) {
+			window.MacAddress.getMacAddress(devices.mac._success(userCallback, ifSaveMac), devices.mac.fail);
 		},
 		success: undefined,
-		_success: function(userCallback) {
+		_success: function(userCallback, ifSaveMac) {
 			return function(macAddress) {
-				devices.mac.value = macAddress;
-
-				if (userCallback) {
-					userCallback(macAddress);
+				if (ifSaveMac) {
+					devices.mac.value = macAddress;
 				} else {
-					devices._callback(macAddress);
-				}
-				if (devices.mac.success) {
-					devices.mac.success(macAddress);
+
+					if (userCallback) {
+						userCallback(macAddress);
+					} else {
+						devices._callback(macAddress);
+					}
+					if (devices.mac.success) {
+						devices.mac.success(macAddress);
+					}
 				}
 			}
 		},

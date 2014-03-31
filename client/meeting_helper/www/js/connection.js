@@ -99,7 +99,7 @@ var connection = {
 			connection.action._base(
 				connection.action.types.get,
 				connectionLinks.get.rooms,
-				{config: {}},
+				null,
 				connection.receive.onReceiveRooms(callb));
 		},
 		getRoomData: function(roomId, callb) {
@@ -291,7 +291,21 @@ var connection = {
 
 				if (connection.socket.onNewPhoto) {
 					connection.socket.onNewPhoto(
-						connection.url + connectionLinks.getPhoto + data.message, data);
+						connection.url + connectionLinks.get.photo + data.message, data);
+				}
+			},
+
+			onNewUser: undefined,
+
+			/**
+			 * In data.message is received message.
+			 */
+			_onNewUser: function (data) {
+				connection._callback(JSON.stringify(data));
+
+				if (connection.socket.onNewUser) {
+					connection.socket.onNewUser(
+						connection.url + connectionLinks.get.user + data.message, data);
 				}
 			}
 		}

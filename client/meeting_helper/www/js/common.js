@@ -30,6 +30,7 @@
 		 * Get single photo
 		 */
 		photo: 'user/',
+		user: 'user/',
 		rooms: 'rooms/list',
 		roomData: 'getRoomData'
 	},
