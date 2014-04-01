@@ -54,6 +54,43 @@ var devices = {
 		}
 	},
 
+	photoLibrary: {
+		take: function(userCallback) {
+			navigator.camera.getPicture(
+				devices.photoLibrary._success(userCallback),
+				devices.photoLibrary.fail, {
+					quality: 50,
+					destinationType: Camera.DestinationType.FILE_URI,
+					sourceType: 2,	// 0:Photo Library, 1=Camera, 2=Saved Album
+                    encodingType: 0
+			});
+		},
+
+		success: undefined,
+
+		_success: function(userCallback) {
+			return function(imageSrc) {
+				devices._callback(
+					"We took a picture: " + imageSrc);
+
+				if (userCallback) {
+					userCallback(imageSrc);
+				} else {
+
+					if (devices.photoLibrary.success) {
+						devices.photoLibrary.success(imageSrc);
+					} else {
+						connection.file.upload.photo(imageSrc);
+					}
+				}
+			}
+		},
+
+		fail: function(message) {
+			devices._callback('Failed because: ' + message);
+		}
+	},
+
 	camera: {
 		takePicture: function(quality, userCallback) {
 			if (!quality) quality = 50;
@@ -74,12 +111,13 @@ var devices = {
 
 				if (userCallback) {
 					userCallback(imageSrc);
-				}
-
-				if (devices.camera.success) {
-					devices.camera.success(imageSrc);
 				} else {
-					connection.file.upload.photo(imageSrc);
+
+					if (devices.camera.success) {
+						devices.camera.success(imageSrc);
+					} else {
+						connection.file.upload.photo(imageSrc);
+					}
 				}
 			}
 		},

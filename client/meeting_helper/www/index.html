@@ -60,14 +60,17 @@
 		<button onclick="main.initialQrCode()">skanuj</button>
         URL: <input type="text" id="url" value="here should be url" disabled/>
         <br>
-		
 		<button onclick="main.takePicture(75)">take picture</button>
+        <br>
+        <button onclick="main.loadPicture()">load picture</button>
         <br>
 		<img style="display:none;width:60px;height:60px;" id="myImageCamera"/>
 		<br>
 		<button onclick="connection.action.hello()">hello</button>
         <br>
         <button onclick="main.getMac()">MAC</button>
+        <br>
+        <button onclick="main.getRooms()">rooms</button>
         <br>
         <button onclick="main.scanAnyQrCode()">scanAnyQrCode</button>
         <br>

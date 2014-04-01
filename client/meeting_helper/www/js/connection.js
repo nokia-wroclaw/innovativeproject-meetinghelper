@@ -297,6 +297,7 @@ var connection = {
 			connection.socket.state = connection.socket.states.open;
 
 			connection.socket.instance.on(webSocketBroadcast.newPhoto, connection.socket.receive._onNewPhoto);
+			connection.socket.instance.on(webSocketBroadcast.newUser, connection.socket.receive._onNewUser);
 		},
 
 		send: function(event, object) {
@@ -320,10 +321,16 @@ var connection = {
 			_onNewPhoto: function (data) {
 				connection._callback(JSON.stringify(data));
 
-				if (connection.socket.onNewPhoto) {
-					connection.socket.onNewPhoto(
-						connection.url + connectionLinks.get.photo + data.message, data);
+				alert('tutaj przed');
+				if (connection.socket.receive.onNewPhoto) {
+					alert('tutaj');
+					connection.socket.receive.onNewPhoto({
+						userId: data.message.userId,
+						type: 'photo',
+						data: connection.url + connectionLinks.get.photo + data.message.url
+					});
 				}
+				alert('tutaj za');
 			},
 
 			onNewUser: undefined,
@@ -334,9 +341,47 @@ var connection = {
 			_onNewUser: function (data) {
 				connection._callback(JSON.stringify(data));
 
-				if (connection.socket.onNewUser) {
-					connection.socket.onNewUser(
-						connection.url + connectionLinks.get.user + data.message, data);
+				if (connection.socket.receive.onNewUser) {
+					connection.socket.receive.onNewUser({
+						userId: data.message.userId,
+						type: 'user',
+						data: data.message
+					});
+				}
+			},
+
+			onNewMessage: undefined,
+
+			/**
+			 * In data.message is received message.
+			 */
+			_onNewMessage: function (data) {
+				connection._callback(JSON.stringify(data));
+
+				if (connection.socket.receive.onNewMessage) {
+					connection.socket.receive.onNewMessage({
+						userId: data.message.userId,
+						type: 'message',
+						data: data.message
+					});
+				}
+			},
+
+			onNewComment: undefined,
+
+			/**
+			 * In data.message is received message.
+			 */
+			_onNewComment: function (data) {
+				connection._callback(JSON.stringify(data));
+
+				if (connection.socket.receive.onNewComment) {
+					connection.socket.receive.onNewComment({
+						userId: data.message.userId,
+						type: 'comment',
+						target: data.message.url,
+						data: data.message
+					});
 				}
 			}
 		}

@@ -22,6 +22,22 @@ var main = {
 	},
 
 	/**
+	 * Pobiera zdjęcie, wysyła na serwer i wyświetla na wallu.
+	 * @param {Number} quality
+	 * Jakość wykonywanego zdjęcia z zakresu [1, 100].
+	 */
+	loadPicture: function() {
+		devices.photoLibrary.take(function(imageSrc) {
+			connection.file.upload.photo(imageSrc);
+
+			var image = document.getElementById('myImageCamera');
+			image.style.display = 'block';
+
+			image.src = imageSrc/*"data:image/jpeg;base64," + */;
+		});
+	},
+
+	/**
 	 * Skanuje kod webserwera, nawiązuje połączenie websocketa i zapisuje zeskanowane dane do inputa.
 	 */
 	initialQrCode: function() {
@@ -46,6 +62,15 @@ var main = {
 	getMac: function() {
 		devices.mac.get(function(result) {
 			alert(result);
+		});
+	},
+
+	/**
+	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
+	 */
+	getRooms: function() {
+		connection.action.getRooms(function(received) {
+			alert(received);
 		});
 	},
 
@@ -83,5 +108,19 @@ connection.socket.receive.onNewPhoto = function(data) {
 	image.style.display = 'block';
 	image.src = data;
 
+	callback(data);
+};
+
+/**
+ * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
+ */
+connection.socket.receive.onNewUser = function(data) {
+	callback(data);
+};
+
+/**
+ * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
+ */
+connection.socket.receive.onNewMessage = function(data) {
 	callback(data);
 };

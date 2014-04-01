@@ -37,8 +37,8 @@
 
 	post: {
 		mac: 'sendMac',
-		login: 'users/login',
-		register: 'users/register',
+		login: 'login',
+		register: 'register',
 		rooms: {
 			create: 'rooms/create/' // /room_name -> OK
 		}
@@ -49,7 +49,9 @@
  * Webserver broadcast messages received by client.
  */
 var webSocketBroadcast = {
-	newPhoto: 'newPhoto'
+	newPhoto: 'newPhoto',
+	newUser: 'newUser',
+	newMessage: 'newMessage'
 };
 
 /**
