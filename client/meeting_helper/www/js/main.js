@@ -94,21 +94,13 @@ var main = {
 };
 
 /**
- * Pobranie początkowego adresu MAC.
- */
-devices.mac.get(function(result) {}, true);
-
-
-/**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
 connection.socket.receive.onNewPhoto = function(data) {
 	var image = document.getElementById('received');
 
 	image.style.display = 'block';
-	image.src = data;
-
-	callback(data);
+	image.src = data.data;
 };
 
 /**
@@ -124,3 +116,10 @@ connection.socket.receive.onNewUser = function(data) {
 connection.socket.receive.onNewMessage = function(data) {
 	callback(data);
 };
+
+/**
+ * Pobranie początkowego adresu MAC.
+ */
+if (init.ready) {
+	devices.mac.get(function(result) {alert(result);}, true);
+}

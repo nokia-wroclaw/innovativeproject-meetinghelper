@@ -321,16 +321,13 @@ var connection = {
 			_onNewPhoto: function (data) {
 				connection._callback(JSON.stringify(data));
 
-				alert('tutaj przed');
 				if (connection.socket.receive.onNewPhoto) {
-					alert('tutaj');
 					connection.socket.receive.onNewPhoto({
-						userId: data.message.userId,
+						userId: data.message.user,
 						type: 'photo',
-						data: connection.url + connectionLinks.get.photo + data.message.url
+						data: connection.url + connectionLinks.get.photo + data.message
 					});
 				}
-				alert('tutaj za');
 			},
 
 			onNewUser: undefined,
