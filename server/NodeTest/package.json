@@ -1,0 +1,19 @@
+{
+  "name": "NodeTest",
+  "version": "0.0.0",
+  "description": "NodeTest",
+  "main": "server.js",
+  "author": {
+    "name": "Leszek",
+    "email": ""
+  },
+  "dependencies": {
+    "express.io": "^1.1.13",
+    "socket.io": "^0.9.16",
+    "express": "^3.4.8",
+    "qr-image": "^1.1.0",
+    "mysql": "^2.1.1",
+    "sequelize": "^1.7.0",
+    "mongoose": "^3.8.8"
+  }
+}

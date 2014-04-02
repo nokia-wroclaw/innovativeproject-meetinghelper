@@ -1,0 +1,35 @@
+﻿<html>
+<head>
+    <title>Client</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    io = io.connect()
+
+
+
+    // Emit ready event with room name.
+    //io.emit('ready')
+
+    // Listen for the announce event.
+    io.on('newPhoto', function (data) {
+
+        var img = $("<img width=\"188\" height=\"314\" />").attr('src', 'http://localhost:1337/user/' + data.message)
+        .load(function () {
+        if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
+            alert('broken image!');
+        } else {
+            $("#something").append(img);
+        }
+    });
+
+
+        //$('body').append('<p>' + data.message + new Date().toString() + '</p>')
+    })
+
+</script>
+</head>
+<body>
+    <p id="something"></p>
+</body>
+</html>
