@@ -18,29 +18,51 @@
 	/**
 	 * Page to send file
 	 */
-	sendFile: 'sendFile',
+	uploadFile: 'sendFile',
 
 	/**
 	 * Page to show all files
 	 */
-	getPhotos: 'getPhotos',
+ 	get: {
+		photos: 'getPhotos',
 
-	/**
-	 * Get single photo
-	 */
-	getPhoto: 'user/'
+		/**
+		 * Get single photo
+		 */
+		photo: 'user/',
+		user: 'user/',
+		rooms: {
+			all: 'rooms/list',
+			create: 'rooms/create',
+			join: 'rooms/join',
+			data: 'rooms/data'
+		}
+	},
+
+	post: {
+		mac: 'sendMac',
+		login: 'login',
+		register: 'register',
+		rooms: {
+			create: 'rooms/create/' // /room_name -> OK
+		}
+	}
 };
 
 /**
  * Webserver broadcast messages received by client.
  */
 var webSocketBroadcast = {
-	newPhoto: 'newPhoto'
+	newPhoto: 'newPhoto',
+	newUser: 'newUser',
+	newMessage: 'newMessage',
+	newComment: 'newComment'
 };
 
 /**
  * Webclient send events.
  */
 var webSocketSend = {
-	test: 'testWebSocket'
+	test: 'testWebSocket',
+	enterRoom: 'enterRoom'
 };
