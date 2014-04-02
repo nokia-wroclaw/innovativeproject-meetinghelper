@@ -40,7 +40,8 @@
 		login: 'login',
 		register: 'register',
 		rooms: {
-			create: 'rooms/create/' // /room_name -> OK
+			create: 'rooms/create/', // /room_name -> OK,
+			join: 'rooms/join'
 		}
 	}
 };
@@ -51,7 +52,8 @@
 var webSocketBroadcast = {
 	newPhoto: 'newPhoto',
 	newUser: 'newUser',
-	newMessage: 'newMessage'
+	newMessage: 'newMessage',
+	newComment: 'newComment'
 };
 
 /**

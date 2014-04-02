@@ -118,6 +118,20 @@ var connection = {
 				callb("passwords are not equal");
 			}
 		},
+		createRoom: function(room, callb) {
+			connection.action._base(
+				connection.action.types.post,
+				connectionLinks.post.rooms.create,
+				{room: room},
+				connection.receive.onCreateRoom(callb));
+		},
+		joinRoom: function(room, callb) {
+			connection.action._base(
+				connection.action.types.post,
+				connectionLinks.post.rooms.join,
+				{room: room},
+				connection.receive.onJoinRoom(callb));
+		},
 		getRooms: function(callb) {
 			connection.action._base(
 				connection.action.types.get,
@@ -148,6 +162,12 @@ var connection = {
 			return connection.receive._base(callb);
 		},
 		onRegister: function(callb) {
+			return connection.receive._base(callb);
+		},
+		onCreateRoom: function(callb) {
+			return connection.receive._base(callb);
+		},
+		onJoinRoom: function(callb) {
 			return connection.receive._base(callb);
 		},
 		onReceiveRooms: function(callb) {
@@ -298,6 +318,8 @@ var connection = {
 
 			connection.socket.instance.on(webSocketBroadcast.newPhoto, connection.socket.receive._onNewPhoto);
 			connection.socket.instance.on(webSocketBroadcast.newUser, connection.socket.receive._onNewUser);
+			connection.socket.instance.on(webSocketBroadcast.newMessage, connection.socket.receive._onNewMessage);
+			connection.socket.instance.on(webSocketBroadcast.newComment, connection.socket.receive._onNewComment);
 		},
 
 		send: function(event, object) {
@@ -340,7 +362,7 @@ var connection = {
 
 				if (connection.socket.receive.onNewUser) {
 					connection.socket.receive.onNewUser({
-						userId: data.message.userId,
+						userId: data.message.user,
 						type: 'user',
 						data: data.message
 					});
@@ -357,7 +379,7 @@ var connection = {
 
 				if (connection.socket.receive.onNewMessage) {
 					connection.socket.receive.onNewMessage({
-						userId: data.message.userId,
+						userId: data.message.user,
 						type: 'message',
 						data: data.message
 					});
@@ -374,10 +396,10 @@ var connection = {
 
 				if (connection.socket.receive.onNewComment) {
 					connection.socket.receive.onNewComment({
-						userId: data.message.userId,
+						userId: data.message.user,
 						type: 'comment',
-						target: data.message.url,
-						data: data.message
+						target: connection.url + connectionLinks.get.photo + data.message,
+						data: data.message.data
 					});
 				}
 			}
