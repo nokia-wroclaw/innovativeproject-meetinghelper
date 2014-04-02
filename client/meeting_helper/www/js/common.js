@@ -63,5 +63,6 @@ var webSocketBroadcast = {
  * Webclient send events.
  */
 var webSocketSend = {
-	test: 'testWebSocket'
+	test: 'testWebSocket',
+	enterRoom: 'enterRoom'
 };

@@ -334,6 +334,10 @@ var connection = {
 			connection.socket.send(webSocketSend.test, message);
 		},
 
+		enterRoom: function(roomId) {
+			connection.socket.send(webSocketSend.enterRoom, {roomId: roomId});
+		},
+
 		receive: {
 			onNewPhoto: undefined,
 

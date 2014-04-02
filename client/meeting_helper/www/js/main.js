@@ -102,10 +102,21 @@ var main = {
 	},
 
 	/**
-	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
+	 * Dołącza do pokoju za pomocą nazwy pokoju.
 	 */
 	joinRoom: function(room) {
 		connection.action.joinRoom(room, function(received) {
+			alert(received);
+
+			main.enterRoom(received.room);
+		});
+	},
+
+	/**
+	 * Informuje serwer, że `wchodzi` do pokoju.
+	 */
+	enterRoom: function(roomId) {
+		connection.socket.enterRoom(roomId, function(received) {
 			alert(received);
 		});
 	},
