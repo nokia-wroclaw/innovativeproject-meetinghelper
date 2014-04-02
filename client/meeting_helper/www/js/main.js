@@ -122,11 +122,20 @@ var main = {
 	},
 
 	/**
-	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
+	 * Skanuje kod, dołącza do pokoju i wchodzi do niego.
 	 */
-	getRooms: function() {
-		connection.action.getRooms(function(received) {
-			alert(received);
+	scanRoomQrCode: function() {
+		// skanowanie
+		devices.qrCode.scan(function(roomId) {
+			alert(roomId);
+			// dołączenie do pokoju
+			connection.action.joinRoom(roomId, function(received) {
+				alert(received);
+				// wejście do pokoju
+				connection.socket.enterRoom(roomId, function(entered) {
+					alert(entered);
+				});
+			});
 		});
 	}
 };
