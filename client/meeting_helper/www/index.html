@@ -88,6 +88,18 @@
             onclick="main.register(document.getElementById('login').value, document.getElementById('password').value, document.getElementById('password2').value)">
                 register
         </button>
+        <br>
+        <input type="text" id="rooms" value="rooooom"/>
+        <br>
+        <button
+            onclick="main.createRoom(document.getElementById('rooms').value)">
+                create room
+        </button>
+        <br>
+        <button
+            onclick="main.joinRoom(document.getElementById('rooms').value)">
+                join room
+        </button>
 
         <br/><br/><br/><br/><br/><br/>
         <img style="display:none;width:100px;height:100px;" id="received"/>

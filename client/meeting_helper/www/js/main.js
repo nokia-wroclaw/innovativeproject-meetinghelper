@@ -90,6 +90,33 @@ var main = {
 		connection.action.register(login, password, password2, function(received) {
 			alert(received);
 		});
+	},
+
+	/**
+	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
+	 */
+	createRoom: function(room) {
+		connection.action.createRoom(room, function(received) {
+			alert(received);
+		});
+	},
+
+	/**
+	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
+	 */
+	joinRoom: function(room) {
+		connection.action.joinRoom(room, function(received) {
+			alert(received);
+		});
+	},
+
+	/**
+	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
+	 */
+	getRooms: function() {
+		connection.action.getRooms(function(received) {
+			alert(received);
+		});
 	}
 };
 

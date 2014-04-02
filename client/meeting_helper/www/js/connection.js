@@ -120,29 +120,29 @@ var connection = {
 		},
 		createRoom: function(room, callb) {
 			connection.action._base(
-				connection.action.types.post,
-				connectionLinks.post.rooms.create,
+				connection.action.types.get,
+				connectionLinks.get.rooms.create,
 				{room: room},
 				connection.receive.onCreateRoom(callb));
 		},
 		joinRoom: function(room, callb) {
 			connection.action._base(
-				connection.action.types.post,
-				connectionLinks.post.rooms.join,
+				connection.action.types.get,
+				connectionLinks.get.rooms.join,
 				{room: room},
 				connection.receive.onJoinRoom(callb));
 		},
 		getRooms: function(callb) {
 			connection.action._base(
 				connection.action.types.get,
-				connectionLinks.get.rooms,
+				connectionLinks.get.rooms.all,
 				null,
 				connection.receive.onReceiveRooms(callb));
 		},
 		getRoomData: function(roomId, callb) {
 			connection.action._base(
 				connection.action.types.get,
-				connectionLinks.get.roomData,
+				connectionLinks.get.rooms.data,
 				{roomId: roomId},
 				connection.receive.onReceiveRoomData(callb));
 		}

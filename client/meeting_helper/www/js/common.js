@@ -31,8 +31,12 @@
 		 */
 		photo: 'user/',
 		user: 'user/',
-		rooms: 'rooms/list',
-		roomData: 'getRoomData'
+		rooms: {
+			all: 'rooms/list',
+			create: 'rooms/create',
+			join: 'rooms/join',
+			data: 'rooms/data'
+		}
 	},
 
 	post: {
@@ -40,8 +44,7 @@
 		login: 'login',
 		register: 'register',
 		rooms: {
-			create: 'rooms/create/', // /room_name -> OK,
-			join: 'rooms/join'
+			create: 'rooms/create/' // /room_name -> OK
 		}
 	}
 };
