@@ -98,17 +98,21 @@ var main = {
 	createRoom: function(room) {
 		connection.action.createRoom(room, function(received) {
 			alert(received);
+			var roomId = JSON.parse(received).data.id;
+			var input = document.getElementById('roomId');
+			input.value = roomId;
 		});
 	},
 
 	/**
 	 * Dołącza do pokoju za pomocą nazwy pokoju.
 	 */
-	joinRoom: function(room) {
-		connection.action.joinRoom(room, function(received) {
+	joinRoom: function(roomId) {
+		connection.action.joinRoom(roomId, function(received) {
+			// `received` na razie nie potrzebne
 			alert(received);
 
-			main.enterRoom(received.room);
+			//main.enterRoom(roomId);
 		});
 	},
 
@@ -116,9 +120,7 @@ var main = {
 	 * Informuje serwer, że `wchodzi` do pokoju.
 	 */
 	enterRoom: function(roomId) {
-		connection.socket.enterRoom(roomId, function(received) {
-			alert(received);
-		});
+		connection.socket.enterRoom(roomId);
 	},
 
 	/**
@@ -129,12 +131,10 @@ var main = {
 		devices.qrCode.scan(function(roomId) {
 			alert(roomId);
 			// dołączenie do pokoju
-			connection.action.joinRoom(roomId, function(received) {
-				alert(received);
+			connection.action.joinRoom(roomId, function(received2) {
+				alert(received2);
 				// wejście do pokoju
-				connection.socket.enterRoom(roomId, function(entered) {
-					alert(entered);
-				});
+				connection.socket.enterRoom(roomId);
 			});
 		});
 	}
@@ -153,9 +153,9 @@ connection.socket.receive.onNewPhoto = function(data) {
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
-connection.socket.receive.onNewUser = function(data) {
+/*connection.socket.receive.onNewUser = function(data) {
 	callback(data);
-};
+};*/
 
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:

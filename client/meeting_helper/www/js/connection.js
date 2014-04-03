@@ -24,6 +24,7 @@
 
 var connection = {
 	url: '',
+	correct: undefined,
 
 	callback: undefined,
 
@@ -37,12 +38,17 @@ var connection = {
 
 	setUrl: function(url) {
 		connection.url = '';
-		connection.action.ping(url, function() {
-			connection.url = url;
-			try {
-				connection.socket.init(url);
-			} catch(e) {
-				connection._callback(e);
+		connection.correct = false;
+		connection.action.ping(url, function(result) {
+			result = JSON.parse(result);
+			if (result.message === connectionAnswers.ping) {
+				connection.url = url;
+				connection.correct = true;
+				try {
+					connection.socket.init(url);
+				} catch(e) {
+					connection._callback(e);
+				}
 			}
 		});
 	},
@@ -53,9 +59,9 @@ var connection = {
 			post: "POST"
 		},
 
-		_base: function(type, link, value, callb) {
+		_base: function(type, link, value, callb, ping) {
 			try {
-				if (connection.url !== '') {
+				if (connection.correct || ping) {
 				    var xmlHttp = null;
 
 				    xmlHttp = new XMLHttpRequest();
@@ -78,6 +84,8 @@ var connection = {
 					}
 				    xmlHttp.send( value );
 
+				} else if (connection.correct === false) {
+					connection._callback('Wrong url');
 				} else {
 					connection._callback('No url is set');
 				}
@@ -96,7 +104,8 @@ var connection = {
 				connection.action.types.get,
 				link + connectionLinks.get.ping,
 				null,
-				connection.receive.onPong(callb));
+				connection.receive._onPong(callb),
+				true);
 		},
 		hello: function(callb) {
 			connection.action._base(
@@ -133,15 +142,15 @@ var connection = {
 		createRoom: function(room, callb) {
 			connection.action._base(
 				connection.action.types.get,
-				connectionLinks.get.rooms.create,
-				{room: room},
+				connectionLinks.get.rooms.create + room,
+				null,
 				connection.receive.onCreateRoom(callb));
 		},
 		joinRoom: function(room, callb) {
 			connection.action._base(
 				connection.action.types.get,
-				connectionLinks.get.rooms.join,
-				{room: room},
+				connectionLinks.get.rooms.join + room,
+				null,
 				connection.receive.onJoinRoom(callb));
 		},
 		getRooms: function(callb) {
@@ -350,7 +359,7 @@ var connection = {
 		},
 
 		enterRoom: function(roomId) {
-			connection.socket.send(webSocketSend.enterRoom, {roomId: roomId});
+			connection.socket.send(webSocketSend.enterRoom, roomId);
 		},
 
 		receive: {
@@ -377,7 +386,7 @@ var connection = {
 			 * In data.message is received message.
 			 */
 			_onNewUser: function (data) {
-				connection._callback(JSON.stringify(data));
+				connection._callback('_onNewUser: ' + JSON.stringify(data));
 
 				if (connection.socket.receive.onNewUser) {
 					connection.socket.receive.onNewUser({

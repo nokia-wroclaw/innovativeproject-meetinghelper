@@ -96,13 +96,15 @@
                 create room
         </button>
         <br>
+        <input type="text" id="roomId" value=""/>
+        <br>
         <button
-            onclick="main.joinRoom(document.getElementById('rooms').value)">
+            onclick="main.joinRoom(document.getElementById('roomId').value)">
                 join room
         </button>
         <br>
         <button
-            onclick="main.enterRoom(document.getElementById('rooms').value)">
+            onclick="main.enterRoom(document.getElementById('roomId').value)">
                 enter room
         </button>
         <br>

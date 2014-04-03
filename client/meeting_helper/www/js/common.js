@@ -34,8 +34,8 @@
 		user: 'user/',
 		rooms: {
 			all: 'rooms/list',
-			create: 'rooms/create',
-			join: 'rooms/join',
+			create: 'rooms/create/',
+			join: 'rooms/join/',
 			data: 'rooms/data'
 		}
 	},
@@ -48,6 +48,10 @@
 			create: 'rooms/create/' // /room_name -> OK
 		}
 	}
+};
+
+var connectionAnswers = {
+	ping: 'PONG'
 };
 
 /**
