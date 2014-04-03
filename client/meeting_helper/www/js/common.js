@@ -24,6 +24,7 @@
 	 * Page to show all files
 	 */
  	get: {
+		ping: 'ping',
 		photos: 'getPhotos',
 
 		/**

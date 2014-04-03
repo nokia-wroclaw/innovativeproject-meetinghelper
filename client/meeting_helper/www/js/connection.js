@@ -23,7 +23,7 @@
  */
 
 var connection = {
-	url: undefined,
+	url: '',
 
 	callback: undefined,
 
@@ -36,10 +36,15 @@ var connection = {
 	},
 
 	setUrl: function(url) {
-		connection.url = url;
-		try {
-			connection.socket.init(url);
-		} catch(e) {}
+		connection.url = '';
+		connection.action.ping(url, function() {
+			connection.url = url;
+			try {
+				connection.socket.init(url);
+			} catch(e) {
+				connection._callback(e);
+			}
+		});
 	},
 
 	action: {
@@ -50,7 +55,7 @@ var connection = {
 
 		_base: function(type, link, value, callb) {
 			try {
-				if (connection.url) {
+				if (connection.url !== '') {
 				    var xmlHttp = null;
 
 				    xmlHttp = new XMLHttpRequest();
@@ -85,6 +90,13 @@ var connection = {
 					connection._callback(e);
 			    }
 			}
+		},
+		ping: function(link, callb) {
+			connection.action._base(
+				connection.action.types.get,
+				link + connectionLinks.get.ping,
+				null,
+				connection.receive.onPong(callb));
 		},
 		hello: function(callb) {
 			connection.action._base(
@@ -157,6 +169,9 @@ var connection = {
 					connection._callback(data);
 				}
 			}
+		},
+		_onPong: function(callb) {
+			return connection.receive._base(callb);
 		},
 		onLogin: function(callb) {
 			return connection.receive._base(callb);
