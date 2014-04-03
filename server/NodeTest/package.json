@@ -12,8 +12,9 @@
     "socket.io": "^0.9.16",
     "express": "^3.4.8",
     "qr-image": "^1.1.0",
-    "mysql": "^2.1.1",
     "sequelize": "^1.7.0",
-    "mongoose": "^3.8.8"
+    "ip": "^0.3.0",
+    "sequelize-sqlite": "^1.7.0",
+    "sqlite3": "^2.2.0"
   }
 }
