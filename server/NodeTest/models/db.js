@@ -1,9 +1,14 @@
-﻿var mongoose = require('mongoose');
+﻿var Sequelize = require('sequelize');
 
-var User = new mongoose.Schema({
- Mac: String,
- Room: String
-});
-mongoose.model('User', User);
+var sequelize = new Sequelize('meetinghelper', '', '', {
+      dialect: 'sqlite',
 
-mongoose.connect('mongodb://localhost/NodeTest');
+      // disable logging
+      logging: false,
+      storage: 'meetinghelper.db'
+    });
+
+
+
+  module.exports.Sequelize = sequelize;
+

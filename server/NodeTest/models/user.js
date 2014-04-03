@@ -1,9 +1,13 @@
-﻿
-var User = function(mac) {
-
-    var mac = mac;
-    var room = undefined;
-};
+﻿var Sequelize = require('sequelize');
+var sequelize = require('./db.js').Sequelize;
 
 
-module.exports.User = User;
+var User = sequelize.define('Users', {
+        name: Sequelize.STRING,
+        password: Sequelize.STRING,
+    }, {
+        updatedAt: false,
+        createdAt: false
+    });
+
+  module.exports = User;

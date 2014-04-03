@@ -1,6 +1,7 @@
 var fs = require('fs');
+express = require('express.io');
+app = express();
 
-app = require('express.io')();
 app.http().io();
 
 var message = "";
@@ -8,20 +9,40 @@ var arr = [];
 var photos = [];
 
 
-var connection = require('./routes/connection.js');
+var connection = require('./routes/connectionRoute.js');
+var qrcode = require('./routes/qrcodeRoute.js');
+var user = require('./routes/userRoute.js');
+var room = require('./routes/roomRoute.js');
 
-
-
+var sequelize = require('./models/db.js').Sequelize;
 
 app.configure( function() {
-    app.use(require('express.io').bodyParser());
+    app.use(express.bodyParser());
+  app.use(express.cookieParser());  
+  app.use(express.session({ secret: "PWRTeam" }));
+
 });
+/*
+sequelize
+  .sync({ force: true })
+  .complete(function(err) {
+    // Even if we didn't define any foreign key or something else,
+    // instances of Target will have a column SourceId!
+  })
+/*
+*/
+
 
 var form = "<!DOCTYPE HTML><html><body>" +
 "<form method='post' action='/sendFile' enctype='multipart/form-data'>" +
 "<input type='file' name='file'/>" +
 "<input type='submit' /></form>" +
 "</body></html>";
+
+var form1 ="<form method='post' action='/users/register'>"+
+    "<input type='text' name='username'>"+
+    "<input type='submit'>"+
+"</form>";
 
 // Routes
 
@@ -38,11 +59,22 @@ app.io.route('testWebSocket', function(req) {
 
 
 app.get('/', connection.HelloWorld);
-app.get('/rooms/create/:roomName', connection.CreateRoom);
-app.get('/rooms/join/:roomName', connection.JoinRoom);
-app.get('/qrcode', connection.QRCode);
-app.get('/users/login/:mac', connection.Login);
-app.get('/users/list', connection.GetUsers);
+app.get('/ping', connection.Ping);
+
+app.get('/rooms/create/:roomName', room.CreateRoom);
+app.get('/rooms/join/:roomName', room.JoinRoom);
+app.get('/rooms/liest', room.GetRoomsList);
+
+
+app.get('/qrcode', qrcode.QRCode);
+app.get('/qrcode/:address/:port', qrcode.QRCodeGenerator);
+app.get('/qrcode/:groupCode', qrcode.QRCodeJoinGroup);
+
+app.post('/login', user.Login);
+app.post('/register', user.Register);
+app.post('/logout', user.Logout);
+
+app.get('/users/list', user.GetUsers);
 
 
 

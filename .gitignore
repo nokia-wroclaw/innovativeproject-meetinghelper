@@ -34,3 +34,6 @@ client/meeting_helper/merges
 client/meeting_helper/node_modules
 client/meeting_helper/platforms
 client/meeting_helper/plugins
+
+# Cordova generated files
+server/NodeTest/node_modules
