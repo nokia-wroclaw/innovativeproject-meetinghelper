@@ -22,9 +22,19 @@
  * Polega to na przypisaniu nowej funkcji, wywoływanej przy danej akcji.
  */
 
+var states = {
+	unknown_host: 'unknown_host',
+	wrong_host: 'wrong_host',
+	established: 'established',
+	connecting: 'connecting',
+	disconnected: 'disconnected'
+};
+
 var connection = {
 	url: '',
-	correct: undefined,
+	state: states.unknown_host,
+
+	states: states,
 
 	callback: undefined,
 
@@ -38,17 +48,18 @@ var connection = {
 
 	setUrl: function(url) {
 		connection.url = '';
-		connection.correct = false;
+		connection.state = connection.states.connecting;
 		connection.action.ping(url, function(result) {
 			result = JSON.parse(result);
 			if (result.message === connectionAnswers.ping) {
 				connection.url = url;
-				connection.correct = true;
 				try {
 					connection.socket.init(url);
 				} catch(e) {
 					connection._callback(e);
+					connection.state = connection.states.disconnected;
 				}
+				connection.state = connection.states.established;
 			}
 		});
 	},
@@ -61,7 +72,7 @@ var connection = {
 
 		_base: function(type, link, value, callb, ping) {
 			try {
-				if (connection.correct || ping) {
+				if (connection.state === connection.states.established || ping) {
 				    var xmlHttp = null;
 
 				    xmlHttp = new XMLHttpRequest();
@@ -84,10 +95,14 @@ var connection = {
 					}
 				    xmlHttp.send( value );
 
-				} else if (connection.correct === false) {
+				} else if (connection.state === connection.states.connecting) {
+					connection._callback('Connecting...');
+				} else if (connection.state === connection.states.wrong_host) {
 					connection._callback('Wrong url');
-				} else {
+				} else if (connection.state === connection.states.unknown_host) {
 					connection._callback('No url is set');
+				} else {
+					connection._callback('Unknown exception');
 				}
 			} catch(e) {
 			    if (callb) {
