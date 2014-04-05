@@ -141,6 +141,13 @@ var main = {
 };
 
 /**
+ * Funkcja wywoływana po poprawnym ustawieniu strony.
+ */
+connection.onSetUrl = function() {
+	//
+};
+
+/**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
 connection.socket.receive.onNewPhoto = function(data) {
@@ -153,9 +160,9 @@ connection.socket.receive.onNewPhoto = function(data) {
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
-/*connection.socket.receive.onNewUser = function(data) {
+connection.socket.receive.onNewUser = function(data) {
 	callback(data);
-};*/
+};
 
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:

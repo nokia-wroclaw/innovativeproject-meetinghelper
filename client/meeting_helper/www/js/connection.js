@@ -60,9 +60,14 @@ var connection = {
 					connection.state = connection.states.disconnected;
 				}
 				connection.state = connection.states.established;
+				if (connection.onSetUrl) {
+					connection.onSetUrl();
+				}
 			}
 		});
 	},
+
+	onSetUrl: undefined,
 
 	action: {
 		types: {
@@ -96,7 +101,7 @@ var connection = {
 				    xmlHttp.send( value );
 
 				} else if (connection.state === connection.states.connecting) {
-					connection._callback('Connecting...');
+					connection._callback('Connecting...\nPlease check your connection.');
 				} else if (connection.state === connection.states.wrong_host) {
 					connection._callback('Wrong url');
 				} else if (connection.state === connection.states.unknown_host) {
