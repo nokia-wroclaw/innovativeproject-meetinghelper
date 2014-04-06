@@ -1,0 +1,26 @@
+<div id="bar">
+	<img alt="logo" height="30" src="img/logo2.png" width="30">
+	<span class="meeting_small">Meeting</span><span class="helper_small">Helper</span>
+	&nbsp;&nbsp;&nbsp;Login
+</div>
+<div id="body">
+	<br><br>
+	<img alt="Login icon" width="64" height="64" src="img/login.png">
+	<br><br>
+	<span class="white_text">login</span>
+	<br>
+	<input type="text" id="login" value=""/>
+	<br><br>
+	<span class="white_text">password</span>
+	<br>
+	<input type="password" id="password" value=""/>
+	<br><br>
+	<button onclick="main.login(document.getElementById('login').value, document.getElementById('password').value)">
+		<img alt="OK" width="50" height="50" src="img/accept.png">
+	</button>
+	<br><br>
+	<span class="white_text" onclick="load('rooms')">Go to rooms</span>
+	<br><br>
+	<span class="white_text" onclick="load('registration')">Create new account</span>
+	<br><br>
+</div>
