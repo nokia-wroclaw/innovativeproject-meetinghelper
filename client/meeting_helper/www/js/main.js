@@ -88,6 +88,8 @@ var main = {
 	 */
 	getRooms: function() {
 		connection.action.getRooms(function(received) {
+			// received zawiera listę elementów z: id, name, folderName
+			// instersuje nas id po którym dołączamy i name które wyświetlamy
 			alert(received);
 		});
 	},
@@ -97,7 +99,16 @@ var main = {
 	 */
 	login: function(login, password) {
 		connection.action.login(login, password, function(received) {
-			alert(received);
+			//akcja wykonywana po odpowiedzi serwera
+			if (received.result === 0) {//gdy jest ok
+				//received.message zawiera wiadomość
+				
+				//TUTAJ AKCJE PO POPRAWNYM ZALOGOWANIU - NP PRZEJŚCIE DO WALLA
+				
+			} else if (received.result === 1) {//błąd
+				//received.message zawiera wiadomość dlaczego nie
+			}
+			alert('login: ' + JSON.stringify(received));
 		});
 	},
 
@@ -106,6 +117,15 @@ var main = {
 	 */
 	register: function(login, password, password2) {
 		connection.action.register(login, password, password2, function(received) {
+			//akcja wykonywana po odpowiedzi serwera
+			if (received.result === 0) {//gdy jest ok
+				//received.message zawiera wiadomość
+				
+				//TUTAJ AKCJE PO POPRAWNYM ZAREJESTROWANIU - NP PRZEJŚCIE DO STRONY LOGOWANIA
+				
+			} else if (received.result === 1) {//błąd
+				//received.message zawiera wiadomość dlaczego nie
+			}
 			alert(received);
 		});
 	},
