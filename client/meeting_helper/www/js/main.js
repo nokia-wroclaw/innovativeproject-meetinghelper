@@ -16,6 +16,13 @@ var t_onlineUser = {
 	login: []*/
 };
 
+var me = {
+	id: undefined,
+	chosedRoom: undefined,
+	joinedRoom: undefined,
+	enteredRoom: undefined
+};
+
 /**
  * Funkcje, od których oczekujemy odpowiedzi, wywołujemy,
  * podając w nich jako argument funkcję, która ma zostać wywołana
@@ -100,10 +107,12 @@ var main = {
 	login: function(login, password) {
 		connection.action.login(login, password, function(received) {
 			//akcja wykonywana po odpowiedzi serwera
+			received = JSON.parse(received);
 			if (received.result === 0) {//gdy jest ok
 				//received.message zawiera wiadomość
 				
 				//TUTAJ AKCJE PO POPRAWNYM ZALOGOWANIU - NP PRZEJŚCIE DO WALLA
+				me.id = received.data.id;
 				
 			} else if (received.result === 1) {//błąd
 				//received.message zawiera wiadomość dlaczego nie
@@ -133,32 +142,48 @@ var main = {
 	/**
 	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
 	 */
-	createRoom: function(room) {
-		connection.action.createRoom(room, function(received) {
+	createRoom: function(roomName) {
+		connection.action.createRoom(roomName, function(received) {
 			alert(received);
 			var roomId = JSON.parse(received).data.id;
-			var input = document.getElementById('roomId');
-			input.value = roomId;
+			main.choseRoom(roomId);
+			//var input = document.getElementById('roomId');
+			//input.value = roomId;
 		});
+	},
+
+	/**
+	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
+	 */
+	choseRoom: function(chosedRoom) {
+		me.chosedRoom = chosedRoom;
 	},
 
 	/**
 	 * Dołącza do pokoju za pomocą nazwy pokoju.
 	 */
-	joinRoom: function(roomId) {
-		connection.action.joinRoom(roomId, function(received) {
-			// `received` na razie nie potrzebne
-			alert(received);
+	joinRoom: function() {
+		var roomId = me.chosedRoom;
+		if (roomId) {
+			connection.action.joinRoom(roomId, function(received) {
+				// `received` na razie nie potrzebne
+				alert(received);
 
-			//main.enterRoom(roomId);
-		});
+				me.joinedRoom = roomId;
+				//main.enterRoom();
+			});
+		}
 	},
 
 	/**
 	 * Informuje serwer, że `wchodzi` do pokoju.
 	 */
-	enterRoom: function(roomId) {
-		connection.socket.enterRoom(roomId);
+	enterRoom: function() {
+		var userId = me.id,
+			roomId = me.joinedRoom;
+		if (userId && roomId) {
+			connection.socket.enterRoom(userId, roomId);
+		}
 	},
 
 	/**
