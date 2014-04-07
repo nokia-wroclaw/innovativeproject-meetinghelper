@@ -411,9 +411,9 @@ var connection = {
 
 				if (connection.socket.receive.onNewUser) {
 					connection.socket.receive.onNewUser({
-						userId: data.message.user,
+						userId: data.user.id,
 						type: 'user',
-						data: data.message
+						data: data
 					});
 				}
 			},

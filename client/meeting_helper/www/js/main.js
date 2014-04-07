@@ -153,36 +153,33 @@ var main = {
 	},
 
 	/**
-	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
+	 * Ustawia pokój, do którego dołączyć i wejść.
 	 */
 	choseRoom: function(chosedRoom) {
 		me.chosedRoom = chosedRoom;
 	},
 
 	/**
-	 * Dołącza do pokoju za pomocą nazwy pokoju.
+	 * Dołącza i wchodzi do wybranego pokoju.
 	 */
 	joinRoom: function() {
 		var roomId = me.chosedRoom;
 		if (roomId) {
 			connection.action.joinRoom(roomId, function(received) {
-				// `received` na razie nie potrzebne
-				alert(received);
-
 				me.joinedRoom = roomId;
-				//main.enterRoom();
+				main.enterRoom(me.joinedRoom);
 			});
 		}
 	},
 
 	/**
-	 * Informuje serwer, że `wchodzi` do pokoju.
+	 * Informuje serwer, że `wchodzi` do pokoju (do którego już wcześniej dołączył).
 	 */
-	enterRoom: function() {
-		var userId = me.id,
-			roomId = me.joinedRoom;
+	enterRoom: function(roomId) {
+		var userId = me.id;
 		if (userId && roomId) {
 			connection.socket.enterRoom(userId, roomId);
+			me.enteredRoom = roomId;
 		}
 	},
 
@@ -194,11 +191,8 @@ var main = {
 		devices.qrCode.scan(function(roomId) {
 			alert(roomId);
 			// dołączenie do pokoju
-			connection.action.joinRoom(roomId, function(received2) {
-				alert(received2);
-				// wejście do pokoju
-				connection.socket.enterRoom(roomId);
-			});
+			main.choseRoom(roomId);
+			main.joinRoom();
 		});
 	},
         
@@ -315,9 +309,9 @@ connection.socket.receive.onNewPhoto = function(data) {
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
-/*connection.socket.receive.onNewUser = function(data) {
+connection.socket.receive.onNewUser = function(data) {
 	callback(data);
-};*/
+};
 
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
