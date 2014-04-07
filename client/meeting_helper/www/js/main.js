@@ -212,8 +212,8 @@ var main = {
 	 */
 	addNewServerData: function(type, data, author) {
 		t_serverData.totalRecords += 1;
-		t_serverData.data[t_serverData.totalRecords-1] = [type, data, author];
-                main.updateServerData(type, data, author);
+		t_serverData.data[t_serverData.totalRecords-1] = [type, data.data, author];
+                main.updateServerData(type, data.data, author);
 	},
         
         /**
@@ -252,7 +252,7 @@ var main = {
                 image.setAttributeNode(node);
                 var element = document.getElementById('received');
                 element.appendChild(image);
-                var tmp = element.getElementsByTagName("img")[t_serverData.data.length-1];
+                var tmp = element.getElementsByTagName("img")[t_serverData.totalRecords-1];
                 tmp.style.display='block';
                 tmp.src=data;
         },
