@@ -67,15 +67,8 @@ var main = {
 	 */
 	initialQrCode: function() {
 		devices.qrCode.scan(function(result) {
-			var url = document.getElementById('url');
-			url.value = 'Connecting: ' + result;
 
-			connection.setUrl(result, function() {
-				url.value = result;
-
-				//TUTAJ AKCJE PO POPRAWNYM POŁĄCZENIU Z SERWEREM - NP PRZEJŚCIE DO LOGOWANIA
-				load('login');
-			});
+			main.setUrl(result);
 
 		}, true);
 	},
@@ -109,6 +102,17 @@ var main = {
 		});
 	},
 
+	setUrl: function(url) {
+		var url = document.getElementById('url');
+		url.value = 'Connecting: ' + url;
+		connection.setUrl(url, function() {
+			url.value = url;
+
+			//TUTAJ AKCJE PO POPRAWNYM POŁĄCZENIU Z SERWEREM - NP PRZEJŚCIE DO LOGOWANIA
+			load('login');
+		});
+	},
+
 	/**
 	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
 	 */
@@ -118,7 +122,8 @@ var main = {
 			received = JSON.parse(received);
 			if (received.result === 0) {//gdy jest ok
 				//received.message zawiera wiadomość
-				me.id = JSON.parse(received).data.id;
+				alert(received);
+				me.id = received.data.id;
 				
 				//TUTAJ AKCJE PO POPRAWNYM ZALOGOWANIU - NP PRZEJŚCIE DO ROOMÓW
 				load('rooms');
