@@ -1,7 +1,12 @@
 /**
  * Script for switching contents
  */
-function load(what) {
+
+// Memory of previous pages
+var actualPage;
+var pageHistory = new Array();
+
+function load(what, ifHistory) {
 	switch(what) {
 		case "connection":
 			$( "#content" ).load( "loadConnect.html" );
@@ -19,4 +24,10 @@ function load(what) {
 			$( "#content" ).load( "loadWall.html" );
 			break;
 	}
+	if (!ifHistory) {
+		if (actualPage) {
+			pageHistory.push(actualPage);
+		}
+	}
+	actualPage = what;
 }
