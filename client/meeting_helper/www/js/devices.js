@@ -21,13 +21,9 @@ var devices = {
 
 		success: undefined,
 
-		_success: function(userCallback, ifSetUrl) {
+		_success: function(userCallback) {
 			return function (result) {
 				if (result.text !== '') {
-					if (ifSetUrl) {
-						connection.setUrl(result.text);
-					}
-
 					if (userCallback) {
 						userCallback(result.text)
 					}

@@ -46,7 +46,7 @@ var connection = {
 	    }
 	},
 
-	setUrl: function(url) {
+	setUrl: function(url, callback) {
 		connection.url = '';
 		connection.state = connection.states.connecting;
 		connection.action.ping(url, function(result) {
@@ -60,14 +60,12 @@ var connection = {
 					connection.state = connection.states.disconnected;
 				}
 				connection.state = connection.states.established;
-				if (connection.onSetUrl) {
-					connection.onSetUrl();
+				if (callback) {
+					callback();
 				}
 			}
 		});
 	},
-
-	onSetUrl: undefined,
 
 	action: {
 		types: {

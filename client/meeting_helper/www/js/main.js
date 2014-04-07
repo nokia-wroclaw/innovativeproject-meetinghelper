@@ -68,7 +68,14 @@ var main = {
 	initialQrCode: function() {
 		devices.qrCode.scan(function(result) {
 			var url = document.getElementById('url');
-			url.value = result;
+			url.value = 'Connecting: ' + result;
+
+			connection.setUrl(result, function() {
+				url.value = result;
+
+				//TUTAJ AKCJE PO POPRAWNYM POŁĄCZENIU Z SERWEREM - NP PRZEJŚCIE DO LOGOWANIA
+			});
+
 		}, true);
 	},
 
