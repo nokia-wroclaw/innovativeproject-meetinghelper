@@ -377,7 +377,6 @@ var connection = {
 		},
 
 		enterRoom: function(userId, roomId) {
-			alert(userId + ' ' + roomId);
 			connection.socket.send(webSocketSend.enterRoom, {user: userId, room: roomId});
 		},
 
@@ -409,7 +408,7 @@ var connection = {
 
 				if (connection.socket.receive.onNewUser) {
 					connection.socket.receive.onNewUser({
-						userId: data.user.id,
+						userId: data.id,
 						type: 'user',
 						data: data
 					});

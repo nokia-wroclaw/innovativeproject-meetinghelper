@@ -122,7 +122,6 @@ var main = {
 			received = JSON.parse(received);
 			if (received.result === 0) {//gdy jest ok
 				//received.message zawiera wiadomość
-				alert(received);
 				me.id = received.data.id;
 				
 				//TUTAJ AKCJE PO POPRAWNYM ZALOGOWANIU - NP PRZEJŚCIE DO ROOMÓW
@@ -157,7 +156,6 @@ var main = {
 	 */
 	createRoom: function(roomName) {
 		connection.action.createRoom(roomName, function(received) {
-			alert(received);
 			var roomId = JSON.parse(received).data.id;
 			main.choseRoom(roomId);
 			//var input = document.getElementById('roomId');
@@ -202,7 +200,6 @@ var main = {
 	scanRoomQrCode: function() {
 		// skanowanie
 		devices.qrCode.scan(function(roomId) {
-			alert(roomId);
 			// dołączenie do pokoju
 			main.choseRoom(roomId);
 			main.joinRoom();
@@ -323,8 +320,7 @@ connection.socket.receive.onNewPhoto = function(data) {
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
 connection.socket.receive.onNewUser = function(data) {
-	callback(data);
-	if (data.id === me.id) {
+	if (data.userId === me.id) {
 		load('wall');
 	}
 };

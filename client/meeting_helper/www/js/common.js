@@ -2,7 +2,7 @@
  * Default callback.
  */
  var callback = function(message) {
-	alert(message);
+	//alert(message);
 	console.log(message);
  };
 
