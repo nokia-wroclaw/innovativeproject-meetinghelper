@@ -102,11 +102,11 @@ var main = {
 		});
 	},
 
-	setUrl: function(url) {
+	setUrl: function(link) {
 		var url = document.getElementById('url');
-		url.value = 'Connecting: ' + url;
-		connection.setUrl(url, function() {
-			url.value = url;
+		url.value = 'Connecting: ' + link;
+		connection.setUrl(link, function() {
+			url.value = link;
 
 			//TUTAJ AKCJE PO POPRAWNYM POŁĄCZENIU Z SERWEREM - NP PRZEJŚCIE DO LOGOWANIA
 			load('login');
