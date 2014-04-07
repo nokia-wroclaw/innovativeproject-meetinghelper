@@ -99,11 +99,7 @@ app.io.route('enterRoom', function(req) {
 app.io.sockets.on('connection', function (socket) {
     console.log("Ktos do³¹czyl");
   socket.on('enterRoom', function (data) {
-      socket.user = data.user;
-      socket.room = data.room;
-      socket.join(data.room); 
-      socket.emit('newUser', "Do³¹czy³eœ do pokoju" + data.room);
-      console.log("User "+ data.user + " do³¹czy³ do pokoju " + data.room);
+      user.SNewUser(socket, data);
   });
 });
 

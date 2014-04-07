@@ -60,3 +60,17 @@ module.exports.Logout = function(req, res) {
 module.exports.GetUsers = function(req, res) {
 
 }
+
+module.exports.SNewUser = function (socket, data) {
+      socket.user = data.user;
+      socket.room = data.room;
+      socket.join(data.room); 
+      User.find({where:{id: data.user}}).success(function(user) {
+          if(user)
+            {
+                socket.broadcast.to(data.room).emit('newUser', user);
+                socket.emit('newUser', user);
+            }
+       });
+      console.log("User "+ data.user + " dołączył do pokoju " + data.room);
+  }
