@@ -74,6 +74,7 @@ var main = {
 				url.value = result;
 
 				//TUTAJ AKCJE PO POPRAWNYM POŁĄCZENIU Z SERWEREM - NP PRZEJŚCIE DO LOGOWANIA
+				load('login');
 			});
 
 		}, true);
@@ -117,15 +118,14 @@ var main = {
 			received = JSON.parse(received);
 			if (received.result === 0) {//gdy jest ok
 				//received.message zawiera wiadomość
-				alert(received);
 				me.id = JSON.parse(received).data.id;
 				
 				//TUTAJ AKCJE PO POPRAWNYM ZALOGOWANIU - NP PRZEJŚCIE DO ROOMÓW
+				load('rooms');
 				
 			} else if (received.result === 1) {//błąd
 				//received.message zawiera wiadomość dlaczego nie
 			}
-			alert('login: ' + JSON.stringify(received));
 		});
 	},
 
@@ -139,11 +139,11 @@ var main = {
 				//received.message zawiera wiadomość
 				
 				//TUTAJ AKCJE PO POPRAWNYM ZAREJESTROWANIU - NP PRZEJŚCIE DO STRONY LOGOWANIA
+				load('login');
 				
 			} else if (received.result === 1) {//błąd
 				//received.message zawiera wiadomość dlaczego nie
 			}
-			alert(received);
 		});
 	},
 
@@ -319,6 +319,9 @@ connection.socket.receive.onNewPhoto = function(data) {
  */
 connection.socket.receive.onNewUser = function(data) {
 	callback(data);
+	if (data.id === me.id) {
+		load('wall');
+	}
 };
 
 /**
