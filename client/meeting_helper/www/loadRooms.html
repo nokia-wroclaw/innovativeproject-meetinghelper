@@ -15,18 +15,18 @@
 	<br>
 	<input type="text" id="roomName" value="">
 	<br><br>
-	<!-- Tworzy nowy pokój -->
+	<!-- Tworzy nowy pokój i dołącza do niego -->
 	<button onclick="main.createRoom(document.getElementById('roomName').value)">
 		<img alt="Create room" width="50" height="50" src="img/accept.png">
 	</button>
 	<br><br>
-	<!-- Dołącza i wchodzi do nowego pokoju -->
-	<button onclick="main.joinRoom()">
+	<!-- Wchodzi do nowego pokoju -->
+	<button onclick="main.enterRoom()">
 		<img alt="Join room" width="50" height="50" src="img/enter_room.png">
 	</button>
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	<!-- To przenieść do wejścia do pokoju z listy, gdzie jako argument podaje się ID pokoju -->
-	<!-- <button onclick="main.enterRoom(roomId)">
+	<!-- To przenieść do wybrania pokoju z listy. Jako argument podaje się ID pokoju -->
+	<!-- <button onclick="main.choseRoomToEnter(roomToEnterId)">
 		<img alt="Enter room" width="50" height="50" src="img/enter_room.png">
 	</button> -->
 	<br><br>

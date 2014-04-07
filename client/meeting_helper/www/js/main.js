@@ -18,8 +18,7 @@ var t_onlineUser = {
 
 var me = {
 	id: undefined,
-	chosedRoom: undefined,
-	joinedRoom: undefined,
+	chosedRoomToEnter: undefined,
 	enteredRoom: undefined
 };
 
@@ -155,42 +154,48 @@ var main = {
 	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
 	 */
 	createRoom: function(roomName) {
+		main.choseRoomToEnter();
 		connection.action.createRoom(roomName, function(received) {
 			var roomId = JSON.parse(received).data.id;
-			main.choseRoom(roomId);
 			//var input = document.getElementById('roomId');
 			//input.value = roomId;
-		});
-	},
 
-	/**
-	 * Ustawia pokój, do którego dołączyć i wejść.
-	 */
-	choseRoom: function(chosedRoom) {
-		me.chosedRoom = chosedRoom;
+			main.joinRoom(roomId, function() {
+				alert('Room created');
+			});
+		});
 	},
 
 	/**
 	 * Dołącza i wchodzi do wybranego pokoju.
 	 */
-	joinRoom: function() {
-		var roomId = me.chosedRoom;
+	joinRoom: function(roomId, callb) {
 		if (roomId) {
 			connection.action.joinRoom(roomId, function(received) {
-				me.joinedRoom = roomId;
-				main.enterRoom(me.joinedRoom);
+				main.choseRoomToEnter(roomId);
+				callb();
 			});
 		}
 	},
 
 	/**
+	 * Ustawia pokój, do którego wejść.
+	 */
+	choseRoomToEnter: function(chosedRoomToEnter) {
+		me.chosedRoomToEnter = chosedRoomToEnter;
+	},
+
+	/**
 	 * Informuje serwer, że `wchodzi` do pokoju (do którego już wcześniej dołączył).
 	 */
-	enterRoom: function(roomId) {
-		var userId = me.id;
+	enterRoom: function() {
+		var userId = me.id,
+			roomId = me.chosedRoomToEnter;
 		if (userId && roomId) {
 			connection.socket.enterRoom(userId, roomId);
 			me.enteredRoom = roomId;
+		} else {
+			alert('No room is chosen');
 		}
 	},
 
@@ -201,8 +206,9 @@ var main = {
 		// skanowanie
 		devices.qrCode.scan(function(roomId) {
 			// dołączenie do pokoju
-			main.choseRoom(roomId);
-			main.joinRoom();
+			main.joinRoom(roomId, function() {
+				main.enterRoom();
+			});
 		});
 	},
         
