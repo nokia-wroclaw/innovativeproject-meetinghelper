@@ -13,16 +13,24 @@
 	<br><br>
 	<span class="white_text">room name</span>
 	<br>
-	<input type="text" id="roomId" value="">
+	<input type="text" id="roomName" value="">
 	<br><br>
-	<button onclick="main.joinRoom(document.getElementById('roomId').value)">
-		<img alt="Join room" width="50" height="50" src="img/accept.png">
-	</button> 
+	<!-- Tworzy nowy pokój -->
+	<button onclick="main.createRoom(document.getElementById('roomName').value)">
+		<img alt="Create room" width="50" height="50" src="img/accept.png">
+	</button>
+	<br><br>
+	<!-- Dołącza i wchodzi do nowego pokoju -->
+	<button onclick="main.joinRoom()">
+		<img alt="Join room" width="50" height="50" src="img/enter_room.png">
+	</button>
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	<button onclick="main.enterRoom(document.getElementById('roomId').value)">
+	<!-- To przenieść do wejścia do pokoju z listy, gdzie jako argument podaje się ID pokoju -->
+	<!-- <button onclick="main.enterRoom(roomId)">
 		<img alt="Enter room" width="50" height="50" src="img/enter_room.png">
-	</button> 
+	</button> -->
 	<br><br>
+	<!-- Dołącza i wchodzi do nowego zeskanowanego pokoju -->
 	<button onclick="main.scanRoomQrCode()">
 		<img alt="Scan QRCode" src="img/qrcode.png">
 	</button>

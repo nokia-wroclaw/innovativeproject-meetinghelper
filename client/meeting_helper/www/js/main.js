@@ -16,6 +16,13 @@ var t_onlineUser = {
 	login: []*/
 };
 
+var me = {
+	id: undefined,
+	chosedRoom: undefined,
+	joinedRoom: undefined,
+	enteredRoom: undefined
+};
+
 /**
  * Funkcje, od których oczekujemy odpowiedzi, wywołujemy,
  * podając w nich jako argument funkcję, która ma zostać wywołana
@@ -61,7 +68,15 @@ var main = {
 	initialQrCode: function() {
 		devices.qrCode.scan(function(result) {
 			var url = document.getElementById('url');
-			url.value = result;
+			url.value = 'Connecting: ' + result;
+
+			connection.setUrl(result, function() {
+				url.value = result;
+
+				//TUTAJ AKCJE PO POPRAWNYM POŁĄCZENIU Z SERWEREM - NP PRZEJŚCIE DO LOGOWANIA
+				load('login');
+			});
+
 		}, true);
 	},
 
@@ -88,6 +103,8 @@ var main = {
 	 */
 	getRooms: function() {
 		connection.action.getRooms(function(received) {
+			// received zawiera listę elementów z: id, name, folderName
+			// instersuje nas id po którym dołączamy i name które wyświetlamy
 			alert(received);
 		});
 	},
@@ -97,7 +114,18 @@ var main = {
 	 */
 	login: function(login, password) {
 		connection.action.login(login, password, function(received) {
-			alert(received);
+			//akcja wykonywana po odpowiedzi serwera
+			received = JSON.parse(received);
+			if (received.result === 0) {//gdy jest ok
+				//received.message zawiera wiadomość
+				me.id = JSON.parse(received).data.id;
+				
+				//TUTAJ AKCJE PO POPRAWNYM ZALOGOWANIU - NP PRZEJŚCIE DO ROOMÓW
+				load('rooms');
+				
+			} else if (received.result === 1) {//błąd
+				//received.message zawiera wiadomość dlaczego nie
+			}
 		});
 	},
 
@@ -106,39 +134,61 @@ var main = {
 	 */
 	register: function(login, password, password2) {
 		connection.action.register(login, password, password2, function(received) {
-			alert(received);
+			//akcja wykonywana po odpowiedzi serwera
+			if (received.result === 0) {//gdy jest ok
+				//received.message zawiera wiadomość
+				
+				//TUTAJ AKCJE PO POPRAWNYM ZAREJESTROWANIU - NP PRZEJŚCIE DO STRONY LOGOWANIA
+				load('login');
+				
+			} else if (received.result === 1) {//błąd
+				//received.message zawiera wiadomość dlaczego nie
+			}
 		});
 	},
 
 	/**
 	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
 	 */
-	createRoom: function(room) {
-		connection.action.createRoom(room, function(received) {
+	createRoom: function(roomName) {
+		connection.action.createRoom(roomName, function(received) {
 			alert(received);
 			var roomId = JSON.parse(received).data.id;
-			var input = document.getElementById('roomId');
-			input.value = roomId;
+			main.choseRoom(roomId);
+			//var input = document.getElementById('roomId');
+			//input.value = roomId;
 		});
 	},
 
 	/**
-	 * Dołącza do pokoju za pomocą nazwy pokoju.
+	 * Ustawia pokój, do którego dołączyć i wejść.
 	 */
-	joinRoom: function(roomId) {
-		connection.action.joinRoom(roomId, function(received) {
-			// `received` na razie nie potrzebne
-			alert(received);
-
-			//main.enterRoom(roomId);
-		});
+	choseRoom: function(chosedRoom) {
+		me.chosedRoom = chosedRoom;
 	},
 
 	/**
-	 * Informuje serwer, że `wchodzi` do pokoju.
+	 * Dołącza i wchodzi do wybranego pokoju.
+	 */
+	joinRoom: function() {
+		var roomId = me.chosedRoom;
+		if (roomId) {
+			connection.action.joinRoom(roomId, function(received) {
+				me.joinedRoom = roomId;
+				main.enterRoom(me.joinedRoom);
+			});
+		}
+	},
+
+	/**
+	 * Informuje serwer, że `wchodzi` do pokoju (do którego już wcześniej dołączył).
 	 */
 	enterRoom: function(roomId) {
-		connection.socket.enterRoom(roomId);
+		var userId = me.id;
+		if (userId && roomId) {
+			connection.socket.enterRoom(userId, roomId);
+			me.enteredRoom = roomId;
+		}
 	},
 
 	/**
@@ -149,11 +199,8 @@ var main = {
 		devices.qrCode.scan(function(roomId) {
 			alert(roomId);
 			// dołączenie do pokoju
-			connection.action.joinRoom(roomId, function(received2) {
-				alert(received2);
-				// wejście do pokoju
-				connection.socket.enterRoom(roomId);
-			});
+			main.choseRoom(roomId);
+			main.joinRoom();
 		});
 	},
         
@@ -165,8 +212,8 @@ var main = {
 	 */
 	addNewServerData: function(type, data, author) {
 		t_serverData.totalRecords += 1;
-		t_serverData.data[t_serverData.totalRecords-1] = [type, data, author];
-                main.updateServerData(type, data, author);
+		t_serverData.data[t_serverData.totalRecords-1] = [type, data.data, author];
+                main.updateServerData(type, data.data, author);
 	},
         
         /**
@@ -205,7 +252,7 @@ var main = {
                 image.setAttributeNode(node);
                 var element = document.getElementById('received');
                 element.appendChild(image);
-                var tmp = element.getElementsByTagName("img")[t_serverData.data.length-1];
+                var tmp = element.getElementsByTagName("img")[t_serverData.totalRecords-1];
                 tmp.style.display='block';
                 tmp.src=data;
         },
@@ -270,9 +317,12 @@ connection.socket.receive.onNewPhoto = function(data) {
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
-/*connection.socket.receive.onNewUser = function(data) {
+connection.socket.receive.onNewUser = function(data) {
 	callback(data);
-};*/
+	if (data.id === me.id) {
+		load('wall');
+	}
+};
 
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
