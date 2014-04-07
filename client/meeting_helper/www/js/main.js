@@ -110,9 +110,10 @@ var main = {
 			received = JSON.parse(received);
 			if (received.result === 0) {//gdy jest ok
 				//received.message zawiera wiadomość
+				alert(received);
+				me.id = JSON.parse(received).data.id;
 				
-				//TUTAJ AKCJE PO POPRAWNYM ZALOGOWANIU - NP PRZEJŚCIE DO WALLA
-				me.id = received.data.id;
+				//TUTAJ AKCJE PO POPRAWNYM ZALOGOWANIU - NP PRZEJŚCIE DO ROOMÓW
 				
 			} else if (received.result === 1) {//błąd
 				//received.message zawiera wiadomość dlaczego nie
