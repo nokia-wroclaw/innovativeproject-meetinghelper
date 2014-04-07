@@ -2,11 +2,33 @@
  * Script for switching contents
  */
 
-// Memory of previous pages
-var actualPage;
-var pageHistory = new Array();
+// historyObj object
+var historyObj = {
+	actualPage: undefined,
 
-function load(what, ifHistory) {
+	pages: new Array(),
+
+	setActualPage: function(page) {
+		historyObj.actualPage = page;
+	},
+
+	addTohistoryObj: function() {
+		if (historyObj.actualPage) {
+			historyObj.pages.push(historyObj.actualPage);
+		}
+	},
+
+	back: function() {
+		if (historyObj.pages.length > 0) {
+			var route = historyObj.pages.pop();
+			if (route) {
+				load(route, true);
+			}
+		}
+	}
+};
+
+function load(what, ifhistoryObj) {
 	switch(what) {
 		case "connection":
 			$( "#content" ).load( "loadConnect.html" );
@@ -24,10 +46,8 @@ function load(what, ifHistory) {
 			$( "#content" ).load( "loadWall.html" );
 			break;
 	}
-	if (!ifHistory) {
-		if (actualPage) {
-			pageHistory.push(actualPage);
-		}
+	if (!ifhistoryObj) {
+		historyObj.addTohistoryObj();
 	}
-	actualPage = what;
+	historyObj.setActualPage(what);
 }
