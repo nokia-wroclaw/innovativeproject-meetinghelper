@@ -38,7 +38,7 @@ module.exports.CreateRoom = function(req, res) {
             folderName: folderName
         }).success(function(room){
             if(room)
-                res.end(new Success("Stworzono pokój").JSON());
+                res.end(new Success("Stworzono pokój", room).JSON());
             else
                 res.end(new Error("Nie udało sie stworzyć pokoju").JSON()); 
         });
@@ -64,15 +64,15 @@ module.exports.GetRoomsList  = function(req, res){
 }
 
 module.exports.JoinRoom = function(req, res) {
-    var roomName = req.params.roomName;
+    var roomID = req.params.roomID;
     var userID = req.session.user;
-    Room.find({where:{name: roomName}}).success(function(room){
+    Room.find({where:{id: roomID}}).success(function(room){
         if(room){
             User.find({where:{id: userID}}).success(function(user){
                 if(user){
                     user.addRoom(room).success(function(user) {
                         req.session.room = room.id;
-                        res.end(new Success("Dołączono do pokoju").JSON());
+                        res.end(new Success("Dołączono do pokoju", room).JSON());
                     });
                 }
                 else{

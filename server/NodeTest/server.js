@@ -1,10 +1,12 @@
 var fs = require('fs');
 express = require('express.io');
+
 app = express();
+
 
 app.http().io();
 
-var message = "";
+//RedisStore = require('connect-redis')(express);
 var arr = [];
 var photos = [];
 
@@ -17,11 +19,33 @@ var room = require('./routes/roomRoute.js');
 var sequelize = require('./models/db.js').Sequelize;
 
 app.configure( function() {
+    app.use(express.logger());
+
     app.use(express.bodyParser());
   app.use(express.cookieParser());  
   app.use(express.session({ secret: "PWRTeam" }));
+  //app.use(express.session({ store: new RedisStore, secret: "PWRTeam" }))
 
 });
+/*
+io.set('authorization', function (handshakeData, accept) {
+
+  if (handshakeData.headers.cookie) {
+
+    handshakeData.cookie = cookie.parse(handshakeData.headers.cookie);
+
+    handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['express.sid'], 'secret');
+
+    if (handshakeData.cookie['express.sid'] == handshakeData.sessionID) {
+      return accept('Cookie is invalid.', false);
+    }
+
+  } else {
+    return accept('No cookie transmitted.', false);
+  } 
+
+  accept(null, true);
+});*/
 /*
 sequelize
   .sync({ force: true })
@@ -39,8 +63,9 @@ var form = "<!DOCTYPE HTML><html><body>" +
 "<input type='submit' /></form>" +
 "</body></html>";
 
-var form1 ="<form method='post' action='/users/register'>"+
-    "<input type='text' name='username'>"+
+var form1 ="<form method='post' action='/login'>"+
+    "<input type='text' name='login'>"+
+     "<input type='text' name='password'>"+
     "<input type='submit'>"+
 "</form>";
 
@@ -56,14 +81,45 @@ app.io.route('drawClick', function(req) {
 app.io.route('testWebSocket', function(req) {
     console.log("Test dzia³a!")
 })
+/*
+app.io.route('enterRoom', function(req) {
+     console.log(req.headers);
+     console.log(req.session);
+    if(req.session.user == undefined) {
+       console.log("Niezalogowany");
+    }
+    else {
+        req.io.join(req.roomID);
+        req.io.emit('newUser', "Do³¹czy³eœ");
+        req.io.room(req.roomID).broadcast('newUser', "Do³¹czy³ nowy User")
+        console.log("Do³¹czy³ do pokoju ktoœ");
+    }
+})*/
 
+app.io.sockets.on('connection', function (socket) {
+    console.log("Ktos do³¹czyl");
+  socket.on('enterRoom', function (data) {
+      socket.user = data.user;
+      socket.room = data.room;
+      socket.join(data.room); 
+      socket.emit('newUser', "Do³¹czy³eœ do pokoju" + data.room);
+      console.log("User "+ data.user + " do³¹czy³ do pokoju " + data.room);
+  });
+});
+
+function needLogin (req, res, next){
+    if(!req.session.user){
+        return res.send(403);
+    }
+    next();
+}
 
 app.get('/', connection.HelloWorld);
 app.get('/ping', connection.Ping);
 
-app.get('/rooms/create/:roomName', room.CreateRoom);
-app.get('/rooms/join/:roomName', room.JoinRoom);
-app.get('/rooms/liest', room.GetRoomsList);
+app.get('/rooms/create/:roomName', needLogin, room.CreateRoom);
+app.get('/rooms/join/:roomID', needLogin, room.JoinRoom);
+app.get('/rooms/list', needLogin, room.GetRoomsList);
 
 
 app.get('/qrcode', qrcode.QRCode);
@@ -72,38 +128,26 @@ app.get('/qrcode/:groupCode', qrcode.QRCodeJoinGroup);
 
 app.post('/login', user.Login);
 app.post('/register', user.Register);
-app.post('/logout', user.Logout);
+app.get('/logout',  user.Logout);
 
-app.get('/users/list', user.GetUsers);
-
-
+app.get('/users/list', needLogin, user.GetUsers);
 
 
-app.get('/client', function(req, res) {
-    res.sendfile(__dirname + '/client.html')
-});
 
 app.get('/meetingName', function(req, res) {
     res.send(meeting.photos.name);
+});
+
+app.get('/reg', function(req, res) {
+    	
+    res.writeHead(200, {'Content-Type': 'text/html' });
+	res.end(form1);
 });
 
 app.get('/file', function(req, res) {
     	
     res.writeHead(200, {'Content-Type': 'text/html' });
 	res.end(form);
-});
-
-app.get('/setMessage/:message', function(req, res) {
-    arr.push(req.params.message);
-    res.send('Dodano wiadomoœæ: ' + message);
-});
-
-app.get('/getMessage', function(req, res) {
-    var result="";
-    for (var i = 0; i < arr.length; i++) {
-        result += arr[i] + "<br/>";
-    }
-    res.send(result);
 });
 
 app.get('/getPhot', function(req, res) {

@@ -27,7 +27,7 @@ module.exports.Register = function(req, res) {
                 password: req.body.password
             }).success(function(user) {
                 if(user)
-                    res.end(new Success("Zarejestrowano pomyslnie").JSON());
+                    res.end(new Success("Zarejestrowano pomyslnie", user).JSON());
                 else
                     res.end(new Error("Nie udało się stworzyć użytkownika").JSON());
              });
@@ -42,7 +42,7 @@ module.exports.Login = function(req, res) {
         {
             console.log("Zalogował się user: "+ JSON.stringify(user));
             req.session.user = user.id;
-            res.end(new Success("Zalogowany").JSON());
+            res.end(new Success("Zalogowany", user).JSON());
         }
         else
             res.end(new Error("Podano niepoprawne dane").JSON());
@@ -51,7 +51,7 @@ module.exports.Login = function(req, res) {
 
 module.exports.Logout = function(req, res) {
     delete req.session.user;
-    req.io.leave(req.session.room);
+    //req.io.leave(req.session.room);
     delete req.session.room;
     res.end(new Success("Zostałes wylogowany").JSON());
 }
