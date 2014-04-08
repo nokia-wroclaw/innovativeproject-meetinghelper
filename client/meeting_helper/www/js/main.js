@@ -118,7 +118,6 @@ var main = {
 	login: function(login, password) {
 		connection.action.login(login, password, function(received) {
 			//akcja wykonywana po odpowiedzi serwera
-			received = JSON.parse(received);
 			if (received.result === 0) {//gdy jest ok
 				//received.message zawiera wiadomość
 				me.id = received.data.id;
@@ -156,7 +155,7 @@ var main = {
 	createRoom: function(roomName) {
 		main.choseRoomToEnter();
 		connection.action.createRoom(roomName, function(received) {
-			var roomId = JSON.parse(received).data.id;
+			var roomId = received.data.id;
 			//var input = document.getElementById('roomId');
 			//input.value = roomId;
 

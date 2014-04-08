@@ -50,7 +50,6 @@ var connection = {
 		connection.url = '';
 		connection.state = connection.states.connecting;
 		connection.action.ping(url, function(result) {
-			result = JSON.parse(result);
 			if (result.message === connectionAnswers.ping) {
 				connection.url = url;
 				try {
@@ -83,7 +82,7 @@ var connection = {
 				    xmlHttp.onreadystatechange = function() {
 						if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
 						    if (callb) {
-						    	callb(xmlHttp.responseText);
+						    	callb(JSON.parse(xmlHttp.responseText));
 						    } else {
 						    	connection._callback(xmlHttp.responseText);
 						    }
