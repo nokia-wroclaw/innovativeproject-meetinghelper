@@ -54,7 +54,7 @@ var connection = {
 			if (result.message === connectionAnswers.ping) {
 				connection.url = url;
 				try {
-					connection.socket.init(url);
+					connection.socket.init(url.substring(0, url.length - 4));
 				} catch(e) {
 					connection._callback(e);
 					connection.state = connection.states.disconnected;
