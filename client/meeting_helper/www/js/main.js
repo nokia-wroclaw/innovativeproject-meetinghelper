@@ -95,7 +95,7 @@ var main = {
 	 */
 	getRooms: function() {
 		connection.action.getRooms(function(received) {
-			// received zawiera listę elementów z: id, name, folderName
+			// received zawiera listę elementów, np. {id: 0, name: 'room', folderName: 'room'}
 			// instersuje nas id po którym dołączamy i name które wyświetlamy
 			alert(received);
 		});
