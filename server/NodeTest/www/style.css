@@ -586,6 +586,7 @@ a:active {
 	padding:7% 0;
 }
 .site-header-half-width-logo .site-branding{
+    font-family: 'Arial';
 	text-align:center;
 }
 .site-branding img{
@@ -593,6 +594,7 @@ a:active {
 	height:auto;
 }
 .site-title a, .site-title a:visited{
+    font-weight:bold;
 	font-family: 'Helvetica';
 	font-size: 60px;
 	font-size: 6.0rem;
@@ -602,9 +604,8 @@ a:active {
 }
 .site-description{
 	color: #fff;
-	font-family: 'NobileRegular', sans-serif;
 	font-size: 16px;
-	font-size: 1.6rem;
+	font-size: 2.4rem;
 }
 .site-header-half-width-nav{
 	width:100%;
