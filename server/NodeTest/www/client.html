@@ -24,11 +24,37 @@
 	<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
 <style type="text/css" id="custom-background-css">
 
-.auto-style1 {
-	color: #C0C0C0;
-}
-
 </style>
+
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        io = io.connect()
+
+
+
+        // Emit ready event with room name.
+        //io.emit('ready')
+
+        // Listen for the announce event.
+        io.on('newPhoto', function (data) {
+
+            var img = $("<img width=\"188\" height=\"314\" />").attr('src', 'http://localhost:1337/api/user/' + data.message)
+            .load(function () {
+                if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
+                    alert('broken image!');
+                } else {
+                    $("#photos").append(img);
+                }
+            });
+
+
+            //$('body').append('<p>' + data.message + new Date().toString() + '</p>')
+        })
+
+    </script>
+
 </head>
 
 <body class="home blog custom-background">
@@ -54,8 +80,7 @@
     
                 <div class="site-branding">
                 	
-                                            <h1 class="site-title">
-											<span class="auto-style1">&nbsp;<a href="index.html" title="Theme Preview" rel="home">Meeting</a></span><a href=# title="Theme Preview" rel="home"><span style="color:#ff0000">Helper</span></a></h1>
+                                            <h1 class="site-title"><a href="index.html" title="Theme Preview" rel="home">Meeting<span style="color:#ff0000">Helper</span></a></h1>
                         <h2 class="site-description">Improve your meeting experience</h2>
                                         
                 </div>
@@ -126,110 +151,13 @@
     
     	<div class="responsive-container">    
         
-    		<div class="content-container">         
+    		<div class="content-container"> 
 
-	<div class="biz0ne">
-
-        <div class="biz0ne-welcome">
-        
-            <h1>
-                Increase the efficiency of your team work!</h1>
-            
-            <p>
-                Make your meeting easier. With MeetingHelper you can share 
-				photos between meeting participants on the fly! Just scan the QR 
-				Code to join a room and share your notes, charts and sketches 
-				with every peson present in the room. All taken photos 
-				immediately appear on every device connected to the meeting.</p>    
-        
-        </div><!-- .biz0ne-welcome -->
-        
-        <div class="biz0ne-products-services">
-        
-            <div class="biz0ne-products-services-item">
-            
-                <div class="biz0ne-products-services-img">
-                
-                                            <a href="#">
-                                            <img class="" src="img/rooms.png"  />                                    
-                                            </a>        
-                
-                </div><!-- .biz0ne-products-services-img -->
-                
-                <div class="biz0ne-products-services-name">
-                                                    <a href="#">QR Code</a></div><!-- .biz0ne-products-services-name -->
-                
-                <div class="biz0ne-products-services-description">
-                                                    Easily connect to the server 
-													by scanning QR Code insted 
-													of typing in the address. 
-													Just take a photo and you 
-													are connected!</div><!-- .biz0ne-products-services-description -->                
-            
-            </div><!-- .biz0ne-products-services-item -->
-            
-            <div class="biz0ne-products-services-item">
-            
-                <div class="biz0ne-products-services-img">
-                                            <a href="#">
-                                            <img class="" src="img/picture2.png"  />                                            </a>        
-                </div><!-- .biz0ne-products-services-img -->
-                
-                <div class="biz0ne-products-services-name">
-                                                    <a href="#">Separate rooms</a></div><!-- .biz0ne-products-services-name -->
-                
-                <div class="biz0ne-products-services-description">
-                                                    You can divide your meetings 
-													into separate rooms. This 
-													will help you to increase 
-													your teams' efficiecy and 
-													concentrate on particular 
-													tasks in each group.</div><!-- .biz0ne-products-services-description -->                
-            
-            </div><!-- .biz0ne-products-services-item -->
-            
-            <div class="biz0ne-products-services-item">
-            
-                <div class="biz0ne-products-services-img">
-                                            <a href="#">
-                                            <img class="" src="img/broadcast.png"  />                                            </a>        
-                </div><!-- .biz0ne-products-services-img -->
-                
-                <div class="biz0ne-products-services-name">
-                                                    <a href="#">
-													Broadcast</a></div><!-- .biz0ne-products-services-name -->
-                
-                <div class="biz0ne-products-services-description">
-                                                    After taking photo by any of 
-													the meeting participants, it 
-													is broadcasted to others in 
-													the blink of an eye.</div><!-- .biz0ne-products-services-description -->                
-            
-            </div><!-- .biz0ne-products-services-item -->        
-        
-        </div><!-- .biz0ne-products-services -->
-        
-                <div class="biz0ne-quote">
-        
-            <div class="biz0ne-quote-text">
-                
-                <p>
-                    It's really hard to design products by focus groups. A lot of times, people don't know what they want until you show it to them.                </p> 
-                    
-            </div><!-- .biz0ne-quote-text -->
-            
-            <p class="biz0ne-quote-name">
-            
-                <span>
-                    Steve Jobs               </span>   
-            </p>    
-        
-       </div><!-- .biz0ne-quote -->
-        		
-</div><!-- .biz0ne -->  
+                <h3>Received photos:</h3>
+                <div id="photos" style="min-height:350px">
 
 
-  
+                </div>
 
     		</div><!-- .content-container -->
         
