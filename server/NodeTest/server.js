@@ -19,11 +19,11 @@ var room = require('./routes/roomRoute.js');
 var sequelize = require('./models/db.js').Sequelize;
 
 app.configure( function() {
+    app.use(express.static(__dirname + '/www'));
     app.use(express.logger());
-
     app.use(express.bodyParser());
-  app.use(express.cookieParser());  
-  app.use(express.session({ secret: "PWRTeam" }));
+    app.use(express.cookieParser());  
+    app.use(express.session({ secret: "PWRTeam" }));
   //app.use(express.session({ store: new RedisStore, secret: "PWRTeam" }))
 
 });
@@ -58,12 +58,12 @@ sequelize
 
 
 var form = "<!DOCTYPE HTML><html><body>" +
-"<form method='post' action='/sendFile' enctype='multipart/form-data'>" +
+"<form method='post' action='/api/sendFile' enctype='multipart/form-data'>" +
 "<input type='file' name='file'/>" +
 "<input type='submit' /></form>" +
 "</body></html>";
 
-var form1 ="<form method='post' action='/login'>"+
+var form1 ="<form method='post' action='/api/login'>"+
     "<input type='text' name='login'>"+
      "<input type='text' name='password'>"+
     "<input type='submit'>"+
@@ -110,43 +110,50 @@ function needLogin (req, res, next){
     next();
 }
 
-app.get('/', connection.HelloWorld);
-app.get('/ping', connection.Ping);
+function inRoom (req, res, next){
+    if(!req.session.room){
+        return res.send(404);
+    }
+    next();
+}
 
-app.get('/rooms/create/:roomName', needLogin, room.CreateRoom);
-app.get('/rooms/join/:roomID', needLogin, room.JoinRoom);
-app.get('/rooms/list', needLogin, room.GetRoomsList);
+app.get('/api', connection.HelloWorld);
+app.get('/api/ping', connection.Ping);
 
-
-app.get('/qrcode', qrcode.QRCode);
-app.get('/qrcode/:address/:port', qrcode.QRCodeGenerator);
-app.get('/qrcode/:groupCode', qrcode.QRCodeJoinGroup);
-
-app.post('/login', user.Login);
-app.post('/register', user.Register);
-app.get('/logout',  user.Logout);
-
-app.get('/users/list', needLogin, user.GetUsers);
+app.get('/api/rooms/create/:roomName', needLogin, room.CreateRoom);
+app.get('/api/rooms/join/:roomID', needLogin, room.JoinRoom);
+app.get('/api/rooms/list', needLogin, inRoom, room.GetRoomsList);
 
 
+app.get('/api/qrcode', qrcode.QRCode);
+app.get('/api/qrcode/:address/:port', qrcode.QRCodeGenerator);
+app.get('/api/qrcode/:groupCode', qrcode.QRCodeJoinGroup);
 
-app.get('/meetingName', function(req, res) {
+app.post('/api/login', user.Login);
+app.post('/api/register', user.Register);
+app.get('/api/logout',  user.Logout);
+
+app.get('/api/users/list', needLogin, user.GetUsers);
+
+
+
+app.get('/api/meetingName', function(req, res) {
     res.send(meeting.photos.name);
 });
 
-app.get('/reg', function(req, res) {
+app.get('/api/reg', function(req, res) {
     	
     res.writeHead(200, {'Content-Type': 'text/html' });
 	res.end(form1);
 });
 
-app.get('/file', function(req, res) {
+app.get('/api/file', function(req, res) {
     	
     res.writeHead(200, {'Content-Type': 'text/html' });
 	res.end(form);
 });
 
-app.get('/getPhot', function(req, res) {
+app.get('/api/getPhot', function(req, res) {
     var result="";
     for (var i = 0; i < meeting.photos.length; i++) {
         result += meeting.photos[i] + "<br/>";
@@ -154,11 +161,11 @@ app.get('/getPhot', function(req, res) {
     res.send(result);
 });
 
-app.get('/getPhotos', function(req, res) {
+app.get('/api/getPhotos', function(req, res) {
     res.send(JSON.stringify(photos));
 });
 
-app.get('/photoExist/:photoName', function(req, res) {
+app.get('/api/photoExist/:photoName', function(req, res) {
     var photoName = req.params.photoName;
     
     fs.exists('./uploads/'+photoName+'.jpg', function (exists) {
@@ -171,7 +178,7 @@ app.get('/photoExist/:photoName', function(req, res) {
     });
 });
 
-app.post('/sendFile', function(req, res) {
+app.post('/api/sendFile', function(req, res) {
 
     fs.readFile(req.files.file.path, function (err, data) {
 
@@ -182,7 +189,6 @@ var newPath = __dirname + "/uploads/"+ req.files.file.name;
   });
     });
 
-    //meeting.photos.push(req.files.file.name);
     photos.push(req.files.file.name);
 
     req.io.broadcast('newPhoto', {
@@ -191,7 +197,7 @@ var newPath = __dirname + "/uploads/"+ req.files.file.name;
 });
 
 
-app.get('/user/:filename', function(req, res){
+app.get('/api/user/:filename', function(req, res){
   var uid = req.params.filename;
   res.sendfile('./uploads/'+uid);
 });

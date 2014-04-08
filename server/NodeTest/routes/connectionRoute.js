@@ -11,7 +11,7 @@ var Sequelize = require('sequelize');
 module.exports.HelloWorld = function(req, res) {
 
     if(req.session.user == undefined)
-        res.send("Server v0.2");
+        res.send("Server v0.4");
     else
         res.send("Witaj nr: "+ req.session.user);
 };
