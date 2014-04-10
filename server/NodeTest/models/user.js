@@ -6,8 +6,6 @@ var User = sequelize.define('Users', {
         name: Sequelize.STRING,
         password: Sequelize.STRING,
     }, {
-        updatedAt: false,
-        createdAt: false
     });
 
   module.exports = User;
