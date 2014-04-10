@@ -117,7 +117,7 @@ function inRoom (req, res, next){
     next();
 }
 
-app.get('/api', connection.HelloWorld);
+app.get('/api/', connection.HelloWorld);
 app.get('/api/ping', connection.Ping);
 
 app.get('/api/rooms/create/:roomName', needLogin, room.CreateRoom);
@@ -151,6 +151,15 @@ app.get('/api/file', function(req, res) {
     	
     res.writeHead(200, {'Content-Type': 'text/html' });
 	res.end(form);
+});
+
+app.get('/api/generateDatabase', function(req, res) {
+   sequelize
+  .sync({ force: true })
+  .complete(function(err) {
+    res.end("Wygenerowano bazê danych");
+    console.log("Wygenerowano bazê danych");
+  })
 });
 
 app.get('/api/getPhot', function(req, res) {
