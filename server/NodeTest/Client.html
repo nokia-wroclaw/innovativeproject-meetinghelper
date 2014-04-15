@@ -14,7 +14,7 @@
     // Listen for the announce event.
     io.on('newPhoto', function (data) {
 
-        var img = $("<img width=\"188\" height=\"314\" />").attr('src', 'http://localhost:1337/app/user/' + data.message)
+        var img = $("<img width=\"188\" height=\"314\" />").attr('src', 'http://localhost:1337/api/user/' + data.message)
         .load(function () {
         if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
             alert('broken image!');

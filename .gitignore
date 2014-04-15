@@ -7,6 +7,8 @@
 
 # Java class files
 *.class
+*.njsproject
+
 
 # generated files
 bin/
@@ -37,3 +39,10 @@ client/meeting_helper/plugins
 
 # server
 server/NodeTest/node_modules
+server/NodeTest/uploads/
+server/NodeTest/events/
+
+*Thumbs.db
+*.njsproj
+*.v12.suo
+*.sln

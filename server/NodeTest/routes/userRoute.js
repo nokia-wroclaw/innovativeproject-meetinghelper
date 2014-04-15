@@ -38,6 +38,7 @@ module.exports.Register = function(req, res) {
 
 module.exports.Login = function(req, res) {
     User.find({where: Sequelize.and({name: req.body.login}, {password: req.body.password})}).success(function(user) {
+    //var User.login(req.body.login, req.body.password)
         if(user)
         {
             console.log("Zalogował się user: "+ JSON.stringify(user));

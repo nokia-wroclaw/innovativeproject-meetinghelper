@@ -66,6 +66,7 @@ module.exports.GetRoomsList  = function(req, res){
 module.exports.JoinRoom = function(req, res) {
     var roomID = req.params.roomID;
     var userID = req.session.user;
+
     Room.find({where:{id: roomID}}).success(function(room){
         if(room){
             User.find({where:{id: userID}}).success(function(user){
