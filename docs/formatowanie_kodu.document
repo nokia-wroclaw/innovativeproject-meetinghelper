@@ -31,16 +31,16 @@ Zasady formatowania kodu JavaScript:
 			//treść
 		};
 	- sposób wywołania funkcji z długą listą argumentów (ich lista umieszczona jest w kolejnej kolumnie):
-	devices._callback(
-		"We got a barcode\n" +
-		"Result: " + result.text + "\n" +
-		"Format: " + result.format + "\n" +
-		"Cancelled: " + result.cancelled);
+		devices._callback(
+			"We got a barcode\n" +
+			"Result: " + result.text + "\n" +
+			"Format: " + result.format + "\n" +
+			"Cancelled: " + result.cancelled);
 	- sposób wywoływania funkcji, gdzie jednym z argumentów jest inna funkcja (aktualnie definiowana) - treść umieszczona jest w kolejnej kolumnie:
 		main.joinRoom(roomId, function() {
 			alert('Room created');
 		});
-	- nazwy funkcji uznawanych jako prywatne poprzedzane są przez znak "_":
+	- nazwy funkcji oraz zmiennych uznawanych jako prywatne poprzedzane są przez znak "_":
 		...
 			_callback: function(message) {
 				//treść
