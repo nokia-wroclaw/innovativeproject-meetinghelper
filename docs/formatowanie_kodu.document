@@ -1,0 +1,51 @@
+Formatowanie kodu
+
+Stałe formatowanie oraz ujednolicenie wyglądu kodu ułatwia analizowanie, testowanie, weryfikowanie oraz implementowanie kolejnych funkcjonalności programu.
+
+Ogólne zasady formatowania kodu:
+	- szerokość kolumny wynosi 1 znak tabulacji ("\t") lub 4 spacje (" "); preferowaną wartością jest znak tabulacji
+	- brak zbędnych białych znaków na końcach linii
+	- brak zbędnych "enterów" (znaków nowej linii)
+	- umieszczanie znaków nowej linii w celu zwiększenia czytelności kodu
+	- unikanie zbyt szerokich linii (średnio 100 znaków na linię)
+	- sposób dokumentacji kodu opisuje osobny dokument (dokumentacja_kodu.document)
+
+Zasady formatowania kodu JavaScript:
+	- treści funkcji, instrukcji warunkowych, pętli oraz definiowanych obiektów umieszczane są w kolejnej kolumnie
+	- sposób definiowania obiektów (spacje przy znaku "="; spacja za znakiem ":" przy określaniu wartości; brak spacji przy znaku ","; każda ze zmiennych umieszczona w nowej linii):
+		var object = {
+			quality: 50,
+			encodingType: 0,
+			_callback: function(message) {
+				//treść
+			}
+		};
+	- sposób pisania instrukcji warunkowych (spacje za "if" oraz przy nawiasach "{" oraz "}"):
+		if (userCallback) {
+			userCallback(value);
+		} else {
+			...
+		}
+	- sposób definiowania funkcji (spacje przy znaku "="; spacja przed znakiem "{"):
+		var foo = function(message) {
+			//treść
+		};
+	- sposób wywołania funkcji z długą listą argumentów (ich lista umieszczona jest w kolejnej kolumnie):
+	devices._callback(
+		"We got a barcode\n" +
+		"Result: " + result.text + "\n" +
+		"Format: " + result.format + "\n" +
+		"Cancelled: " + result.cancelled);
+	- sposób wywoływania funkcji, gdzie jednym z argumentów jest inna funkcja (aktualnie definiowana) - treść umieszczona jest w kolejnej kolumnie:
+		main.joinRoom(roomId, function() {
+			alert('Room created');
+		});
+	- nazwy funkcji uznawanych jako prywatne poprzedzane są przez znak "_":
+		...
+			_callback: function(message) {
+				//treść
+			}
+		...
+
+Zasady formatowania kodu HTML:
+	- treść wewnętrznych "ograniczników" (div, label itp.) umieszczana jest w kolejnej kolumnie
