@@ -1,0 +1,35 @@
+Dokumentacja kodu programu
+
+Przykład dokumentacji funkcji:
+	/**
+	 * @function editUser
+	 * Dodawanie lub edytowanie nowego użytkownika do spotkania.
+	 * Oraz 3 pozostałe zdania.
+	 * @param {Number} id
+	 * Id użytkownika, który ma być edytowany.
+	 * @param {String} name
+	 * @param {Function} callback
+	 * Funkcja wywoływana, gdy użytkownik się zaloguje.
+	 * @return {String}
+	 * Typ błędu lub sukcesu.
+	 */
+
+Opis dokumentacji:
+	- umieszczona jest przed treścią funkcji
+	- umieszczona jest w komentarzu
+	- brak zbędnych białych znaków na końcach linii
+	- komentarz zaczyna się znakami "/**"
+	- każda kolejna linia treści zaczyna się znakiem "*", przesuniętym o 1 spację
+	- komentarz kończy się znakami "*/", przesuniętym o 1 spację
+	- podanie nazwy funkcji poprzedzone przez "@function"
+	- w pierwszych liniach treści umieszczony jest opis działań (około 3 zdania) wykonywanych przez funkcję, opisuje działania niejawne na prywatnych argumentach klas
+	- gdy tekst jest za długi (podobnie jak w formatowaniu kodu programu), przesuwa się go do kolejnej linii i poprzedza znakiem początku linii w treści
+	- w kolejnych liniach, za tekstem opisującym działania funkcji, listuje się wszystkie parametry funkcji:
+		- poprzedzone są przez "@param"
+		- następnie określony jest typ parametru w nawiasie "{}"
+		- następnie podana jest nazwa agrumentu identyczna jak na liście wrażliwości funkcji
+		- w kolejnej linii umieszczony zostaje krótki opis zmiennej w przypadku niedomyślnej nazwy (wymagania dotyczące warunków początkowych dla danego agrumentu, wartość przechowywana)
+	- wartość zwracana, o ile istnieje, umieszczana jest w ostatnich liniach dokumentacji:
+		- poprzedzona jest poprzez "@return"
+		- następnie, w nawiasach "{}" podany jest typ zwracanej wartości
+		- w kolejnej linii przedstawiony jest opis zwracanej zmiennej
