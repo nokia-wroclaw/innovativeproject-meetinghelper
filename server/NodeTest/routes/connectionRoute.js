@@ -2,8 +2,9 @@
 var fs = require('fs');
 
 var Success = require('../results/result.js').Success;
-var User = require('../models/user.js');
-var Room = require('../models/room.js');
+var Model = require('../models/model.js');
+var User = Model.User;
+var Meeting = Model.Meeting;
 var Sequelize = require('sequelize');
 
 

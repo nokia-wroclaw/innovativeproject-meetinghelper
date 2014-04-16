@@ -1,12 +1,14 @@
 ﻿var fs = require('fs');
 
-var User = require('../models/user.js');
-var Room = require('../models/room.js');
-var UserRoom = require('../models/userRoom.js');
+var Model = require('../models/model.js');
+var User = Model.User;
+var Meeting = Model.Meeting;
 var Success = require('../results/result.js').Success;
 var Error = require('../results/result.js').Error;
 var Exception = require('../results/result.js').Exception;
 var Sequelize = require('sequelize');
+
+
 
 
 
@@ -34,6 +36,13 @@ module.exports.Register = function(req, res) {
         }
     });
     
+}
+
+module.exports.IsLogin = function(req, res, next){
+    if(!req.session.user){
+        return res.send(403);
+    }
+    next();
 }
 
 module.exports.Login = function(req, res) {

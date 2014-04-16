@@ -41,6 +41,7 @@ client/meeting_helper/plugins
 server/NodeTest/node_modules
 server/NodeTest/uploads/
 server/NodeTest/events/
+server/NodeTest/obj/
 
 *Thumbs.db
 *.njsproj

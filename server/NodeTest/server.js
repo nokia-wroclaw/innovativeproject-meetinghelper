@@ -81,20 +81,7 @@ app.io.route('drawClick', function(req) {
 app.io.route('testWebSocket', function(req) {
     console.log("Test dzia³a!")
 })
-/*
-app.io.route('enterRoom', function(req) {
-     console.log(req.headers);
-     console.log(req.session);
-    if(req.session.user == undefined) {
-       console.log("Niezalogowany");
-    }
-    else {
-        req.io.join(req.roomID);
-        req.io.emit('newUser', "Do³¹czy³eœ");
-        req.io.room(req.roomID).broadcast('newUser', "Do³¹czy³ nowy User")
-        console.log("Do³¹czy³ do pokoju ktoœ");
-    }
-})*/
+
 
 app.io.sockets.on('connection', function (socket) {
     console.log("Ktos do³¹czyl");
@@ -103,26 +90,13 @@ app.io.sockets.on('connection', function (socket) {
   });
 });
 
-function needLogin (req, res, next){
-    if(!req.session.user){
-        return res.send(403);
-    }
-    next();
-}
-
-function inRoom (req, res, next){
-    if(!req.session.room){
-        return res.send(404);
-    }
-    next();
-}
 
 app.get('/api/', connection.HelloWorld);
 app.get('/api/ping', connection.Ping);
 
-app.get('/api/rooms/create/:roomName', needLogin, room.CreateRoom);
-app.get('/api/rooms/join/:roomID', needLogin, room.JoinRoom);
-app.get('/api/rooms/list', needLogin, inRoom, room.GetRoomsList);
+app.get('/api/rooms/create/:roomName', user.IsLogin, room.CreateRoom);
+app.get('/api/rooms/join/:roomID', user.IsLogin, room.JoinRoom);
+app.get('/api/rooms/list', user.IsLogin, room.GetRoomsList);
 
 
 app.get('/api/qrcode', qrcode.QRCode);
@@ -133,11 +107,11 @@ app.post('/api/login', user.Login);
 app.post('/api/register', user.Register);
 app.get('/api/logout',  user.Logout);
 
-app.get('/api/users/list', needLogin, user.GetUsers);
+app.get('/api/users/list', user.IsLogin, user.GetUsers);
 
 
 
-app.get('/api/meetingName', function(req, res) {
+app.get('/api/meetingName', function(req, res){
     res.send(meeting.photos.name);
 });
 

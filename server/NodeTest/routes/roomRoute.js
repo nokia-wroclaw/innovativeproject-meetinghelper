@@ -3,9 +3,9 @@
 var Success = require('../results/result.js').Success;
 var Error = require('../results/result.js').Error;
 var Exception = require('../results/result.js').Exception;
-var Room = require('../models/room.js');
-var User = require('../models/user.js');
-var UserRoom = require('../models/userRoom.js');
+var Model = require('../models/model.js');
+var User = Model.User;
+var Meeting = Model.Meeting;
 var Sequelize = require('sequelize');
 
 
@@ -33,9 +33,11 @@ module.exports.CreateRoom = function(req, res) {
   
     if(!folderName == "")
     {
-        var room = Room.create({
+        var room = Meeting.create({
             name: req.params.roomName,
-            folderName: folderName
+            folderName: folderName,
+            accessCode: Math.random().toString(36).slice(2),
+            UserId: req.session.user
         }).success(function(room){
             if(room)
                 res.end(new Success("Stworzono pokój", room).JSON());
@@ -49,11 +51,11 @@ module.exports.CreateRoom = function(req, res) {
     
 };
 
-module.exports.GetRoomsList  = function(req, res){
+module.exports.GetRoomsList  = function(req, res, next){
     var userID = req.session.user;
     User.find({where:{id: userID}}).success(function(user){
         if(user){
-            user.getRooms().success(function (rooms) {
+            user.getMeetings().success(function (rooms) {
                  res.end(JSON.stringify(rooms));
             });
         }
@@ -67,11 +69,11 @@ module.exports.JoinRoom = function(req, res) {
     var roomID = req.params.roomID;
     var userID = req.session.user;
 
-    Room.find({where:{id: roomID}}).success(function(room){
+    Meeting.find({where:{id: roomID}}).success(function(room){
         if(room){
             User.find({where:{id: userID}}).success(function(user){
                 if(user){
-                    user.addRoom(room).success(function(user) {
+                    user.addMeeting(room).success(function(user) {
                         req.session.room = room.id;
                         res.end(new Success("Dołączono do pokoju", room).JSON());
                     });

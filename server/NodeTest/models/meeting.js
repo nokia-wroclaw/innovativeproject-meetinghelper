@@ -1,15 +1,15 @@
 ﻿var Sequelize = require('sequelize');
 var sequelize = require('./db.js').Sequelize;
 
-var Room = sequelize.define('Rooms', {
+var Meeting = sequelize.define('Meetings', {
         name: Sequelize.STRING,
         folderName : Sequelize.STRING,
+        accessCode : Sequelize.STRING,
     }, {
-        updatedAt: false,
-        createdAt: false
+        
     });
 
 
-  module.exports = Room;
+  module.exports = Meeting;
 
   
