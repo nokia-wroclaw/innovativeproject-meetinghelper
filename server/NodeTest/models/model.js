@@ -18,3 +18,4 @@ User.hasMany(Meeting, { as: 'Creator' })
  module.exports.Meeting = Meeting;
  module.exports.UserRoom = UserRooms;
  module.exports.Material = Material;
+

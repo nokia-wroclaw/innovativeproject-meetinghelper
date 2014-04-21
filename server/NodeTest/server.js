@@ -1,22 +1,17 @@
 var fs = require('fs');
-express = require('express.io');
-
-app = express();
-
-
-app.http().io();
+express = require('express.io')
+app = express().http().io()
 
 //RedisStore = require('connect-redis')(express);
-var arr = [];
-var photos = [];
-
 
 var connection = require('./routes/connectionRoute.js');
 var qrcode = require('./routes/qrcodeRoute.js');
 var user = require('./routes/userRoute.js');
 var room = require('./routes/roomRoute.js');
+var material = require('./routes/materialRoute.js');
 
 var sequelize = require('./models/db.js').Sequelize;
+var Config = require('./config/index.js')();
 
 app.configure( function() {
     app.use(express.static(__dirname + '/www'));
@@ -25,37 +20,9 @@ app.configure( function() {
     app.use(express.cookieParser());  
     app.use(express.session({ secret: "PWRTeam" }));
   //app.use(express.session({ store: new RedisStore, secret: "PWRTeam" }))
-
 });
-/*
-io.set('authorization', function (handshakeData, accept) {
 
-  if (handshakeData.headers.cookie) {
-
-    handshakeData.cookie = cookie.parse(handshakeData.headers.cookie);
-
-    handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['express.sid'], 'secret');
-
-    if (handshakeData.cookie['express.sid'] == handshakeData.sessionID) {
-      return accept('Cookie is invalid.', false);
-    }
-
-  } else {
-    return accept('No cookie transmitted.', false);
-  } 
-
-  accept(null, true);
-});*/
-/*
-sequelize
-  .sync({ force: true })
-  .complete(function(err) {
-    // Even if we didn't define any foreign key or something else,
-    // instances of Target will have a column SourceId!
-  })
-/*
-*/
-
+ sequelize.sync();
 
 var form = "<!DOCTYPE HTML><html><body>" +
 "<form method='post' action='/api/sendFile' enctype='multipart/form-data'>" +
@@ -90,6 +57,8 @@ app.io.sockets.on('connection', function (socket) {
   });
 });
 
+app.io.route('ping', connection.SocketPing);
+app.io.route('users/online', connection.UserOnline);
 
 app.get('/api/', connection.HelloWorld);
 app.get('/api/ping', connection.Ping);
@@ -109,11 +78,9 @@ app.get('/api/logout',  user.Logout);
 
 app.get('/api/users/list', user.IsLogin, user.GetUsers);
 
+app.post('/api/materials/sendFile', user.IsLogin, room.IsRoom, material.SendFile);
 
 
-app.get('/api/meetingName', function(req, res){
-    res.send(meeting.photos.name);
-});
 
 app.get('/api/reg', function(req, res) {
     	
@@ -136,17 +103,6 @@ app.get('/api/generateDatabase', function(req, res) {
   })
 });
 
-app.get('/api/getPhot', function(req, res) {
-    var result="";
-    for (var i = 0; i < meeting.photos.length; i++) {
-        result += meeting.photos[i] + "<br/>";
-    }
-    res.send(result);
-});
-
-app.get('/api/getPhotos', function(req, res) {
-    res.send(JSON.stringify(photos));
-});
 
 app.get('/api/photoExist/:photoName', function(req, res) {
     var photoName = req.params.photoName;
@@ -185,5 +141,5 @@ app.get('/api/user/:filename', function(req, res){
   res.sendfile('./uploads/'+uid);
 });
 
-app.listen(1337, function() { }); 
+app.listen(Config.port, function() { }); 
 

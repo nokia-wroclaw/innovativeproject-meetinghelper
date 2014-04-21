@@ -1,12 +1,13 @@
 ﻿var fs = require('fs');
 
-var Success = require('../results/result.js').Success;
-var Error = require('../results/result.js').Error;
-var Exception = require('../results/result.js').Exception;
+var Result = require('../results/result.js');
+var Success = Result.Success;
+var Error = Result.Error;
+var Exception = Result.Exception;
 var Model = require('../models/model.js');
 var User = Model.User;
 var Meeting = Model.Meeting;
-var Sequelize = require('sequelize');
+//var Sequelize = require('sequelize');
 
 
 createFolder = function(folderName) {
@@ -48,27 +49,25 @@ module.exports.CreateRoom = function(req, res) {
     else{
         res.end(new Error("Nie można stworzyć folderu").JSON());    
     }
+
     
 };
 
 module.exports.GetRoomsList  = function(req, res, next){
     var userID = req.session.user;
-    User.find({where:{id: userID}}).success(function(user){
-        if(user){
-            user.getMeetings().success(function (rooms) {
-                 res.end(JSON.stringify(rooms));
-            });
-        }
-        else{
-            res.end(new Error("Nie jesteś zalogowany").JSON());
-        }
-    });
+    User.find({where:{id: userID}})
+    .then(function(user) {
+        return user.getMeetings()
+    })
+    .then(function(meetings) {
+        res.end(JSON.stringify(meetings));
+    })
 }
 
-module.exports.JoinRoom = function(req, res) {
+module.exports.JoinRoom = function(req, res, next) {
     var roomID = req.params.roomID;
     var userID = req.session.user;
-
+/*
     Meeting.find({where:{id: roomID}}).success(function(room){
         if(room){
             User.find({where:{id: userID}}).success(function(user){
@@ -86,4 +85,23 @@ module.exports.JoinRoom = function(req, res) {
         else
             res.end(new Error("Nie znaleziono pokoju").JSON());
     });
+*/
+    User.find({where:{id: userID}})
+    .then(function(user) {
+       return Meeting.find({where:{id: roomID}})
+    })
+    .then(function(room) {
+        return user.addMeeting(room)
+    })
+    .then(function() {
+        req.session.room = roomID;
+        res.end(new Success("Dołączono do pokoju", room).JSON());
+    });
 };
+
+module.exports.IsRoom = function(req, res, next){
+    if(!req.session.room){
+        return res.send(403);
+    }
+    next();
+}

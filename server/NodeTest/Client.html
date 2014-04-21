@@ -9,7 +9,7 @@
 
 
     // Emit ready event with room name.
-    //io.emit('ready')
+    io.emit('ping');
 
     // Listen for the announce event.
     io.on('newPhoto', function (data) {
@@ -21,9 +21,11 @@
         } else {
             $("#something").append(img);
         }
-    });
+        });
 
-
+        io.on('pong', function (data) {
+            $('body').append(data);
+        });
         //$('body').append('<p>' + data.message + new Date().toString() + '</p>')
     })
 

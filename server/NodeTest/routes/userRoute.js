@@ -12,7 +12,7 @@ var Sequelize = require('sequelize');
 
 
 
-module.exports.Register = function(req, res) {
+module.exports.Register = function(req, res, next) {
 
     if(req.body.login == "" || req.body.password == ""){
         res.end(new Exception("Nie podano loginu bądź hasła").JSON());
@@ -45,7 +45,7 @@ module.exports.IsLogin = function(req, res, next){
     next();
 }
 
-module.exports.Login = function(req, res) {
+module.exports.Login = function(req, res, next) {
     User.find({where: Sequelize.and({name: req.body.login}, {password: req.body.password})}).success(function(user) {
     //var User.login(req.body.login, req.body.password)
         if(user)
@@ -59,7 +59,7 @@ module.exports.Login = function(req, res) {
     });
 }
 
-module.exports.Logout = function(req, res) {
+module.exports.Logout = function(req, res, next) {
     delete req.session.user;
     //req.io.leave(req.session.room);
     delete req.session.room;
@@ -67,7 +67,7 @@ module.exports.Logout = function(req, res) {
 }
 
 
-module.exports.GetUsers = function(req, res) {
+module.exports.GetUsers = function(req, res, next) {
 
 }
 

@@ -36,7 +36,8 @@
 
         // Emit ready event with room name.
         //io.emit('ready')
-
+        io.emit('ping');
+        io.emit('users/online');
         // Listen for the announce event.
         io.on('newPhoto', function (data) {
 
@@ -53,6 +54,9 @@
             //$('body').append('<p>' + data.message + new Date().toString() + '</p>')
         })
 
+        io.on('pong', function (data) {
+            $("#photos").append(data);
+        });
     </script>
 
 </head>
