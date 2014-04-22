@@ -67,9 +67,16 @@ module.exports.Logout = function(req, res, next) {
 }
 
 
-module.exports.GetUsers = function(req, res, next) {
 
+module.exports.UserOnline = function(req){
+    var clients = [];
+    app.io.sockets.clients(req.session.room).forEach(function(socket) {
+        if(socket.handshake.session.user)
+            clients.push({ userId: socket.handshake.session.user});
+    })
+    req.io.emit('UserOnline', new Success(clients).JSON());
 }
+
 
 module.exports.SNewUser = function (socket, data) {
       socket.user = data.user;

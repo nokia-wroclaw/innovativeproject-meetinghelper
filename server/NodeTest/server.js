@@ -38,27 +38,12 @@ var form1 ="<form method='post' action='/api/login'>"+
 
 // Routes
 
-app.io.route('ready', function(req) {
-    req.io.broadcast('new visitor')
-})
+app.io.on('connection', connection.Connected);
 
-app.io.route('drawClick', function(req) {
-    req.io.broadcast('draw', req.data)
-})
-app.io.route('testWebSocket', function(req) {
-    console.log("Test dzia³a!")
-})
-
-
-app.io.sockets.on('connection', function (socket) {
-    console.log("Ktos do³¹czyl");
-  socket.on('enterRoom', function (data) {
-      user.SNewUser(socket, data);
-  });
-});
-
+app.io.route('connect', connection.Connected);
 app.io.route('ping', connection.SocketPing);
-app.io.route('users/online', connection.UserOnline);
+app.io.route('users/online', user.UserOnline);
+app.io.route('rooms/enterRoom', room.EnterRoom);
 
 app.get('/api/', connection.HelloWorld);
 app.get('/api/ping', connection.Ping);
@@ -75,8 +60,6 @@ app.get('/api/qrcode/:groupCode', qrcode.QRCodeJoinGroup);
 app.post('/api/login', user.Login);
 app.post('/api/register', user.Register);
 app.get('/api/logout',  user.Logout);
-
-app.get('/api/users/list', user.IsLogin, user.GetUsers);
 
 app.post('/api/materials/sendFile', user.IsLogin, room.IsRoom, material.SendFile);
 

@@ -32,11 +32,10 @@
     <script>
         io = io.connect()
 
-
-
         // Emit ready event with room name.
         //io.emit('ready')
         io.emit('ping');
+        io.emit('rooms/enterRoom', {roomID : 5});
         io.emit('users/online');
         // Listen for the announce event.
         io.on('newPhoto', function (data) {
@@ -57,6 +56,12 @@
         io.on('pong', function (data) {
             $("#photos").append(data);
         });
+
+        io.on('UserOnline', function (data) {
+            $("#photos").append(data);
+        });
+
+        
     </script>
 
 </head>

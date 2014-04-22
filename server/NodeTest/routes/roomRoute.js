@@ -67,35 +67,41 @@ module.exports.GetRoomsList  = function(req, res, next){
 module.exports.JoinRoom = function(req, res, next) {
     var roomID = req.params.roomID;
     var userID = req.session.user;
-/*
-    Meeting.find({where:{id: roomID}}).success(function(room){
-        if(room){
-            User.find({where:{id: userID}}).success(function(user){
-                if(user){
-                    user.addMeeting(room).success(function(user) {
-                        req.session.room = room.id;
-                        res.end(new Success("Dołączono do pokoju", room).JSON());
-                    });
-                }
-                else{
-                    res.end(new Error("Nie jesteś zalogowany").JSON());
-                }
-            });
-        }
-        else
-            res.end(new Error("Nie znaleziono pokoju").JSON());
-    });
-*/
+
     User.find({where:{id: userID}})
     .then(function(user) {
-       return Meeting.find({where:{id: roomID}})
-    })
-    .then(function(room) {
-        return user.addMeeting(room)
-    })
-    .then(function() {
-        req.session.room = roomID;
-        res.end(new Success("Dołączono do pokoju", room).JSON());
+        return Meeting.find({where:{id: roomID}})
+        .then(function(room) {
+            return user.addMeeting(room)
+            .then(function() {
+                req.session.room = roomID;
+                res.end(new Success("Dołączono do pokoju", room).JSON());
+            })
+        })
+        
+    });
+};
+
+module.exports.EnterRoom = function(req) {
+    var roomID = req.data.roomID;
+    var userID = req.session.user;
+
+    User.find({where:{id: userID}})
+    .then(function(user) {
+        return user.getMeetings()
+        .then(function(meetings){
+            meetings.forEach(function(meeting) {
+                if(meeting.id == roomID)
+                    return true
+            })
+            return false;
+        })
+        .then(function(access){
+            if(access) {
+                req.session.rom = roomID;
+                req.io.join(roomID);
+            }
+        })
     });
 };
 

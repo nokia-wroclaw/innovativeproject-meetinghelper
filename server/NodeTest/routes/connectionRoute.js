@@ -9,7 +9,7 @@ var User = Model.User;
 var Meeting = Model.Meeting;
 var Sequelize = require('sequelize');
 
-
+var clients = [];
 
 module.exports.HelloWorld = function(req, res) {
 
@@ -31,11 +31,11 @@ module.exports.SocketPing = function(req){
         req.io.emit('pong', new Error("403").JSON());
 };
 
-module.exports.UserOnline = function(req){
-    req.io.join(1);
-    var clients = app.io.sockets.clients(1);
-    console.log(clients)
+module.exports.Connected = function(socket){
+   
+    
 };
+
 
 
 
