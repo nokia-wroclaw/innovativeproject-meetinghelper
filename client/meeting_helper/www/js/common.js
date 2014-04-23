@@ -61,7 +61,8 @@ var webSocketBroadcast = {
 	newPhoto: 'newPhoto',
 	newUser: 'newUser',
 	newMessage: 'newMessage',
-	newComment: 'newComment'
+	newComment: 'newComment',
+	usersOnline: 'usersOnline'
 };
 
 /**
@@ -69,5 +70,6 @@ var webSocketBroadcast = {
  */
 var webSocketSend = {
 	test: 'testWebSocket',
-	enterRoom: 'enterRoom'
+	connectedUsers: 'users/online',
+	enterMeeting: 'rooms/enterMeeting'
 };

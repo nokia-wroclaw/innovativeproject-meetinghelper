@@ -357,6 +357,7 @@ var connection = {
 
 			connection.socket.state = connection.socket.states.open;
 
+			connection.socket.instance.on(webSocketBroadcast.usersOnline, connection.socket.receive._onUsersOnline);
 			connection.socket.instance.on(webSocketBroadcast.newPhoto, connection.socket.receive._onNewPhoto);
 			connection.socket.instance.on(webSocketBroadcast.newUser, connection.socket.receive._onNewUser);
 			connection.socket.instance.on(webSocketBroadcast.newMessage, connection.socket.receive._onNewMessage);
@@ -375,11 +376,25 @@ var connection = {
 			connection.socket.send(webSocketSend.test, message);
 		},
 
+		getConnectedUsers: function() {
+			connection.socket.send(webSocketSend.connectedUsers);
+		},
+
 		enterRoom: function(roomId) {
-			connection.socket.send(webSocketSend.enterRoom, {roomId: roomId});
+			connection.socket.send(webSocketSend.enterMeeting, {meetingID: roomId});
 		},
 
 		receive: {
+			onUsersOnline: undefined,
+
+			_onUsersOnline: function (data) {
+				connection._callback('_onUsersOnline: ' + JSON.stringify(data));
+
+				if (connection.socket.receive.onUsersOnline) {
+					connection.socket.receive.onUsersOnline(data.data);
+				}
+			},
+
 			onNewPhoto: undefined,
 
 			/**
