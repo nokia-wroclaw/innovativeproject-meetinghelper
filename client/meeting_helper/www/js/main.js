@@ -107,7 +107,6 @@ var main = {
 		connection.setUrl(link, function() {
 			url.value = link;
 
-			//TUTAJ AKCJE PO POPRAWNYM POŁĄCZENIU Z SERWEREM - NP PRZEJŚCIE DO LOGOWANIA
 			load('login');
 		});
 	},
@@ -121,8 +120,7 @@ var main = {
 			if (received.result === 0) {//gdy jest ok
 				//received.message zawiera wiadomość
 				me.id = received.data.id;
-				
-				//TUTAJ AKCJE PO POPRAWNYM ZALOGOWANIU - NP PRZEJŚCIE DO ROOMÓW
+
 				load('rooms');
 				
 			} else if (received.result === 1) {//błąd
@@ -139,10 +137,8 @@ var main = {
 			//akcja wykonywana po odpowiedzi serwera
 			if (received.result === 0) {//gdy jest ok
 				//received.message zawiera wiadomość
-				
-				//TUTAJ AKCJE PO POPRAWNYM ZAREJESTROWANIU - NP PRZEJŚCIE DO STRONY LOGOWANIA
-				load('login');
-				
+
+				load('login');				
 			} else if (received.result === 1) {//błąd
 				//received.message zawiera wiadomość dlaczego nie
 			}
@@ -188,10 +184,9 @@ var main = {
 	 * Informuje serwer, że `wchodzi` do pokoju (do którego już wcześniej dołączył).
 	 */
 	enterRoom: function() {
-		var userId = me.id,
-			roomId = me.chosedRoomToEnter;
-		if (userId && roomId) {
-			connection.socket.enterRoom(userId, roomId);
+		var roomId = me.chosedRoomToEnter;
+		if (roomId) {
+			connection.socket.enterRoom(roomId);
 			me.enteredRoom = roomId;
 		} else {
 			alert('No room is chosen');

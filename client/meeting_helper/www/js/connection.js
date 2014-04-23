@@ -158,14 +158,14 @@ var connection = {
 		},
 		createRoom: function(room, callb) {
 			connection.action._base(
-				connection.action.types.get,
+				connection.action.types.post,
 				connectionLinks.get.rooms.create + room,
 				null,
 				connection.receive.onCreateRoom(callb));
 		},
 		joinRoom: function(room, callb) {
 			connection.action._base(
-				connection.action.types.get,
+				connection.action.types.post,
 				connectionLinks.get.rooms.join + room,
 				null,
 				connection.receive.onJoinRoom(callb));
@@ -375,8 +375,8 @@ var connection = {
 			connection.socket.send(webSocketSend.test, message);
 		},
 
-		enterRoom: function(userId, roomId) {
-			connection.socket.send(webSocketSend.enterRoom, {user: userId, room: roomId});
+		enterRoom: function(roomId) {
+			connection.socket.send(webSocketSend.enterRoom, {roomId: roomId});
 		},
 
 		receive: {
