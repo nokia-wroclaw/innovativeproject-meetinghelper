@@ -68,13 +68,13 @@ module.exports.Logout = function(req, res, next) {
 
 
 
-module.exports.UserOnline = function(req){
+module.exports.UsersOnline = function(req){
     var clients = [];
     app.io.sockets.clients(req.session.room).forEach(function(socket) {
         if(socket.handshake.session.user)
             clients.push({ userId: socket.handshake.session.user});
     })
-    req.io.emit('UserOnline', new Success(clients).JSON());
+    req.io.emit('usersOnline', new Success(clients).JSON());
 }
 
 

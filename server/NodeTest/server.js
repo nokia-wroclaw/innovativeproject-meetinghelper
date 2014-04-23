@@ -7,7 +7,7 @@ app = express().http().io()
 var connection = require('./routes/connectionRoute.js');
 var qrcode = require('./routes/qrcodeRoute.js');
 var user = require('./routes/userRoute.js');
-var room = require('./routes/roomRoute.js');
+var meeting = require('./routes/meetingRoute.js');
 var material = require('./routes/materialRoute.js');
 
 var sequelize = require('./models/db.js').Sequelize;
@@ -40,17 +40,16 @@ var form1 ="<form method='post' action='/api/login'>"+
 
 app.io.on('connection', connection.Connected);
 
-app.io.route('connect', connection.Connected);
 app.io.route('ping', connection.SocketPing);
-app.io.route('users/online', user.UserOnline);
-app.io.route('rooms/enterRoom', room.EnterRoom);
+app.io.route('users/online', user.UsersOnline); 
+app.io.route('meetings/enterMeeting', meeting.EnterMeeting);
 
 app.get('/api/', connection.HelloWorld);
 app.get('/api/ping', connection.Ping);
 
-app.get('/api/rooms/create/:roomName', user.IsLogin, room.CreateRoom);
-app.get('/api/rooms/join/:roomID', user.IsLogin, room.JoinRoom);
-app.get('/api/rooms/list', user.IsLogin, room.GetRoomsList);
+app.post('/api/meetings/create', user.IsLogin, meeting.CreateRoom);
+app.post('/api/meetings/join', user.IsLogin, meeting.JoinRoom);
+app.get('/api/meetings/list', user.IsLogin, meeting.GetRoomsList);
 
 
 app.get('/api/qrcode', qrcode.QRCode);
@@ -61,7 +60,7 @@ app.post('/api/login', user.Login);
 app.post('/api/register', user.Register);
 app.get('/api/logout',  user.Logout);
 
-app.post('/api/materials/sendFile', user.IsLogin, room.IsRoom, material.SendFile);
+app.post('/api/materials/sendFile', user.IsLogin, meeting.IsRoom, material.SendFile);
 
 
 

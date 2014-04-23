@@ -30,12 +30,14 @@ createFolder = function(folderName) {
 
 module.exports.CreateRoom = function(req, res) {
 
-    var folderName = createFolder(req.params.roomName);
+    var roomName = req.body.roomName;
+
+    var folderName = createFolder(roomName);
   
     if(!folderName == "")
     {
         var room = Meeting.create({
-            name: req.params.roomName,
+            name: roomName,
             folderName: folderName,
             accessCode: Math.random().toString(36).slice(2),
             UserId: req.session.user
@@ -65,7 +67,7 @@ module.exports.GetRoomsList  = function(req, res, next){
 }
 
 module.exports.JoinRoom = function(req, res, next) {
-    var roomID = req.params.roomID;
+    var roomID = req.body.roomID;
     var userID = req.session.user;
 
     User.find({where:{id: userID}})
@@ -82,8 +84,8 @@ module.exports.JoinRoom = function(req, res, next) {
     });
 };
 
-module.exports.EnterRoom = function(req) {
-    var roomID = req.data.roomID;
+module.exports.EnterMeeting = function(req) {
+    var roomID = req.data.meetingID;
     var userID = req.session.user;
 
     User.find({where:{id: userID}})
@@ -91,7 +93,7 @@ module.exports.EnterRoom = function(req) {
         return user.getMeetings()
         .then(function(meetings){
             meetings.forEach(function(meeting) {
-                if(meeting.id == roomID)
+                if(meeting.id == meetingID)
                     return true
             })
             return false;
