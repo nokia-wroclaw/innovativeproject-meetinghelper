@@ -1,0 +1,21 @@
+{
+  "name": "NodeTest",
+  "version": "0.0.0",
+  "description": "NodeTest",
+  "main": "server.js",
+  "author": {
+    "name": "Leszek",
+    "email": ""
+  },
+  "dependencies": {
+    "express.io": "^1.1.13",
+    "socket.io": "^0.9.16",
+    "express": "^3.5.2",
+    "qr-image": "^1.1.0",
+    "sequelize": "^1.7.3",
+    "ip": "^0.3.0",
+    "sequelize-sqlite": "^1.7.0",
+    "sqlite3": "^2.2.3",
+    "q": "^1.0.1"
+  }
+}
