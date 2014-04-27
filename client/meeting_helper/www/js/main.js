@@ -1,20 +1,8 @@
-var t_serverData = {
-	totalRecords: 0,
-	data: []
-};
+var dataFromServer = [];
 
-var t_myData = {
-        data: []
-};
+var onlineUsers = [];
 
-var t_onlineUser = {
-	numberOfOnlineUsers: 0,
-        user: []
-	/*id: [],
-	name: [],
-	surname: [],
-	login: []*/
-};
+var rooms = [];
 
 var me = {
 	id: undefined,
@@ -97,6 +85,10 @@ var main = {
 		connection.action.getRooms(function(received) {
 			// received zawiera listę elementów, np. {id: 0, name: 'room', folderName: 'room'}
 			// instersuje nas id po którym dołączamy i name które wyświetlamy
+
+			// wartość dodana (do przetestowania)
+			main.showRooms(received);
+
 			alert(received);
 		});
 	},
@@ -205,111 +197,113 @@ var main = {
 			});
 		});
 	},
-        
-        /**
-	 * Dodawanie elementu do struktury JSON
-	 * @param {String} type
-         * @param {String} data
-         * @param {String} author
-	 */
-	addNewServerData: function(type, data, author) {
-		t_serverData.totalRecords += 1;
-		t_serverData.data[t_serverData.totalRecords-1] = [type, data.data, author];
-                main.updateServerData(type, data.data, author);
-	},
-        
-        /**
-         * 
-         * @param {String} type
-         * @param {String} data
-         */
-        addNewMyData: function(type, data) {
-                t_myData.data[t_myData.data.length] = [type, data];
-                main.updateMyData(type, data);
-        },
-        
-        /**
-         * 
-         * @returns {undefined}
-         */
-        showServerData: function() {
-                for (var data in dataTable) {
-                    ;
-                }
-        },
-        
-        /**
-         * 
-         * @param {String} type
-         * @param {String} data
-         * @param {String} author
-         */
-        updateServerData: function(type, data, author) {
-                var image = document.createElement("img");
-                var node = document.createAttribute("alt");
-                node.value="photo";
-                image.setAttributeNode(node);
-                node = document.createAttribute("style");
-                node.value="display:none;width:90%;margin-left:5%;";
-                image.setAttributeNode(node);
-                var element = document.getElementById('received');
-                element.appendChild(image);
-                var tmp = element.getElementsByTagName("img")[t_serverData.totalRecords-1];
-                tmp.style.display='block';
-                tmp.src=data;
-        },
 
-        /**
-         * 
-         * @param {String} type
-         * @param {String} data
-         */
-        updateMyData: function(type, data) {
-                var image = document.createElement("img");
-                var node = document.createAttribute("alt");
-                node.value="photo";
-                image.setAttributeNode(node);
-                node = document.createAttribute("style");
-                node.value="display:none;width:60px;height:60px;";
-                image.setAttributeNode(node);
-                var element = document.getElementById('myImageCamera');
-                element.appendChild(image);
-                var tmp = element.getElementsByTagName("img")[t_myData.data.length-1];
-                tmp.style.display='block';
-                tmp.src=data;
-        },
-        
 	/**
-	 * Dodawanie nowego użytkownika do spotkania
-         * @param {Number} id_
-	 * @param {String} name_
-         * @param {String} surname_
-         * @param {String} login_
+	 * Zapisuje listę pokoi w tablicy oraz wyświetla je na stronie w sekcji serverRooms
 	 */
-	userEntered: function(id_, name_, surname_, login_/*meaby few more params*/) {
-		t_onlineUser.numberOfOnlineUsers += 1;
-                t_onlineUser.user[t_onlineUser.numberOfOnlineUsers-1] = [id_, name_, surname_, login_];
-                //onlineUserTable.id = id_;
-		//onlineUserTable.id = onlineUserTable.id[numberOfOnlineUsers-1];
-		//onlineUserTable.name = name_;
-		//onlineUserTable.surname = surname_;
-		//onlineUserTable.login = login_;
+	showRooms: function(receivedRooms) {
+		var roomList = document.createElement("select");
+		rooms.length = 0;
+		for (var room in receivedRooms) {
+			rooms[room].id = receivedRooms[room].id;
+			rooms[room].name = receivedRooms[room].name;
+			rooms[room].folderName = receivedRooms[room].folderName;
+			var newOption = document.createElement("option");
+			newOption.setAttribute("value", rooms[room].name);
+			newOption.appendChild(document.createTextNode(rooms[room].name));
+			rooms.appendChild(newOption);
+		}
+		var serverRooms = document.getElementById("serverRooms");
+		serverRooms.removeChild(serverRooms.getElementsByTagName("select")[0]);
+		serverRooms.appendChild(roomList);
 	},
-        
-        /**
-         * 
-         * @param {Number} id_
-         */
-        userLeft: function(id_) {
-                ;
-        }
+
+	/**
+	 * Dodawanie nowych danych do tablicy
+	 */
+	addNewData: function(data) {
+		dataFromServer[dataFromServer.length] = [dataFromServer.length, data.type, data.data, data.userId];
+		data.id = dataFromServer.length-1;
+		if (data.type === "photo") {
+			addNewPhoto(data);
+		}
+		else if (data.type === "message") {
+			addNewMessage(data);
+		}
+	},
+
+	/**
+	 * Dodawanie nowych zdjęć
+	 */
+	addNewPhoto: function(data) {
+		var image = document.createElement("img");
+		image.setAttribute("alt", "photo");
+		image.setAttribute("style", "display:none;width:90%;margin-left:5%");
+		image.setAttribute("align", "center");
+		image.style.display = "block";
+		image.src = data.data;
+		var element = document.getElementById('myImageCamera');
+		element.appendChild(image);
+		main.addCommentBox(data);
+	},
+
+	/**
+	 * Dodawanie nowych notatek tekstowych jako paragraf
+	 */
+	addNewMessage: function(data) {
+		var message = document.createElement("p");
+		message.appendChild(document.createTextNode(data.data));
+		var element = document.getElementById('myImageCamera');
+		element.appendChild(message);
+		main.addCommentBox(data);
+	},
+	
+	/**
+	 * Po kliknięciu na commentBox jest rozszerzany i zostaje dodany przycisk "Submit"
+	 */
+	expandCommentBox: function(id) {
+		var item = document.getElementById(id);
+		item.getElementsByTagName("textarea")[0].setAttribute("rows", "3");
+		item.appendChild(document.createElement("br"));
+		item.appendChild(document.createElement("input"));
+		item.getElementsByTagName("input")[0].setAttribute("type", "submit");
+		item.getElementsByTagName("input")[0].setAttribute("value", "Submit");
+	},
+	
+	/**
+	 * Utrata focusu przez commentBox cofa w/w zmiany
+	 */
+	contractCommentBox: function(id) {
+		var item = document.getElementById(id);
+		item.removeChild(item.getElementsByTagName("br")[0]);
+		item.removeChild(item.getElementsByTagName("input")[0]);
+		item.getElementsByTagName("textarea")[0].setAttribute("rows", "1");
+	},
+
+	/**
+	 * Funkcja dodaje commentBox pod dodanym elementem (brak implementacji komentarzy)
+	 */
+	addCommentBox: function(data) {
+		var formNode = document.createElement("form");
+		formNode.setAttribute("id", data.id);
+		formNode.setAttribute("method", "post");
+		var textArea = document.createElement("textarea");
+		textArea.setAttribute("cols", "50");
+		textArea.setAttribute("rows", "1");
+		textArea.setAttribute("placeholder", "Enter your comment here ...");
+		textArea.setAttribute("onfocus", "main.expandCommentBox(" + data.id + ")");
+		textArea.setAttribute("onblur", "main.contractCommentBox(" + data.id + ")");
+		formNode.appendChild(textArea);
+		document.getElementById('myImageCamera').appendChild(formNode);
+		document.getElementById('myImageCamera').appendChild(document.createElement("br"));
+	}
 };
 
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
 connection.socket.receive.onNewPhoto = function(data) {
-        main.addNewServerData('image', data, 'sbd');
+        main.addNewData(data);
 	/*var image = document.getElementById('received');
 
 	image.style.display = 'block';
