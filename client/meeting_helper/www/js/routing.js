@@ -3,7 +3,7 @@
  */
 
 // historyObj object
-var historyObj = {
+historyObj = {
 	actualPage: undefined,
 
 	pages: new Array(),
