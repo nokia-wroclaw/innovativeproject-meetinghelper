@@ -225,10 +225,10 @@ var main = {
 		dataFromServer[dataFromServer.length] = [dataFromServer.length, data.type, data.data, data.userId];
 		data.id = dataFromServer.length-1;
 		if (data.type === "photo") {
-			addNewPhoto(data);
+			main.addNewPhoto(data);
 		}
 		else if (data.type === "message") {
-			addNewMessage(data);
+			main.addNewMessage(data);
 		}
 	},
 
