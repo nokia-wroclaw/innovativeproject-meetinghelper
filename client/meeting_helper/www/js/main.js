@@ -85,17 +85,14 @@ var main = {
 		connection.action.getRooms(function(received) {
 			// received zawiera listę elementów, np. {id: 0, name: 'room', folderName: 'room'}
 			// instersuje nas id po którym dołączamy i name które wyświetlamy
-
-			// wartość dodana (do przetestowania)
 			main.showRooms(received);
 
-			alert(received);
 		});
 	},
 
 	setUrl: function(link) {
 		var url = document.getElementById('url');
-		url.value = 'Connecting: ' + link;
+		url.value = link;
 		connection.setUrl(link, function() {
 			url.value = link;
 
@@ -109,15 +106,12 @@ var main = {
 	login: function(login, password) {
 		connection.action.login(login, password, function(received) {
 			//akcja wykonywana po odpowiedzi serwera
-			if (received.result === 0) {//gdy jest ok
-				//received.message zawiera wiadomość
-				me.id = received.data.id;
-
+			if (received.name === login) {//gdy jest ok
+				me.id = received.id;
 				load('rooms');
-				
-			} else if (received.result === 1) {//błąd
-				//received.message zawiera wiadomość dlaczego nie
 			}
+		}, function(data) {
+			alert('Wrong username or password');
 		});
 	},
 
@@ -127,13 +121,11 @@ var main = {
 	register: function(login, password, password2) {
 		connection.action.register(login, password, password2, function(received) {
 			//akcja wykonywana po odpowiedzi serwera
-			if (received.result === 0) {//gdy jest ok
-				//received.message zawiera wiadomość
-
-				load('login');				
-			} else if (received.result === 1) {//błąd
-				//received.message zawiera wiadomość dlaczego nie
+			if (received) {//gdy jest ok
+				load('login');
 			}
+		}, function(data) {
+			alert('Login already registered');
 		});
 	},
 
@@ -143,12 +135,13 @@ var main = {
 	createRoom: function(roomName) {
 		main.choseRoomToEnter();
 		connection.action.createRoom(roomName, function(received) {
-			var roomId = received.data.id;
-			//var input = document.getElementById('roomId');
-			//input.value = roomId;
-
-			main.joinRoom(roomId, function() {
-				alert('Room created');
+			var roomId = received.id;
+			main.joinRoom(roomId, function(answer) {
+				if (answer) {
+					alert('Room created');
+				} else {
+					alert('Creating room failed');
+				}
 			});
 		});
 	},
@@ -159,8 +152,10 @@ var main = {
 	joinRoom: function(roomId, callb) {
 		if (roomId) {
 			connection.action.joinRoom(roomId, function(received) {
-				main.choseRoomToEnter(roomId);
-				callb();
+				if (received) {
+					main.choseRoomToEnter(roomId);
+				}
+				callb(received);
 			});
 		}
 	},
@@ -177,9 +172,9 @@ var main = {
 	 */
 	enterRoom: function() {
 		var roomId = me.chosedRoomToEnter;
+		alert('roomId: ' + roomId);
 		if (roomId) {
 			connection.socket.enterRoom(roomId);
-			me.enteredRoom = roomId;
 		} else {
 			alert('No room is chosen');
 		}
@@ -203,15 +198,13 @@ var main = {
 	 */
 	showRooms: function(receivedRooms) {
 		var roomList = document.createElement("select");
-		rooms.length = 0;
+		rooms = [];
 		for (var room in receivedRooms) {
-			rooms[room].id = receivedRooms[room].id;
-			rooms[room].name = receivedRooms[room].name;
-			rooms[room].folderName = receivedRooms[room].folderName;
+			rooms.push(receivedRooms[room]);
 			var newOption = document.createElement("option");
-			newOption.setAttribute("value", rooms[room].name);
-			newOption.appendChild(document.createTextNode(rooms[room].name));
-			rooms.appendChild(newOption);
+			newOption.setAttribute("value", receivedRooms[room].name);
+			newOption.appendChild(document.createTextNode(receivedRooms[room].name));
+			roomList.appendChild(newOption);
 		}
 		var serverRooms = document.getElementById("serverRooms");
 		serverRooms.removeChild(serverRooms.getElementsByTagName("select")[0]);
@@ -299,10 +292,15 @@ var main = {
 	}
 };
 
+connection.socket.receive.onEnterRoom = function(data) {
+	me.enteredRoom = data;
+	load('wall');
+};
+
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
-connection.socket.receive.onNewPhoto = function(data) {
+connection.socket.receive.onNewMaterial = function(data) {
         main.addNewData(data);
 	/*var image = document.getElementById('received');
 
@@ -317,13 +315,6 @@ connection.socket.receive.onNewUser = function(data) {
 	if (data.userId === me.id) {
 		load('wall');
 	}
-};
-
-/**
- * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
- */
-connection.socket.receive.onNewMessage = function(data) {
-	callback(data);
 };
 
 /**

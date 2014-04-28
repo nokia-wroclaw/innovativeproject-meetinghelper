@@ -17,7 +17,7 @@
 /**
  * Przykład użycia funkcji wywoływanej podczas przyjścia wiadomości ze strony serwera.
  *
- * connection.socket.receive.onNewPhoto = function(data) {};
+ * connection.socket.receive.onNewMaterial = function(data) {};
  *
  * Polega to na przypisaniu nowej funkcji, wywoływanej przy danej akcji.
  */
@@ -50,7 +50,7 @@ var connection = {
 		connection.url = '';
 		connection.state = connection.states.connecting;
 		connection.action.ping(url, function(result) {
-			if (result.message === connectionAnswers.ping) {
+			if (result === connectionAnswers.ping) {
 				connection.url = url;
 				try {
 					connection.socket.init(url.substring(0, url.length - 4));
@@ -72,7 +72,7 @@ var connection = {
 			post: "POST"
 		},
 
-		_base: function(type, link, value, callb, ping) {
+		_base: function(type, link, value, callb, callb2, ping) {
 			try {
 				if (connection.state === connection.states.established || ping) {
 				    var xmlHttp = null;
@@ -86,6 +86,10 @@ var connection = {
 						    } else {
 						    	connection._callback(xmlHttp.responseText);
 						    }
+						} else if (xmlHttp.readyState === 4 && (xmlHttp.status === 400 || xmlHttp.status === 401)) {
+							if (callb2) {
+								callb2();
+							}
 						}
 					}
 
@@ -122,6 +126,7 @@ var connection = {
 				link + connectionLinks.get.ping,
 				null,
 				connection.receive._onPong(callb),
+				undefined,
 				true);
 		},
 		hello: function(callb) {
@@ -138,36 +143,38 @@ var connection = {
 					connection.mac.value, callb);
 			}
 		},
-		login: function(login, password, callb) {
+		login: function(login, password, callb, callb2) {
 			connection.action._base(
 				connection.action.types.post,
 				connectionLinks.post.login,
 				{login: login, password: password},
-				connection.receive.onLogin(callb));
+				connection.receive.onLogin(callb),
+				callb2);
 		},
-		register: function(login, password, password2, callb) {
+		register: function(login, password, password2, callb, callb2) {
 			if (password === password2) {
 				connection.action._base(
 					connection.action.types.post,
 					connectionLinks.post.register,
 					{login: login, password: password},
-					connection.receive.onRegister(callb));
+					connection.receive.onRegister(callb),
+					callb2);
 			} else {
 				callb("passwords are not equal");
 			}
 		},
-		createRoom: function(room, callb) {
+		createRoom: function(roomName, callb) {
 			connection.action._base(
 				connection.action.types.post,
-				connectionLinks.get.rooms.create + room,
-				null,
+				connectionLinks.post.rooms.create,
+				{meetingName: roomName},
 				connection.receive.onCreateRoom(callb));
 		},
-		joinRoom: function(room, callb) {
+		joinRoom: function(roomId, callb) {
 			connection.action._base(
 				connection.action.types.post,
-				connectionLinks.get.rooms.join + room,
-				null,
+				connectionLinks.post.rooms.join,
+				{meetingID: roomId},
 				connection.receive.onJoinRoom(callb));
 		},
 		getRooms: function(callb) {
@@ -357,10 +364,10 @@ var connection = {
 
 			connection.socket.state = connection.socket.states.open;
 
+			connection.socket.instance.on(webSocketBroadcast.enterRoom, connection.socket.receive._onEnterRoom);
 			connection.socket.instance.on(webSocketBroadcast.usersOnline, connection.socket.receive._onUsersOnline);
-			connection.socket.instance.on(webSocketBroadcast.newPhoto, connection.socket.receive._onNewPhoto);
+			connection.socket.instance.on(webSocketBroadcast.newMaterial, connection.socket.receive._onNewMaterial);
 			connection.socket.instance.on(webSocketBroadcast.newUser, connection.socket.receive._onNewUser);
-			connection.socket.instance.on(webSocketBroadcast.newMessage, connection.socket.receive._onNewMessage);
 			connection.socket.instance.on(webSocketBroadcast.newComment, connection.socket.receive._onNewComment);
 		},
 
@@ -385,6 +392,16 @@ var connection = {
 		},
 
 		receive: {
+			onEnterRoom: undefined,
+
+			_onEnterRoom: function (data) {
+				connection._callback('_onEnterRoom: ' + JSON.stringify(data));
+
+				if (connection.socket.receive.onEnterRoom) {
+					connection.socket.receive.onEnterRoom(data.data);
+				}
+			},
+
 			onUsersOnline: undefined,
 
 			_onUsersOnline: function (data) {
@@ -395,16 +412,16 @@ var connection = {
 				}
 			},
 
-			onNewPhoto: undefined,
+			onNewMaterial: undefined,
 
 			/**
 			 * In data.message is received message.
 			 */
-			_onNewPhoto: function (data) {
+			_onNewMaterial: function (data) {
 				connection._callback(JSON.stringify(data));
 
-				if (connection.socket.receive.onNewPhoto) {
-					connection.socket.receive.onNewPhoto({
+				if (connection.socket.receive.onNewMaterial) {
+					connection.socket.receive.onNewMaterial({
 						userId: data.message.user,
 						type: 'photo',
 						data: connection.url + connectionLinks.get.photo + data.message
@@ -425,23 +442,6 @@ var connection = {
 						userId: data.id,
 						type: 'user',
 						data: data
-					});
-				}
-			},
-
-			onNewMessage: undefined,
-
-			/**
-			 * In data.message is received message.
-			 */
-			_onNewMessage: function (data) {
-				connection._callback(JSON.stringify(data));
-
-				if (connection.socket.receive.onNewMessage) {
-					connection.socket.receive.onNewMessage({
-						userId: data.message.user,
-						type: 'message',
-						data: data.message
 					});
 				}
 			},
