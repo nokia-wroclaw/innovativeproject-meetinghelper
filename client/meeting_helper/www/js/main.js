@@ -301,6 +301,7 @@ connection.socket.receive.onEnterRoom = function(data) {
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
 connection.socket.receive.onNewMaterial = function(data) {
+	alert('new photo: ' + JSON.stringify(data));
         main.addNewData(data);
 	/*var image = document.getElementById('received');
 

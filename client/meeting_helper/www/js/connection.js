@@ -52,12 +52,6 @@ var connection = {
 		connection.action.ping(url, function(result) {
 			if (result === connectionAnswers.ping) {
 				connection.url = url;
-				try {
-					connection.socket.init(url.substring(0, url.length - 4));
-				} catch(e) {
-					connection._callback(e);
-					connection.state = connection.states.disconnected;
-				}
 				connection.state = connection.states.established;
 				if (callback) {
 					callback();
@@ -194,7 +188,15 @@ var connection = {
 	},
 
 	receive: {
-		_base: function(callb) {
+		_base: function(callb, ifLogin) {
+			if (ifLogin) {
+				try {
+					connection.socket.init(connection.url.substring(0, connection.url.length - 4));
+				} catch(e) {
+					connection._callback(e);
+					connection.state = connection.states.disconnected;
+				}
+			}
 			return function(data) {
 				if (callb) {
 					callb(data);
@@ -207,7 +209,7 @@ var connection = {
 			return connection.receive._base(callb);
 		},
 		onLogin: function(callb) {
-			return connection.receive._base(callb);
+			return connection.receive._base(callb, true);
 		},
 		onRegister: function(callb) {
 			return connection.receive._base(callb);
