@@ -30,20 +30,20 @@ createFolder = function(folderName) {
 
 module.exports.CreateRoom = function(req, res) {
 
-    var roomName = req.body.roomName;
+    var meetingName = req.body.meetingName;
 
-    var folderName = createFolder(roomName);
+    var folderName = createFolder(meetingName);
   
     if(!folderName == "")
     {
         var room = Meeting.create({
-            name: roomName,
+            name: meetingName,
             folderName: folderName,
             accessCode: Math.random().toString(36).slice(2),
             UserId: req.session.user
         }).success(function(room){
             if(room)
-                res.endSuccess(room.id);
+                res.endSuccess(room);
             else
                 res.endError(Dictionary.meetingNotCreated); 
         });
@@ -65,16 +65,16 @@ module.exports.GetRoomsList  = function(req, res, next){
 }
 
 module.exports.JoinRoom = function(req, res, next) {
-    var roomID = req.body.roomID;
+    var meetingID = req.body.meetingID;
     var userID = req.session.user;
 
     User.find({where:{id: userID}})
     .then(function(user) {
-        return Meeting.find({where:{id: roomID}})
-        .then(function(room) {
-            return user.addMeeting(room)
+        return Meeting.find({where:{id: meetingID}})
+        .then(function(meeting) {
+            return user.addMeeting(meeting)
             .then(function() {
-                req.session.room = roomID;
+                req.session.room = meetingID;
                 res.endSuccess(true);
             })
         })
@@ -83,7 +83,7 @@ module.exports.JoinRoom = function(req, res, next) {
 };
 
 module.exports.EnterMeeting = function(req) {
-    var roomID = req.data.meetingID;
+    var meetingID = req.data.meetingID;
     var userID = req.session.user;
 
     User.find({where:{id: userID}})
@@ -92,14 +92,14 @@ module.exports.EnterMeeting = function(req) {
         .then(function(meetings){
             meetings.forEach(function(meeting) {
                 if(meeting.id == meetingID)
-                    return true
+                    return true;
             })
-            return false;
         })
         .then(function(access){
             if(access) {
-                req.session.rom = roomID;
-                req.io.join(roomID);
+                req.session.rom = meetingID;
+                req.io.join(meetingID);
+                req.io.emit('joined', {data: meetingID});
             }
         })
     });

@@ -12,6 +12,7 @@ var sequelize = require('./models/db.js').Sequelize;
 var Config = require('./config/index.js')();
 
 
+
 app.configure( function() {
     app.use(express.static(__dirname + '/www'));
     app.use(express.logger());
@@ -122,4 +123,6 @@ app.get('/api/user/:filename', function(req, res){
 
 app.listen(Config.port, function() { }); 
 
+
+module.exports = app;
 
