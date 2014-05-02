@@ -1,4 +1,4 @@
-﻿
+﻿var fs = require('fs');
 var Model = require('../models/model.js');
 var Meeting = Model.Meeting;
 var Material = Model.Material;

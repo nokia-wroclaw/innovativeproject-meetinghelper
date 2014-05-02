@@ -85,15 +85,17 @@ module.exports.JoinRoom = function(req, res, next) {
 module.exports.EnterMeeting = function(req) {
     var meetingID = req.data.meetingID;
     var userID = req.session.user;
-
+     console.log("sesja socketa: "+ req.session.id)
     User.find({where:{id: userID}})
     .then(function(user) {
         return user.getMeetings()
         .then(function(meetings){
+            access = false;
             meetings.forEach(function(meeting) {
                 if(meeting.id == meetingID)
-                    return true;
+                    access = true;
             })
+           return access;
         })
         .then(function(access){
             if(access) {

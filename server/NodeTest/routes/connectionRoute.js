@@ -27,9 +27,21 @@ module.exports.SocketPing = function(req){
         req.io.emit('pong', new Error("403").JSON());
 };
 
-module.exports.Connected = function(socket){
-   
-    
+module.exports.Connected = function (socket) {
+    var hs = socket.handshake;
+    console.log('\n A socket with sessionID ' + hs.sessionID 
+        + ' connected! \n');
+    var intervalID = setInterval(function () {
+        hs.session.reload( function () { 
+            hs.session.touch().save();
+        });
+    }, 60 * 1000);
+    socket.on('disconnect', function () {
+        console.log('\n A socket with sessionID ' + hs.sessionID 
+            + ' disconnected! \n ');
+        clearInterval(intervalID);
+    });
+ 
 };
 
 
