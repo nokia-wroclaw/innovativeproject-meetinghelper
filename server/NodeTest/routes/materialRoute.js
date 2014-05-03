@@ -13,17 +13,18 @@ module.exports.SendFile = function(req, res, next) {
 
         Meeting.find({where:{id: roomID}})
         .then(function (meeting){
-            var extention = filename.split('.').pop();
+            var extention = file.name.split('.').pop();
             var newfilename = Math.random().toString(36).slice(2) +"."+ extention;
-            var newPath = __dirname + "/events/"+ meeting.folderName +"/"+ newfilename;
+            var newPath = "events\\"+ meeting.folderName +"\\"+ newfilename;
             fs.writeFile(newPath, data, function (err) {
 
                 var material = Material.create({
-                name: roomName,
+                name: file.name,
                 fileName: newfilename,
-                orginalFileName : filename,
+                orginalFileName : file.name,
                 like: 0,
-                UserId: req.session.user
+                UserId: userID,
+                MeetingId: roomID
                 }).then(function(material){
                     if(material){
                         res.endSuccess(newfilename);
