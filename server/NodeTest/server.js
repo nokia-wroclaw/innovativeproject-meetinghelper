@@ -73,6 +73,7 @@ app.get('/api/ping', connection.Ping);
 
 app.post('/api/meetings/create', user.IsLogin, meeting.CreateRoom);
 app.post('/api/meetings/join', user.IsLogin, meeting.JoinRoom);
+app.post('/api/meetings/joinByCode', user.IsLogin, meeting.JoinRoomByCode);
 app.get('/api/meetings/list', user.IsLogin, meeting.GetRoomsList);
 
 

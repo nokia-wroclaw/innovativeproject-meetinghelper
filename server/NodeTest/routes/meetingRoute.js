@@ -82,6 +82,25 @@ module.exports.JoinRoom = function(req, res, next) {
     });
 };
 
+module.exports.JoinRoomByCode = function(req, res, next) {
+    var accessCode = req.body.accessCode;
+    var userID = req.session.user;
+
+    User.find({where:{id: userID}})
+    .then(function(user) {
+        return Meeting.find({where:{accessCode: accessCode}})
+        .then(function(meeting) {
+            return user.addMeeting(meeting)
+            .then(function() {
+                req.session.room = meeting.Id;
+                res.endSuccess(true);
+            })
+        })
+        
+    });
+};
+
+
 module.exports.EnterMeeting = function(req) {
     var meetingID = req.data.meetingID;
     var userID = req.session.user;
