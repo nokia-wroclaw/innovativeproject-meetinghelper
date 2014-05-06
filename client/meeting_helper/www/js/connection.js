@@ -30,6 +30,8 @@ var states = {
 	disconnected: 'disconnected'
 };
 
+var nextIdToBeDepreciated = 0;
+
 var connection = {
 	url: '',
 	state: states.unknown_host,
@@ -424,9 +426,16 @@ var connection = {
 			_onNewMaterial: function (data) {
 				connection._callback(JSON.stringify(data));
 
+				var nextId;
+				if (data.message.id) {
+					nextId = data.message.id;
+				} else {
+					nextId = nextIdToBeDepreciated++;
+				}
+
 				if (connection.socket.receive.onNewPhoto) {
 					connection.socket.receive.onNewPhoto({
-						id: data.message.id,
+						id: nextId,
 						userId: data.message.user,
 						type: 'photo',
 						data: connection.url + connectionLinks.get.photo + data.message
@@ -435,7 +444,7 @@ var connection = {
 
 				if (connection.socket.receive.onNewNote) {
 					connection.socket.receive.onNewNote({
-						id: data.message.id,
+						id: nextId,
 						userId: data.message.user,
 						type: 'note',
 						data: connection.url + connectionLinks.get.note + data.message
