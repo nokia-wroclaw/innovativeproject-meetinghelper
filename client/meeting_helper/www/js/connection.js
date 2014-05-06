@@ -188,14 +188,14 @@ var connection = {
 		sendNote: function(note, callb) {
 			connection.action._base(
 				connection.action.types.get,
-				connectionLinks.post.sendNote,
+				connectionLinks.post.note,
 				{note: note},
 				connection.receive.onSendNote(callb));
 		},
 		sendComment: function(id, comment, callb) {
 			connection.action._base(
 				connection.action.types.get,
-				connectionLinks.post.sendNote,
+				connectionLinks.post.comment,
 				{materialId: id, comment: comment},
 				connection.receive.onSendComment(callb));
 		}
@@ -275,7 +275,7 @@ var connection = {
 					}
 					ft.upload(
 						imageSrc,
-						connection.url + connectionLinks.uploadFile,
+						connection.url + connectionLinks.post.file,
 						connection.file.upload._success(onUpload),
 						connection.file.upload.fail,
 						options);
@@ -387,12 +387,14 @@ var connection = {
 
 			connection.socket.state = connection.socket.states.open;
 
+			connection.socket.instance.on(webSocketBroadcast.pong, connection.socket.receive.onPing);
 			connection.socket.instance.on(webSocketBroadcast.enterRoom, connection.socket.receive._onEnterRoom);
 			connection.socket.instance.on(webSocketBroadcast.usersOnline, connection.socket.receive._onUsersOnline);
+			connection.socket.instance.on(webSocketBroadcast.allMatetials, connection.socket.receive._onAllMatetials);
+			connection.socket.instance.on(webSocketBroadcast.allComments, connection.socket.receive._onAllComments);
 			connection.socket.instance.on(webSocketBroadcast.newUser, connection.socket.receive._onNewUser);
 			connection.socket.instance.on(webSocketBroadcast.newMaterial, connection.socket.receive._onNewMaterial);
 			connection.socket.instance.on(webSocketBroadcast.newComment, connection.socket.receive._onNewComment);
-			connection.socket.instance.on(webSocketBroadcast.pong, connection.socket.receive.onPing);
 		},
 
 		close: function() {
@@ -445,12 +447,32 @@ var connection = {
 					var toReturn = [];
 					for (var i in data.data) {
 						toReturn.push({
-							userId: data.id,
+							userId: data.data[i].id,
 							type: 'user',
-							data: data
+							data: data.data[i]
 						});
 					}
 					connection.socket.receive.onUsersOnline(toReturn);
+				}
+			},
+
+			_onAllMatetials: function (data) {
+				connection._callback('_onAllMatetials: ' + JSON.stringify(data));
+
+				if (connection.socket.receive._onNewMaterial) {
+					for (var i in data.data) {
+						connection.socket.receive._onNewMaterial(data.data[id]);
+					}
+				}
+			},
+
+			_onAllComments: function (data) {
+				connection._callback('_onAllComments: ' + JSON.stringify(data));
+
+				if (connection.socket.receive._onNewComment) {
+					for (var i in data.data) {
+						connection.socket.receive._onNewComment(data.data[id]);
+					}
 				}
 			},
 

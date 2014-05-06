@@ -7,29 +7,12 @@
  };
 
 /**
- * Webserver links.
+ * Webserver get and post links.
  */
  var connectionLinks = {
-	/**
-	 * Initial page
-	 */
-	hello: '',
-
-	/**
-	 * Page to send file
-	 */
-	uploadFile: 'materials/sendFile',
-
-	/**
-	 * Page to show all files
-	 */
  	get: {
 		ping: 'ping',
 		photos: 'getPhotos',
-
-		/**
-		 * Get single photo
-		 */
 		material: 'materials/file/',
 		user: 'user/',
 		rooms: {
@@ -46,10 +29,15 @@
 			create: 'meetings/create/',
 			join: 'meetings/join/'
 		},
-		sendNote: 'sendNote'
+		file: 'materials/sendFile',
+		note: 'materials/sendNote',
+		comment: 'materials/sendComment'
 	}
 };
 
+/**
+ * Webserver get and post constant answers.
+ */
 var connectionAnswers = {
 	ping: 'PONG'
 };
@@ -60,11 +48,12 @@ var connectionAnswers = {
 var webSocketBroadcast = {
 	pong: 'pong',
 	enterRoom: 'joined',
-	newMaterial: 'newMaterial',
-	newPhoto: 'newPhoto',
+	usersOnline: 'usersOnline',
+	allMatetials: 'allMatetials',
+	allComments: 'allComments',
 	newUser: 'newUser',
-	newComment: 'newComment',
-	usersOnline: 'usersOnline'
+	newMaterial: 'newMaterial',
+	newComment: 'newComment'
 };
 
 /**
