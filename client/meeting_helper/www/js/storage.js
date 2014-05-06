@@ -18,7 +18,7 @@ var storage = {
 		for (var room in receivedRooms) {
 			rooms.push(receivedRooms[room]);
 			var newOption = document.createElement("option");
-			newOption.setAttribute("value", receivedRooms[room].name);
+			newOption.setAttribute("value", receivedRooms[room].id);
 			newOption.appendChild(document.createTextNode(receivedRooms[room].name));
 			roomList.appendChild(newOption);
 		}
@@ -111,7 +111,7 @@ var storage = {
 	 * Ustawia zmienną odpowiedzialną za wybór pokoju do wejścia
 	 */
 	setChosedRoomToEnter: function() {
-		main.me.chosedRoomToEnter = document.getElementById('serverRooms').getElementsByTagName('select')[0].value;
+		main.choseRoomToEnter(document.getElementById('serverRooms').getElementsByTagName('select')[0].value);
 	},
 
 	/**
