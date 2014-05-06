@@ -186,6 +186,13 @@ var connection = {
 				connectionLinks.get.rooms.data,
 				{roomId: roomId},
 				connection.receive.onReceiveRoomData(callb));
+		},
+		sendNote: function(note, callb) {
+			connection.action._base(
+				connection.action.types.get,
+				connectionLinks.post.sendNote,
+				{note: note},
+				connection.receive.onReceiveRoomData(callb));
 		}
 	},
 

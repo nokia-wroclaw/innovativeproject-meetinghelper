@@ -46,7 +46,8 @@
 		rooms: {
 			create: 'meetings/create/',
 			join: 'meetings/join/'
-		}
+		},
+		sendNote: 'sendNote'
 	}
 };
 
