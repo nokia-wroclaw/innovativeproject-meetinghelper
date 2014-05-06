@@ -79,11 +79,7 @@ var main = {
 		connection.action.getRooms(function(received) {
 			// received zawiera listę elementów, np. {id: 0, name: 'room', folderName: 'room'}
 			// instersuje nas id po którym dołączamy i name które wyświetlamy
-<<<<<<< HEAD
 			storage.showRooms(received);
-=======
-			main.showRooms(received);
->>>>>>> FETCH_HEAD
 
 		});
 	},
@@ -189,107 +185,6 @@ var main = {
 				main.enterRoom();
 			});
 		});
-<<<<<<< HEAD
-=======
-	},
-
-	/**
-	 * Zapisuje listę pokoi w tablicy oraz wyświetla je na stronie w sekcji serverRooms
-	 */
-	showRooms: function(receivedRooms) {
-		var roomList = document.createElement("select");
-		rooms = [];
-		for (var room in receivedRooms) {
-			rooms.push(receivedRooms[room]);
-			var newOption = document.createElement("option");
-			newOption.setAttribute("value", receivedRooms[room].name);
-			newOption.appendChild(document.createTextNode(receivedRooms[room].name));
-			roomList.appendChild(newOption);
-		}
-		var serverRooms = document.getElementById("serverRooms");
-		serverRooms.removeChild(serverRooms.getElementsByTagName("select")[0]);
-		serverRooms.appendChild(roomList);
-	},
-
-	/**
-	 * Dodawanie nowych danych do tablicy
-	 */
-	addNewData: function(data) {
-		dataFromServer[dataFromServer.length] = [dataFromServer.length, data.type, data.data, data.userId];
-		data.id = dataFromServer.length-1;
-		if (data.type === "photo") {
-			main.addNewPhoto(data);
-		}
-		else if (data.type === "message") {
-			main.addNewMessage(data);
-		}
-	},
-
-	/**
-	 * Dodawanie nowych zdjęć
-	 */
-	addNewPhoto: function(data) {
-		var image = document.createElement("img");
-		image.setAttribute("alt", "photo");
-		image.setAttribute("style", "display:none;width:90%;margin-left:5%");
-		image.setAttribute("align", "center");
-		image.style.display = "block";
-		image.src = data.data;
-		var element = document.getElementById('myImageCamera');
-		element.appendChild(image);
-		main.addCommentBox(data);
-	},
-
-	/**
-	 * Dodawanie nowych notatek tekstowych jako paragraf
-	 */
-	addNewMessage: function(data) {
-		var message = document.createElement("p");
-		message.appendChild(document.createTextNode(data.data));
-		var element = document.getElementById('myImageCamera');
-		element.appendChild(message);
-		main.addCommentBox(data);
-	},
-	
-	/**
-	 * Po kliknięciu na commentBox jest rozszerzany i zostaje dodany przycisk "Submit"
-	 */
-	expandCommentBox: function(id) {
-		var item = document.getElementById(id);
-		item.getElementsByTagName("textarea")[0].setAttribute("rows", "3");
-		item.appendChild(document.createElement("br"));
-		item.appendChild(document.createElement("input"));
-		item.getElementsByTagName("input")[0].setAttribute("type", "submit");
-		item.getElementsByTagName("input")[0].setAttribute("value", "Submit");
-	},
-	
-	/**
-	 * Utrata focusu przez commentBox cofa w/w zmiany
-	 */
-	contractCommentBox: function(id) {
-		var item = document.getElementById(id);
-		item.removeChild(item.getElementsByTagName("br")[0]);
-		item.removeChild(item.getElementsByTagName("input")[0]);
-		item.getElementsByTagName("textarea")[0].setAttribute("rows", "1");
-	},
-
-	/**
-	 * Funkcja dodaje commentBox pod dodanym elementem (brak implementacji komentarzy)
-	 */
-	addCommentBox: function(data) {
-		var formNode = document.createElement("form");
-		formNode.setAttribute("id", data.id);
-		formNode.setAttribute("method", "post");
-		var textArea = document.createElement("textarea");
-		textArea.setAttribute("cols", "50");
-		textArea.setAttribute("rows", "1");
-		textArea.setAttribute("placeholder", "Enter your comment here ...");
-		textArea.setAttribute("onfocus", "main.expandCommentBox(" + data.id + ")");
-		textArea.setAttribute("onblur", "main.contractCommentBox(" + data.id + ")");
-		formNode.appendChild(textArea);
-		document.getElementById('myImageCamera').appendChild(formNode);
-		document.getElementById('myImageCamera').appendChild(document.createElement("br"));
->>>>>>> FETCH_HEAD
 	}
 };
 
@@ -303,11 +198,7 @@ connection.socket.receive.onEnterRoom = function(data) {
  */
 connection.socket.receive.onNewMaterial = function(data) {
 	alert('new photo: ' + JSON.stringify(data));
-<<<<<<< HEAD
         storage.addNewData(data);
-=======
-        main.addNewData(data);
->>>>>>> FETCH_HEAD
 	/*var image = document.getElementById('received');
 
 	image.style.display = 'block';
