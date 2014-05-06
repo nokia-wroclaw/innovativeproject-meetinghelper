@@ -239,7 +239,7 @@ var connection = {
 
 	file: {
 		upload: {
-			photo: function(imageSrc, onProgress) {
+			photo: function(imageSrc, onUpload, onProgress) {
 				if (connection.url) {
 					var options = new FileUploadOptions();
 					options.fileKey="file";
@@ -265,7 +265,7 @@ var connection = {
 					ft.upload(
 						imageSrc,
 						connection.url + connectionLinks.uploadFile,
-						connection.file.upload._success,
+						connection.file.upload._success(callb),
 						connection.file.upload.fail,
 						options);
 				} else {
@@ -289,16 +289,16 @@ var connection = {
 				}
 			},
 
-			success: undefined,
+			_success: function(callb, message) {
+				return function() {
+					connection._callback(
+						"Code = " + message.responseCode + "\n" +
+						"Response = " + message.response + "\n" +
+						"Sent = " + message.bytesSent);
 
-			_success: function(message) {
-				connection._callback(
-					"Code = " + message.responseCode + "\n" +
-					"Response = " + message.response + "\n" +
-					"Sent = " + message.bytesSent);
-
-				if (connection.file.upload.success) {
-					connection.file.upload.success(message.response);
+					if (callb) {
+						callb(message.response);
+					}
 				}
 			},
 
