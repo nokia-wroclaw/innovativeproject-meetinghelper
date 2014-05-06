@@ -390,8 +390,8 @@ var connection = {
 
 			connection.socket.instance.on(webSocketBroadcast.enterRoom, connection.socket.receive._onEnterRoom);
 			connection.socket.instance.on(webSocketBroadcast.usersOnline, connection.socket.receive._onUsersOnline);
-			connection.socket.instance.on(webSocketBroadcast.newMaterial, connection.socket.receive._onNewMaterial);
 			connection.socket.instance.on(webSocketBroadcast.newUser, connection.socket.receive._onNewUser);
+			connection.socket.instance.on(webSocketBroadcast.newMaterial, connection.socket.receive._onNewMaterial);
 			connection.socket.instance.on(webSocketBroadcast.newComment, connection.socket.receive._onNewComment);
 		},
 
@@ -432,7 +432,32 @@ var connection = {
 				connection._callback('_onUsersOnline: ' + JSON.stringify(data));
 
 				if (connection.socket.receive.onUsersOnline) {
-					connection.socket.receive.onUsersOnline(data.data);
+					var toReturn = [];
+					for (var i in data.data) {
+						toReturn.push({
+							userId: data.id,
+							type: 'user',
+							data: data
+						});
+					}
+					connection.socket.receive.onUsersOnline(toReturn);
+				}
+			},
+
+			onNewUser: undefined,
+
+			/**
+			 * In data.message is received message.
+			 */
+			_onNewUser: function (data) {
+				connection._callback('_onNewUser: ' + JSON.stringify(data));
+
+				if (connection.socket.receive.onNewUser) {
+					connection.socket.receive.onNewUser({
+						userId: data.id,
+						type: 'user',
+						data: data
+					});
 				}
 			},
 
@@ -468,23 +493,6 @@ var connection = {
 						userId: data.message.user,
 						type: 'note',
 						data: connection.url + connectionLinks.get.note + data.message
-					});
-				}
-			},
-
-			onNewUser: undefined,
-
-			/**
-			 * In data.message is received message.
-			 */
-			_onNewUser: function (data) {
-				connection._callback('_onNewUser: ' + JSON.stringify(data));
-
-				if (connection.socket.receive.onNewUser) {
-					connection.socket.receive.onNewUser({
-						userId: data.id,
-						type: 'user',
-						data: data
 					});
 				}
 			},

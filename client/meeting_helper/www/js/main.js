@@ -196,6 +196,20 @@ connection.socket.receive.onEnterRoom = function(data) {
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
+connection.socket.receive.onUsersOnline = function(data) {
+	// add new users
+};
+
+/**
+ * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
+ */
+connection.socket.receive.onNewUser = function(data) {
+	// add new user
+};
+
+/**
+ * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
+ */
 connection.socket.receive.onNewPhoto = function(data) {
 	alert('new photo: ' + JSON.stringify(data));
     storage.addNewData(data);
@@ -216,19 +230,3 @@ connection.socket.receive.onNewComment = function(data) {
 	alert('new comment: ' + JSON.stringify(data));
     //tutaj akcja na otrzymanie nowego komentarza
 };
-
-/**
- * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
- */
-connection.socket.receive.onNewUser = function(data) {
-	if (data.userId === me.id) {
-		load('wall');
-	}
-};
-
-/**
- * Pobranie początkowego adresu MAC.
- */
-if (init.ready) {
-	devices.mac.get(function(result) {alert(result);}, true);
-}
