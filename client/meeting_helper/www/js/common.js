@@ -30,8 +30,7 @@
 		/**
 		 * Get single photo
 		 */
-		photo: 'user/',
-		note: 'note/',
+		material: 'materials/file/',
 		user: 'user/',
 		rooms: {
 			all: 'meetings/list',
@@ -59,6 +58,7 @@ var connectionAnswers = {
  * Webserver broadcast messages received by client.
  */
 var webSocketBroadcast = {
+	pong: 'pong',
 	enterRoom: 'joined',
 	newMaterial: 'newMaterial',
 	newPhoto: 'newPhoto',
@@ -71,7 +71,7 @@ var webSocketBroadcast = {
  * Webclient send events.
  */
 var webSocketSend = {
-	test: 'testWebSocket',
+	ping: 'ping',
 	connectedUsers: 'users/online',
 	enterMeeting: 'meetings/enterMeeting'
 };

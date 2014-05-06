@@ -111,7 +111,9 @@ var storage = {
 	 * Ustawia zmienną odpowiedzialną za wybór pokoju do wejścia
 	 */
 	setChosedRoomToEnter: function() {
-		main.choseRoomToEnter(document.getElementById('serverRooms').getElementsByTagName('select')[0].value);
+		var value = document.getElementById('serverRooms').getElementsByTagName('select')[0].value;
+		alert(value);
+		main.choseRoomToEnter(value);
 	},
 
 	/**
@@ -146,7 +148,7 @@ var storage = {
 	 * Zapisuje hasło ostatno zalogowanego użytkownika
 	 */
 	setLastUserPassword: function(password) {
-		localStorage.setItem("userPassword"), password);
+		localStorage.setItem("userPassword", password);
 	},
 
 	/**

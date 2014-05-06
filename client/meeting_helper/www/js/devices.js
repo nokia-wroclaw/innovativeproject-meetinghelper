@@ -111,7 +111,9 @@ var devices = {
 
 				if (devices.camera.success) {
 					devices.camera.success(imageSrc);
-				} else {
+				}
+
+				if (!userCallback && !devices.camera.success) {
 					connection.file.upload.photo(imageSrc);
 				}
 			}

@@ -30,8 +30,6 @@ var states = {
 	disconnected: 'disconnected'
 };
 
-var nextIdToBeDepreciated = 0;
-
 var connection = {
 	url: '',
 	state: states.unknown_host,
@@ -278,7 +276,7 @@ var connection = {
 					ft.upload(
 						imageSrc,
 						connection.url + connectionLinks.uploadFile,
-						connection.file.upload._success(callb),
+						connection.file.upload._success(onUpload),
 						connection.file.upload.fail,
 						options);
 				} else {
@@ -302,8 +300,8 @@ var connection = {
 				}
 			},
 
-			_success: function(callb, message) {
-				return function() {
+			_success: function(callb) {
+				return function(message) {
 					connection._callback(
 						"Code = " + message.responseCode + "\n" +
 						"Response = " + message.response + "\n" +
@@ -312,7 +310,7 @@ var connection = {
 					if (callb) {
 						callb(message.response);
 					}
-				}
+				};
 			},
 
 			fail: function(error) {
@@ -384,6 +382,7 @@ var connection = {
 		state: undefined,
 
 		init: function(link) {
+			connection.socket.close();
 			connection.socket.instance = io.connect(link);
 
 			connection.socket.state = connection.socket.states.open;
@@ -393,6 +392,15 @@ var connection = {
 			connection.socket.instance.on(webSocketBroadcast.newUser, connection.socket.receive._onNewUser);
 			connection.socket.instance.on(webSocketBroadcast.newMaterial, connection.socket.receive._onNewMaterial);
 			connection.socket.instance.on(webSocketBroadcast.newComment, connection.socket.receive._onNewComment);
+			connection.socket.instance.on(webSocketBroadcast.pong, connection.socket.receive.onPing);
+		},
+
+		close: function() {
+			if (connection.socket.instance) {
+				connection.socket.instance.disconnect();
+
+				connection.socket.state = connection.socket.states.closed;
+			}
 		},
 
 		send: function(event, object) {
@@ -403,8 +411,8 @@ var connection = {
 			}
 		},
 
-		testSend: function(message) {
-			connection.socket.send(webSocketSend.test, message);
+		ping: function() {
+			connection.socket.send(webSocketSend.ping);
 		},
 
 		getConnectedUsers: function() {
@@ -419,6 +427,8 @@ var connection = {
 			onEnterRoom: undefined,
 
 			_onEnterRoom: function (data) {
+				//connection.socket.ping();
+
 				connection._callback('_onEnterRoom: ' + JSON.stringify(data));
 
 				if (connection.socket.receive.onEnterRoom) {
@@ -469,31 +479,31 @@ var connection = {
 			 * In data.message is received message.
 			 */
 			_onNewMaterial: function (data) {
+				alert('new material: ' + JSON.stringify(data));
 				connection._callback(JSON.stringify(data));
-
-				var nextId;
-				if (data.message.id) {
-					nextId = data.message.id;
+alert(data.material.name.substring(
+					data.material.name.length - 5,
+					data.material.name.length - 1));
+				if (data.material.name.substring(
+					data.material.name.length - 5,
+					data.material.name.length - 1) === '.jpg') {
+						if (connection.socket.receive.onNewPhoto) {
+							connection.socket.receive.onNewPhoto({
+								id: data.material.id,
+								userId: data.material.UserId,
+								type: 'photo',
+								data: connection.url + connectionLinks.get.material + data.material.id
+							});
+						}
 				} else {
-					nextId = nextIdToBeDepreciated++;
-				}
-
-				if (connection.socket.receive.onNewPhoto) {
-					connection.socket.receive.onNewPhoto({
-						id: nextId,
-						userId: data.message.user,
-						type: 'photo',
-						data: connection.url + connectionLinks.get.photo + data.message
-					});
-				}
-
-				if (connection.socket.receive.onNewNote) {
-					connection.socket.receive.onNewNote({
-						id: nextId,
-						userId: data.message.user,
-						type: 'note',
-						data: connection.url + connectionLinks.get.note + data.message
-					});
+					if (connection.socket.receive.onNewNote) {
+						connection.socket.receive.onNewNote({
+							id: data.material.id,
+							userId: data.material.UserId,
+							type: 'note',
+							data: connection.url + connectionLinks.get.material + data.material.id
+						});
+					}
 				}
 			},
 
@@ -514,6 +524,10 @@ var connection = {
 						data: data.message.data
 					});
 				}
+			},
+
+			onPing: function () {
+				connection._callback('pong');
 			}
 		}
 	}
