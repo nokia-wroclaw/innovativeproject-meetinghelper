@@ -212,6 +212,14 @@ connection.socket.receive.onNewNote = function(data) {
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
+connection.socket.receive.onNewComment = function(data) {
+	alert('new comment: ' + JSON.stringify(data));
+    //tutaj akcja na otrzymanie nowego komentarza
+};
+
+/**
+ * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
+ */
 connection.socket.receive.onNewUser = function(data) {
 	if (data.userId === me.id) {
 		load('wall');

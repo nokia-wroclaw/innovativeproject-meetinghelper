@@ -426,6 +426,7 @@ var connection = {
 
 				if (connection.socket.receive.onNewPhoto) {
 					connection.socket.receive.onNewPhoto({
+						id: data.message.id,
 						userId: data.message.user,
 						type: 'photo',
 						data: connection.url + connectionLinks.get.photo + data.message
@@ -434,6 +435,7 @@ var connection = {
 
 				if (connection.socket.receive.onNewNote) {
 					connection.socket.receive.onNewNote({
+						id: data.message.id,
 						userId: data.message.user,
 						type: 'note',
 						data: connection.url + connectionLinks.get.note + data.message
@@ -468,6 +470,7 @@ var connection = {
 
 				if (connection.socket.receive.onNewComment) {
 					connection.socket.receive.onNewComment({
+						materialId: data.message.id,
 						userId: data.message.user,
 						type: 'comment',
 						target: connection.url + connectionLinks.get.photo + data.message,
