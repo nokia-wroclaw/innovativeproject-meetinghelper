@@ -31,6 +31,7 @@
 		 * Get single photo
 		 */
 		photo: 'user/',
+		note: 'note/',
 		user: 'user/',
 		rooms: {
 			all: 'meetings/list',

@@ -196,13 +196,17 @@ connection.socket.receive.onEnterRoom = function(data) {
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
-connection.socket.receive.onNewMaterial = function(data) {
+connection.socket.receive.onNewPhoto = function(data) {
 	alert('new photo: ' + JSON.stringify(data));
-        storage.addNewData(data);
-	/*var image = document.getElementById('received');
+    storage.addNewData(data);
+};
 
-	image.style.display = 'block';
-	image.src = data.data;*/
+/**
+ * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
+ */
+connection.socket.receive.onNewNote = function(data) {
+	alert('new note: ' + JSON.stringify(data));
+    storage.addNewData(data);
 };
 
 /**

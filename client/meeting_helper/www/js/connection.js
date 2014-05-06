@@ -17,7 +17,7 @@
 /**
  * Przykład użycia funkcji wywoływanej podczas przyjścia wiadomości ze strony serwera.
  *
- * connection.socket.receive.onNewMaterial = function(data) {};
+ * connection.socket.receive.onNewPhoto = function(data) {};
  *
  * Polega to na przypisaniu nowej funkcji, wywoływanej przy danej akcji.
  */
@@ -414,7 +414,9 @@ var connection = {
 				}
 			},
 
-			onNewMaterial: undefined,
+			onNewPhoto: undefined,
+
+			onNewNote: undefined,
 
 			/**
 			 * In data.message is received message.
@@ -422,11 +424,19 @@ var connection = {
 			_onNewMaterial: function (data) {
 				connection._callback(JSON.stringify(data));
 
-				if (connection.socket.receive.onNewMaterial) {
-					connection.socket.receive.onNewMaterial({
+				if (connection.socket.receive.onNewPhoto) {
+					connection.socket.receive.onNewPhoto({
 						userId: data.message.user,
 						type: 'photo',
 						data: connection.url + connectionLinks.get.photo + data.message
+					});
+				}
+
+				if (connection.socket.receive.onNewNote) {
+					connection.socket.receive.onNewNote({
+						userId: data.message.user,
+						type: 'note',
+						data: connection.url + connectionLinks.get.note + data.message
 					});
 				}
 			},
