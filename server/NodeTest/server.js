@@ -2,6 +2,8 @@ var fs = require('fs');
 express = require('./node_extentions/express.js')
 app = express().http().io()
 
+var connect = require('connect');
+
 var connection = require('./routes/connectionRoute.js');
 var qrcode = require('./routes/qrcodeRoute.js');
 var user = require('./routes/userRoute.js');
@@ -10,14 +12,18 @@ var material = require('./routes/materialRoute.js');
 
 var sequelize = require('./models/db.js').Sequelize;
 var Config = require('./config/index.js')();
+var Cookie = require('cookie');
 
+MemoryStore = express.session.MemoryStore,
+sessionStore = new MemoryStore();
 
 app.configure( function() {
     app.use(express.static(__dirname + '/www'));
     app.use(express.logger());
     app.use(express.bodyParser());
     app.use(express.cookieParser());  
-    app.use(express.session({ secret: "PWRTeam" }));
+    app.use(express.session({ store: sessionStore, secret: 'PWRTeam', key: 'express.sid'}));
+
 });
 
  sequelize.sync();
@@ -35,6 +41,26 @@ var form1 ="<form method='post' action='/api/login'>"+
 "</form>";
 
 // Routes
+app.io.set('authorization', function(data, accept){
+    if(data.headers.cookie){
+        data.cookie = Cookie.parse(data.headers.cookie);
+        data.cookie = connect.utils.parseSignedCookies(data.cookie, 'PWRTeam');
+        data.sessionID = data.cookie["express.sid"];
+
+         console.log("\n sessionID = "+ data.sessionID + "\n");
+        sessionStore.get(data.sessionID, function(err, session){
+            if(err || !session){
+                accept("Error,", false);
+            } else{
+                data.session = session;
+                accept(null, true);
+            }
+        })
+    }
+    else{
+        return accept("No Transmitted cookie", false)
+    }
+    });
 
 app.io.on('connection', connection.Connected);
 
@@ -47,6 +73,7 @@ app.get('/api/ping', connection.Ping);
 
 app.post('/api/meetings/create', user.IsLogin, meeting.CreateRoom);
 app.post('/api/meetings/join', user.IsLogin, meeting.JoinRoom);
+app.post('/api/meetings/joinByCode', user.IsLogin, meeting.JoinRoomByCode);
 app.get('/api/meetings/list', user.IsLogin, meeting.GetRoomsList);
 
 
@@ -96,25 +123,6 @@ app.get('/api/photoExist/:photoName', function(req, res) {
     });
 });
 
-app.post('/api/sendFile', function(req, res) {
-
-    fs.readFile(req.files.file.path, function (err, data) {
-
-var newPath = __dirname + "/uploads/"+ req.files.file.name;
-  fs.writeFile(newPath, data, function (err) {
-      console.log("Plik zapisano: "+ req.files.file.name )
-    res.send("Plik zapisano: "+ req.files.file.name );
-  });
-    });
-
-    photos.push(req.files.file.name);
-
-    req.io.broadcast('newPhoto', {
-        message: req.files.file.name
-    })
-});
-
-
 app.get('/api/user/:filename', function(req, res){
   var uid = req.params.filename;
   res.sendfile('./uploads/'+uid);
@@ -122,4 +130,6 @@ app.get('/api/user/:filename', function(req, res){
 
 app.listen(Config.port, function() { }); 
 
+
+module.exports = app;
 

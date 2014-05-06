@@ -40,6 +40,7 @@ module.exports.IsLogin = function(req, res, next){
     if(!req.session.user){
         return res.unauthorized();
     }
+    
     next();
 }
 
@@ -48,7 +49,9 @@ module.exports.Login = function(req, res, next) {
         if(user)
         {
             req.session.user = user.id;
+            req.session.save();
             res.endSuccess(user);
+            console.log("\n sesja podczas logowania: "+ req.session.id + "\n")
         }
         else
             res.endError(Dictionary.invalidData);
@@ -58,6 +61,7 @@ module.exports.Login = function(req, res, next) {
 module.exports.Logout = function(req, res, next) {
     delete req.session.user;
     delete req.session.room;
+    req.session.save();
     res.endSuccess(true);
 }
 

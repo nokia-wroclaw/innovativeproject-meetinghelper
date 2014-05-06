@@ -1,6 +1,7 @@
-﻿
+﻿var fs = require('fs');
 var Model = require('../models/model.js');
 var Meeting = Model.Meeting;
+var Material = Model.Material;
 
 module.exports.SendFile = function(req, res, next) {
 
@@ -12,16 +13,30 @@ module.exports.SendFile = function(req, res, next) {
 
         Meeting.find({where:{id: roomID}})
         .then(function (meeting){
-            var newPath = __dirname + "/events/"+ meeting.folderName +"/"+ file.name;
+            var extention = file.name.split('.').pop();
+            var newfilename = Math.random().toString(36).slice(2) +"."+ extention;
+            var newPath = "events\\"+ meeting.folderName +"\\"+ newfilename;
             fs.writeFile(newPath, data, function (err) {
-                console.log("Plik zapisano: "+ file.name )
-                res.send("Plik zapisano: "+ file.name );
+
+                var material = Material.create({
+                name: file.name,
+                fileName: newfilename,
+                orginalFileName : file.name,
+                like: 0,
+                UserId: userID,
+                MeetingId: roomID
+                }).then(function(material){
+                    if(material){
+                        res.endSuccess(newfilename);
+                        req.io.broadcast('newMaterial', {
+                            material: material
+                        })
+                    } else
+                        res.endError(Dictionary.materialNotCreated); 
+                });
             });    
         });
         
     });
-    //Uwaga wcześniej broadcast 
-    req.io.broadcast('newPhoto', {
-        message: req.files.file.name
-    })
+
 };

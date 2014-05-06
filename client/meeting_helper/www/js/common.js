@@ -18,7 +18,7 @@
 	/**
 	 * Page to send file
 	 */
-	uploadFile: 'sendFile',
+	uploadFile: 'materials/sendFile',
 
 	/**
 	 * Page to show all files
@@ -33,10 +33,8 @@
 		photo: 'user/',
 		user: 'user/',
 		rooms: {
-			all: 'rooms/list',
-			create: 'rooms/create/',
-			join: 'rooms/join/',
-			data: 'rooms/data'
+			all: 'meetings/list',
+			data: 'meetings/data'
 		}
 	},
 
@@ -45,7 +43,8 @@
 		login: 'login',
 		register: 'register',
 		rooms: {
-			create: 'rooms/create/' // /room_name -> OK
+			create: 'meetings/create/',
+			join: 'meetings/join/'
 		}
 	}
 };
@@ -58,9 +57,10 @@ var connectionAnswers = {
  * Webserver broadcast messages received by client.
  */
 var webSocketBroadcast = {
+	enterRoom: 'joined',
+	newMaterial: 'newMaterial',
 	newPhoto: 'newPhoto',
 	newUser: 'newUser',
-	newMessage: 'newMessage',
 	newComment: 'newComment',
 	usersOnline: 'usersOnline'
 };
@@ -71,5 +71,5 @@ var webSocketBroadcast = {
 var webSocketSend = {
 	test: 'testWebSocket',
 	connectedUsers: 'users/online',
-	enterMeeting: 'rooms/enterMeeting'
+	enterMeeting: 'meetings/enterMeeting'
 };
