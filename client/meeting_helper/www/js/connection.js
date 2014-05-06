@@ -3,25 +3,28 @@
  */
 
 /**
- * Przykład wywołania funkcji, której argumentem jest callb, co będzie uznawane jako
- * nazwa innej funkcji - callbacku ( devices.qrCode.scan(callb) ).
+ * Example of function call, having one of arguments `callb`, what is considered as
+ * name of other function - callback ( eg. devices.qrCode.scan(callb) ).
  *
  * devices.qrCode.scan(function(result) {
  *     alert(result);
  * });
  *
- * Taka funkcja, po wykonaniu skanowania, uruchomi z argumentem (u nas result) funkcję
- * podaną jako argument.
+ * Such function, after scan, runs function, passed as argument,
+ * with result argument of scanning.
  */
 
 /**
- * Przykład użycia funkcji wywoływanej podczas przyjścia wiadomości ze strony serwera.
+ * Example of function use which is called while receiving asynchronous message from server.
  *
  * connection.socket.receive.onNewPhoto = function(data) {};
  *
- * Polega to na przypisaniu nowej funkcji, wywoływanej przy danej akcji.
+ * It relies on assigning new function to object, which will be called in specific action.
  */
 
+/**
+ * Possible connection states.
+ */
 var states = {
 	unknown_host: 'unknown_host',
 	wrong_host: 'wrong_host',
@@ -30,8 +33,13 @@ var states = {
 	disconnected: 'disconnected'
 };
 
+/**
+ * `connection` is an object responsible for connecting with web server and
+ * allowing user to get or post data.
+ */
 var connection = {
 	url: '',
+
 	state: states.unknown_host,
 
 	states: states,
