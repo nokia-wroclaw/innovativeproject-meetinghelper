@@ -192,7 +192,14 @@ var connection = {
 				connection.action.types.get,
 				connectionLinks.post.sendNote,
 				{note: note},
-				connection.receive.onReceiveRoomData(callb));
+				connection.receive.onSendNote(callb));
+		},
+		sendComment: function(id, comment, callb) {
+			connection.action._base(
+				connection.action.types.get,
+				connectionLinks.post.sendNote,
+				{materialId: id, comment: comment},
+				connection.receive.onSendComment(callb));
 		}
 	},
 
@@ -233,6 +240,12 @@ var connection = {
 			return connection.receive._base(callb);
 		},
 		onReceiveRoomData: function(callb) {
+			return connection.receive._base(callb);
+		},
+		onSendNote: function(callb) {
+			return connection.receive._base(callb);
+		},
+		onSendComment: function(callb) {
 			return connection.receive._base(callb);
 		}
 	},
