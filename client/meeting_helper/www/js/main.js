@@ -119,7 +119,11 @@ var main = {
 				load('login');
 			}
 		}, function(data) {
-			alert('Login already registered');
+			if (data) {
+				alert(data);
+			} else {
+				alert('Login already registered');
+			}
 		});
 	},
 
