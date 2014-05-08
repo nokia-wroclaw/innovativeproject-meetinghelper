@@ -19,7 +19,7 @@ var main = {
 		devices.camera.takePicture(quality, function(imageSrc) {
 			connection.file.upload.photo(imageSrc);
 
-                        //main.addNewMyData('image', imageSrc);
+			//main.addNewMyData('image', imageSrc);
 			//var image = document.getElementById('myImageCamera');
 			//image.style.display = 'block';
 
@@ -119,7 +119,11 @@ var main = {
 				load('login');
 			}
 		}, function(data) {
-			alert('Login already registered');
+			if (data) {
+				alert(data);
+			} else {
+				alert('Login already registered');
+			}
 		});
 	},
 
@@ -196,27 +200,37 @@ connection.socket.receive.onEnterRoom = function(data) {
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
-connection.socket.receive.onNewMaterial = function(data) {
-	alert('new photo: ' + JSON.stringify(data));
-        storage.addNewData(data);
-	/*var image = document.getElementById('received');
-
-	image.style.display = 'block';
-	image.src = data.data;*/
+connection.socket.receive.onUsersOnline = function(data) {
+	// add new users
 };
 
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
 connection.socket.receive.onNewUser = function(data) {
-	if (data.userId === me.id) {
-		load('wall');
-	}
+	// add new user
 };
 
 /**
- * Pobranie początkowego adresu MAC.
+ * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
-if (init.ready) {
-	devices.mac.get(function(result) {alert(result);}, true);
-}
+connection.socket.receive.onNewPhoto = function(data) {
+	alert('new photo: ' + JSON.stringify(data));
+    storage.addNewData(data);
+};
+
+/**
+ * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
+ */
+connection.socket.receive.onNewNote = function(data) {
+	alert('new note: ' + JSON.stringify(data));
+    storage.addNewData(data);
+};
+
+/**
+ * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
+ */
+connection.socket.receive.onNewComment = function(data) {
+	alert('new comment: ' + JSON.stringify(data));
+    //tutaj akcja na otrzymanie nowego komentarza
+};

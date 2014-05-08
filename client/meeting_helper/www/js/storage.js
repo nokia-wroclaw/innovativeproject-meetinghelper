@@ -31,13 +31,21 @@ var storage = {
 	 * Dodawanie nowych danych do tablicy
 	 */
 	addNewData: function(data) {
-		dataFromServer[dataFromServer.length] = [dataFromServer.length, data.type, data.data, data.userId];
-		data.id = dataFromServer.length-1;
-		if (data.type === "photo") {
-			storage.addNewPhoto(data);
-		}
-		else if (data.type === "message") {
-			storage.addNewMessage(data);
+		dataFromServer.push(data);
+		//dataFromServer[dataFromServer.length] = [dataFromServer.length, data.type, data.data, data.userId];
+		//data.id = dataFromServer.length-1;
+		switch (data.type) {
+			case "photo":
+				storage.addNewPhoto(data);
+				break;
+			case "note":
+				storage.addNewMessage(data);
+				break;
+			case "comment":
+				storage.addNewComment(data);
+				break;
+			default:
+				alert("Unknown data received");
 		}
 	},
 
@@ -65,6 +73,10 @@ var storage = {
 		var element = document.getElementById('myImageCamera');
 		element.appendChild(message);
 		storage.addCommentBox(data);
+	},
+
+	addNewComment: function(data) {
+		var comment = document.getElementById(data.id);
 	},
 	
 	/**
@@ -111,7 +123,9 @@ var storage = {
 	 * Ustawia zmienną odpowiedzialną za wybór pokoju do wejścia
 	 */
 	setChosedRoomToEnter: function() {
-		main.choseRoomToEnter(document.getElementById('serverRooms').getElementsByTagName('select')[0].value);
+		var value = document.getElementById('serverRooms').getElementsByTagName('select')[0].value;
+		alert(value);
+		main.choseRoomToEnter(value);
 	},
 
 	/**
@@ -146,7 +160,7 @@ var storage = {
 	 * Zapisuje hasło ostatno zalogowanego użytkownika
 	 */
 	setLastUserPassword: function(password) {
-		localStorage.setItem("userPassword"), password);
+		localStorage.setItem("userPassword", password);
 	},
 
 	/**
@@ -160,54 +174,38 @@ var storage = {
 	 * Dodaje nowego użytkownika, który wchodzi do pokoju
 	 */
 	addNewUser: function(data) {
-		/*onlineUsers[onlineUsers.length].userId = data.userId;
-		onlineUsers[onlineUsers.length-1].type = data.type;
-		onlineUsers[onlineUsers.length-1].data = data.data;*/
-		onlineUsers[onlineUsers.length] = [data.userId, data.type, data.data];
+		//onlineUsers[onlineUsers.length] = [data.userId, data.type, data.data];
+		onlineUsers.push(data);
 	},
 
 	/**
 	 * Usuwa użytkownika, gdy opuszcza pokój
 	 */
 	deleteUser: function(data) {
-		;
+		onlineUsers.delete(data.userId);
 	},
 
 	/**
 	 * Wywoływana po wejściu do pokoju, pobiera wszystkich użytkowników obecnych w pokoju
 	 */
 	getAllOnlineUsers: function(receivedUsers) {
-		var userList = document.createElement("select");
 		onlineUsers = [];
 		for (var user in receivedUsers)
 		{
-			onlineUsers[user].userId = receivedUsers[user].userId;
-			onlineUsers[user].type = receivedUsers[user].type;
-			onlineUsers[user].data = receivedUsers[user].data;
-			var newOption = document.createElement("option");
-			newOption.setAttribute("value", onlineUsers[user].name);
-			newOption.appendChild(document.createTextNode(onlineUsers[user].name));
-			userList.appendChild(newOption);
+			onlineUsers.push(receivedUsers[room]);
 		}
-		var usersInRoom = document.getElementById("");
-		usersInRoom.removeChild(document.getElementsByTagName("")[0]);
-		usersInRoom.appendChild(userList);
 	},
 
 	/**
 	 * Wyświetla wszysktich użytkowników online w pokoju
 	 */
 	showOnlineUsers: function() {
-		var userList = document.createElement("select");
+		var users = document.getElementById('onlineUsers');
 		for (var user in onlineUsers)
 		{
-			var newOption = document.createElement("option");
-			newOption.setAttribute("value", onlineUsers[user].name);
-			newOption.appendChild(document.createTextNode(onlineUsers[user].name));
-			userList.appendChild(newOption);
+			var newUser = document.createElement('div');
+			newUser.appendChild(document.createTextNode(onlineUsers[user].data));
+			users.appendChild(newUser);
 		}
-		var usersInRoom = document.getElementById("");
-		usersInRoom.removeChild(document.getElementsByTagName("")[0]);
-		usersInRoom.appendChild(userList);
 	}
 };
