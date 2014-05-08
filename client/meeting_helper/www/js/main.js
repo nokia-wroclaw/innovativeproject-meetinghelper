@@ -19,7 +19,7 @@ var main = {
 		devices.camera.takePicture(quality, function(imageSrc) {
 			connection.file.upload.photo(imageSrc);
 
-                        //main.addNewMyData('image', imageSrc);
+			//main.addNewMyData('image', imageSrc);
 			//var image = document.getElementById('myImageCamera');
 			//image.style.display = 'block';
 
