@@ -29,6 +29,13 @@ historyObj = {
 };
 
 function load(what, ifhistoryObj) {
+	/*if (historyObj.actualPage === "wall" && what !== "wall") {
+		// when we were on wall and want to load other page
+		window.location = 'index2.html';
+	} else if (historyObj.actualPage !== "wall" && what === "wall") {
+		// when we weren't on wall and want to load wall
+		window.location = 'loadWall.html';
+	}*/
 	switch(what) {
 		case "connection":
 			$( "#content" ).load( "loadConnect.html" );

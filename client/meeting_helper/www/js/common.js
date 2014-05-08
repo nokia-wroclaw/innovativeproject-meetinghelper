@@ -7,6 +7,13 @@
  };
 
 /**
+ * Default server url.
+ */
+var common = {
+	defaultUrl: 'http://192.168.0.198:1337/api/'
+};
+
+/**
  * Webserver get and post links.
  */
  var connectionLinks = {

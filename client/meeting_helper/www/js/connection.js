@@ -71,6 +71,35 @@ var connection = {
 	},
 
 	/**
+	 * @function connection.initUrl
+	 * Sets initial url. Checks in cookies, later in default server url.
+	 * Checks connection. When connection is right, calls success callback.
+	 * When wrong, calls failure callback.
+	 * @param {Function} success
+	 * Called after successfull connection.
+	 * @param {Function} failure
+	 * Called after failed connection.
+	 */
+	initUrl: function(success, failure) {
+		connection.state = connection.states.unknown_host;
+		if (!connection.url) {
+			connection.url = window.localStorage.getItem('url');
+		}
+		if (!connection.url) {
+			connection.url = common.defaultUrl;
+		}
+		if (connection.url) {
+			connection.checkConnection(connection.url, success, failure);
+		} else {
+			connection.state = connection.states.wrong_host;
+			if (failure) {
+				failure();
+			}
+		}
+		return connection.url;
+	},
+
+	/**
 	 * @function connection.setUrl
 	 * Sets server url and pings it to check connection. After correct ping,
 	 * changes connection state and calls callback.
@@ -79,18 +108,74 @@ var connection = {
 	 * @param {Function} callback
 	 * Called after setting url correctly.
 	 */
-	setUrl: function(url, callback) {
+	setUrl: function(url, success, failure) {
 		connection.url = '';
+
+		connection.checkConnection(url, function() {
+			connection.url = url;
+			window.localStorage.setItem('url', url);
+			if (success) {
+				success();
+			}
+		}, failure);
+	},
+
+	/**
+	 * @function connection.getUrl
+	 * Gets server url. If not set, checks if any is saved in cookies.
+	 * @return {String}
+	 * Requested url.
+	 */
+	getUrl: function() {
+		if (!connection.url) {
+			connection.url = window.localStorage.getItem('url');
+		}
+		return connection.url;
+	},
+
+	/**
+	 * @function connection.getSocketUrl
+	 * Gets websocket url.
+	 * @return {String}
+	 * Requested url.
+	 */
+	getSocketUrl: function() {
+		var url = connection.getUrl();
+		if (url) {
+			return url.substring(0, url.length - 4);
+		}
+	},
+
+	/**
+	 * @function connection.checkConnection
+	 * Checks connection with server by sending ping request.
+	 * @param {String} url
+	 * URL to be checked.
+	 * @param {Function} success
+	 * Called after successfull connection.
+	 * @param {Function} failure
+	 * Called after failed connection.
+	 */
+	checkConnection: function(url, success, failure) {
 		connection.state = connection.states.connecting;
 		connection.action.ping(url, function(result) {
 			if (result === connectionAnswers.ping) {
-				connection.url = url;
 				connection.state = connection.states.established;
-				if (callback) {
-					callback();
+				if (success) {
+					success();
+				}
+			} else {
+				connection.state = connection.states.wrong_host;
+				if (failure) {
+					failure();
 				}
 			}
 		});
+		setTimeout(function() {
+			if (failure) {
+				failure();
+			}
+		}, 3000);
 	},
 
 	/**
@@ -143,8 +228,13 @@ var connection = {
 							}
 						}
 					}
-
-				    xmlHttp.open( type, connection.url + link, true );
+					var url;
+					if (ping) {
+						url = link;
+					} else {
+						url = connection.getUrl() + link;
+					}
+				    xmlHttp.open( type, url, true );
 
 				    if (type === connection.action.types.post) {
 						value = JSON.stringify(value);
@@ -351,7 +441,7 @@ var connection = {
 		_base: function(callb, ifLogin) {
 			if (ifLogin) {
 				try {
-					connection.socket.init(connection.url.substring(0, connection.url.length - 4));
+					connection.socket.init(connection.getSocketUrl());
 				} catch(e) {
 					connection._callback(e);
 					connection.state = connection.states.disconnected;
@@ -476,7 +566,7 @@ var connection = {
 			 * Called when upload progress changes.
 			 */
 			photo: function(imageSrc, onUpload, onProgress) {
-				if (connection.url) {
+				if (connection.getUrl()) {
 					var options = new FileUploadOptions();
 					options.fileKey="file";
 					options.fileName=imageSrc.substr(imageSrc.lastIndexOf('/')+1);
@@ -500,7 +590,7 @@ var connection = {
 					}
 					ft.upload(
 						imageSrc,
-						connection.url + connectionLinks.post.file,
+						connection.getUrl() + connectionLinks.post.file,
 						connection.file.upload._success(onUpload),
 						connection.file.upload.fail,
 						options);
@@ -585,9 +675,9 @@ var connection = {
 			 * Called when download progress changes.
 			 */
 			photo: function(fileUrl, filePath, onDownload, onProgress) {
-				if (connection.url) {
+				if (connection.getUrl()) {
 					var ft = new FileTransfer();
-					var uri = encodeURI(connection.url + connectionLinks.getPhoto + fileUrl);
+					var uri = encodeURI(connection.getUrl() + connectionLinks.getPhoto + fileUrl);
 
 					if (onProgress) {
 						ft.onprogress = function(progressEvent) {
@@ -817,7 +907,7 @@ alert(data.material.name.substring(
 								id: data.material.id,
 								userId: data.material.UserId,
 								type: 'photo',
-								data: connection.url + connectionLinks.get.material + data.material.id
+								data: connection.getUrl() + connectionLinks.get.material + data.material.id
 							});
 						}
 				} else {
@@ -826,7 +916,7 @@ alert(data.material.name.substring(
 							id: data.material.id,
 							userId: data.material.UserId,
 							type: 'note',
-							data: connection.url + connectionLinks.get.material + data.material.id
+							data: connection.getUrl() + connectionLinks.get.material + data.material.id
 						});
 					}
 				}
@@ -845,7 +935,7 @@ alert(data.material.name.substring(
 						materialId: data.message.id,
 						userId: data.message.user,
 						type: 'comment',
-						target: connection.url + connectionLinks.get.photo + data.message,
+						target: connection.getUrl() + connectionLinks.get.photo + data.message,
 						data: data.message.data
 					});
 				}
