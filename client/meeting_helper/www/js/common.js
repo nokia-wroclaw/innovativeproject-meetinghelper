@@ -7,30 +7,20 @@
  };
 
 /**
- * Webserver links.
+ * Default server url.
+ */
+var common = {
+	defaultUrl: 'http://192.168.0.198:1337/api/'
+};
+
+/**
+ * Webserver get and post links.
  */
  var connectionLinks = {
-	/**
-	 * Initial page
-	 */
-	hello: '',
-
-	/**
-	 * Page to send file
-	 */
-	uploadFile: 'materials/sendFile',
-
-	/**
-	 * Page to show all files
-	 */
  	get: {
 		ping: 'ping',
 		photos: 'getPhotos',
-
-		/**
-		 * Get single photo
-		 */
-		photo: 'user/',
+		material: 'materials/file/',
 		user: 'user/',
 		rooms: {
 			all: 'meetings/list',
@@ -45,10 +35,16 @@
 		rooms: {
 			create: 'meetings/create/',
 			join: 'meetings/join/'
-		}
+		},
+		file: 'materials/sendFile',
+		note: 'materials/sendNote',
+		comment: 'materials/sendComment'
 	}
 };
 
+/**
+ * Webserver get and post constant answers.
+ */
 var connectionAnswers = {
 	ping: 'PONG'
 };
@@ -57,19 +53,21 @@ var connectionAnswers = {
  * Webserver broadcast messages received by client.
  */
 var webSocketBroadcast = {
+	pong: 'pong',
 	enterRoom: 'joined',
-	newMaterial: 'newMaterial',
-	newPhoto: 'newPhoto',
+	usersOnline: 'usersOnline',
+	allMatetials: 'allMatetials',
+	allComments: 'allComments',
 	newUser: 'newUser',
-	newComment: 'newComment',
-	usersOnline: 'usersOnline'
+	newMaterial: 'newMaterial',
+	newComment: 'newComment'
 };
 
 /**
  * Webclient send events.
  */
 var webSocketSend = {
-	test: 'testWebSocket',
+	ping: 'ping',
 	connectedUsers: 'users/online',
 	enterMeeting: 'meetings/enterMeeting'
 };

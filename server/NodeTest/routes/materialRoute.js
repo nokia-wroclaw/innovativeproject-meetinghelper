@@ -40,3 +40,15 @@ module.exports.SendFile = function(req, res, next) {
     });
 
 };
+
+
+module.exports.DownloadFile = function(req, res, next) {
+    var materialID = req.param.materialID;
+    Material.find({where:{id: materialID}})
+    .then(function(material) {
+        var meeting = material.getMeeting();
+        var newPath = "events\\"+ meeting.folderName +"\\"+ materialfilename;
+        res.sendfile(newPath);
+    });
+};
+

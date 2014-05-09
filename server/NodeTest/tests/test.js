@@ -10,3 +10,7 @@ testosterone
     assert.equal(res.statusCode, 200);
     assert.equal(JSON.parse(res.body), 'PONG');
   })
+
+  .post('/api/register', {login:"test", password:"test"}, function (res) {
+    assert.equal(res.statusCode, 200);
+  })

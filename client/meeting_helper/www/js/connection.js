@@ -3,25 +3,28 @@
  */
 
 /**
- * Przykład wywołania funkcji, której argumentem jest callb, co będzie uznawane jako
- * nazwa innej funkcji - callbacku ( devices.qrCode.scan(callb) ).
+ * Example of function call, having one of arguments `callb`, what is considered as
+ * name of other function - callback ( eg. devices.qrCode.scan(callb) ).
  *
  * devices.qrCode.scan(function(result) {
  *     alert(result);
  * });
  *
- * Taka funkcja, po wykonaniu skanowania, uruchomi z argumentem (u nas result) funkcję
- * podaną jako argument.
+ * Such function, after scan, runs function, passed as argument,
+ * with result argument of scanning.
  */
 
 /**
- * Przykład użycia funkcji wywoływanej podczas przyjścia wiadomości ze strony serwera.
+ * Example of function use which is called while receiving asynchronous message from server.
  *
- * connection.socket.receive.onNewMaterial = function(data) {};
+ * connection.socket.receive.onNewPhoto = function(data) {};
  *
- * Polega to na przypisaniu nowej funkcji, wywoływanej przy danej akcji.
+ * It relies on assigning new function to object, which will be called in specific action.
  */
 
+/**
+ * Possible connection states.
+ */
 var states = {
 	unknown_host: 'unknown_host',
 	wrong_host: 'wrong_host',
@@ -30,14 +33,35 @@ var states = {
 	disconnected: 'disconnected'
 };
 
+/**
+ * `connection` is an object responsible for connecting with web server and
+ * allowing user to get or post data.
+ */
 var connection = {
 	url: '',
+
+	/**
+	 * Actual connection state.
+	 */
 	state: states.unknown_host,
 
+	/**
+	 * Possigle connection states.
+	 */
 	states: states,
 
+	/**
+	 * Callback to be set by developer.
+	 */
 	callback: undefined,
 
+	/**
+	 * @function connection._callback
+	 * Default callback. Runs connection callback if exists.
+	 * In other case runs global callback.
+	 * @param {Strion} message
+	 * Message to be displayed.
+	 */
 	_callback: function(message) {
 		if (connection.callback) {
 		    connection.callback(message);
@@ -46,27 +70,156 @@ var connection = {
 	    }
 	},
 
-	setUrl: function(url, callback) {
+	/**
+	 * @function connection.initUrl
+	 * Sets initial url. Checks in cookies, later in default server url.
+	 * Checks connection. When connection is right, calls success callback.
+	 * When wrong, calls failure callback.
+	 * @param {Function} success
+	 * Called after successfull connection.
+	 * @param {Function} failure
+	 * Called after failed connection.
+	 */
+	initUrl: function(success, failure) {
+		connection.state = connection.states.unknown_host;
+		if (!connection.url) {
+			connection.url = window.localStorage.getItem('url');
+		}
+		if (!connection.url) {
+			connection.url = common.defaultUrl;
+		}
+		if (connection.url) {
+			connection.checkConnection(connection.url, success, failure);
+		} else {
+			connection.state = connection.states.wrong_host;
+			if (failure) {
+				failure();
+			}
+		}
+		return connection.url;
+	},
+
+	/**
+	 * @function connection.setUrl
+	 * Sets server url and pings it to check connection. After correct ping,
+	 * changes connection state and calls callback.
+	 * @param {String} url
+	 * URL to be set.
+	 * @param {Function} callback
+	 * Called after setting url correctly.
+	 */
+	setUrl: function(url, success, failure) {
 		connection.url = '';
+
+		connection.checkConnection(url, function() {
+			connection.url = url;
+			window.localStorage.setItem('url', url);
+			if (success) {
+				success();
+			}
+		}, failure);
+	},
+
+	/**
+	 * @function connection.getUrl
+	 * Gets server url. If not set, checks if any is saved in cookies.
+	 * @return {String}
+	 * Requested url.
+	 */
+	getUrl: function() {
+		if (!connection.url) {
+			connection.url = window.localStorage.getItem('url');
+		}
+		return connection.url;
+	},
+
+	/**
+	 * @function connection.getSocketUrl
+	 * Gets websocket url.
+	 * @return {String}
+	 * Requested url.
+	 */
+	getSocketUrl: function() {
+		var url = connection.getUrl();
+		if (url) {
+			return url.substring(0, url.length - 4);
+		}
+	},
+
+	/**
+	 * @function connection.checkConnection
+	 * Checks connection with server by sending ping request.
+	 * @param {String} url
+	 * URL to be checked.
+	 * @param {Function} success
+	 * Called after successfull connection.
+	 * @param {Function} failure
+	 * Called after failed connection.
+	 */
+	checkConnection: function(url, success, failure) {
 		connection.state = connection.states.connecting;
+		var stateChanged = false;
 		connection.action.ping(url, function(result) {
 			if (result === connectionAnswers.ping) {
-				connection.url = url;
-				connection.state = connection.states.established;
-				if (callback) {
-					callback();
+				if (!stateChanged) {
+					stateChanged = true;
+					connection.state = connection.states.established;
+					if (success) {
+						success();
+					}
+				}
+			} else {
+				if (!stateChanged) {
+					stateChanged = true;
+					connection.state = connection.states.wrong_host;
+					if (failure) {
+						failure();
+					}
 				}
 			}
 		});
+		setTimeout(function() {
+			if (!stateChanged) {
+				stateChanged = true;
+				connection.state = connection.states.wrong_host;
+				if (failure) {
+					failure();
+				}
+			}
+		}, 3000);
 	},
 
+	/**
+	 * Get and post actions object.
+	 */
 	action: {
+		/**
+		 * Enum with possible actions
+		 */
 		types: {
 			get: "GET",
 			post: "POST"
 		},
 
-		_base: function(type, link, value, callb, callb2, ping) {
+		/**
+		 * @function connection.action._base
+		 * Performs http get or post request.
+		 * @param {Object} type
+		 * Type of actually runned action.
+		 * @param {String} link
+		 * Link of actually runned action.
+		 * @param {Object} value
+		 * Object to sent in request.
+		 * @param {Function} correctCallb
+		 * Callback called after receiving correct status.
+		 * @param {Function} errorCallb
+		 * Callback called after receiving incorrect status.
+		 * @param {Boolean} ping
+		 * Sprecifies whether actual request is
+		 * from ping - it doesn't have to wait until
+		 * connection state will be changed to established.
+		 */
+		_base: function(type, link, value, correctCallb, errorCallb, ping) {
 			try {
 				if (connection.state === connection.states.established || ping) {
 				    var xmlHttp = null;
@@ -75,19 +228,24 @@ var connection = {
 
 				    xmlHttp.onreadystatechange = function() {
 						if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-						    if (callb) {
-						    	callb(JSON.parse(xmlHttp.responseText));
+						    if (correctCallb) {
+						    	correctCallb(JSON.parse(xmlHttp.responseText));
 						    } else {
 						    	connection._callback(xmlHttp.responseText);
 						    }
 						} else if (xmlHttp.readyState === 4 && (xmlHttp.status === 400 || xmlHttp.status === 401)) {
-							if (callb2) {
-								callb2();
+							if (errorCallb) {
+								errorCallb();
 							}
 						}
 					}
-
-				    xmlHttp.open( type, connection.url + link, true );
+					var url;
+					if (ping) {
+						url = link;
+					} else {
+						url = connection.getUrl() + link;
+					}
+				    xmlHttp.open( type, url, true );
 
 				    if (type === connection.action.types.post) {
 						value = JSON.stringify(value);
@@ -105,15 +263,24 @@ var connection = {
 					connection._callback('Unknown exception');
 				}
 			} catch(e) {
-			    if (callb) {
-					callb("an error occured");
-					callb(e);
+			    if (correctCallb) {
+					correctCallb("an error occured");
+					correctCallb(e);
 			    } else {
 					connection._callback("an error occured");
 					connection._callback(e);
 			    }
 			}
 		},
+
+		/**
+		 * @function connection.action.ping
+		 * Sends ping request to server.
+		 * @param {String} link
+		 * Link for ping action.
+		 * @param {Function} callb
+		 * Called after receiving ping answer.
+		 */
 		ping: function(link, callb) {
 			connection.action._base(
 				connection.action.types.get,
@@ -123,40 +290,59 @@ var connection = {
 				undefined,
 				true);
 		},
-		hello: function(callb) {
-			connection.action._base(
-				connection.action.types.get,
-				connectionLinks.hello,
-				null, callb);
-		},
-		mac: function(callb) {
-			if (connection.mac.value) {
-				connection.action._base(
-					connection.action.types.post,
-					connectionLinks.post.mac,
-					connection.mac.value, callb);
-			}
-		},
-		login: function(login, password, callb, callb2) {
+
+		/**
+		 * @function connection.action.login
+		 * Logins actual user.
+		 * @param {String} login
+		 * @param {String} password
+		 * @param {String} login
+		 * @param {Function} callb
+		 * Called after receiving success status.
+		 * @param {Function} errorCallb
+		 * Called after receiving error status.
+		 */
+		login: function(login, password, callb, errorCallb) {
 			connection.action._base(
 				connection.action.types.post,
 				connectionLinks.post.login,
 				{login: login, password: password},
 				connection.receive.onLogin(callb),
-				callb2);
+				errorCallb);
 		},
-		register: function(login, password, password2, callb, callb2) {
+
+		/**
+		 * @function connection.action.register
+		 * Registers actual user.
+		 * @param {String} login
+		 * @param {String} password
+		 * @param {String} password2
+		 * @param {Function} callb
+		 * Called after receiving success status.
+		 * @param {Function} errorCallb
+		 * Called after receiving error status.
+		 */
+		register: function(login, password, password2, callb, errorCallb) {
 			if (password === password2) {
 				connection.action._base(
 					connection.action.types.post,
 					connectionLinks.post.register,
 					{login: login, password: password},
 					connection.receive.onRegister(callb),
-					callb2);
+					errorCallb);
 			} else {
-				callb("passwords are not equal");
+				errorCallb("passwords are not equal");
 			}
 		},
+
+		/**
+		 * @function connection.action.createRoom
+		 * Creates new room.
+		 * @param {String} roomName
+		 * Name of new room.
+		 * @param {Function} callb
+		 * Called after creating room properly.
+		 */
 		createRoom: function(roomName, callb) {
 			connection.action._base(
 				connection.action.types.post,
@@ -164,6 +350,15 @@ var connection = {
 				{meetingName: roomName},
 				connection.receive.onCreateRoom(callb));
 		},
+
+		/**
+		 * @function connection.action.joinRoom
+		 * Joins specified room.
+		 * @param {String} roomId
+		 * Id of room to join.
+		 * @param {Function} callb
+		 * Called after joining room properly.
+		 */
 		joinRoom: function(roomId, callb) {
 			connection.action._base(
 				connection.action.types.post,
@@ -171,6 +366,13 @@ var connection = {
 				{meetingID: roomId},
 				connection.receive.onJoinRoom(callb));
 		},
+
+		/**
+		 * @function connection.action.getRooms
+		 * Gets all rooms which was recently entered by user.
+		 * @param {Function} callb
+		 * Called after receiving rooms with rooms array.
+		 */
 		getRooms: function(callb) {
 			connection.action._base(
 				connection.action.types.get,
@@ -178,20 +380,79 @@ var connection = {
 				null,
 				connection.receive.onReceiveRooms(callb));
 		},
+
+		/**
+		 * @function connection.action.getRoomData
+		 * Requests for all room data.
+		 * @param {String} roomId
+		 * Id of room to get data.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
 		getRoomData: function(roomId, callb) {
 			connection.action._base(
 				connection.action.types.get,
 				connectionLinks.get.rooms.data,
 				{roomId: roomId},
 				connection.receive.onReceiveRoomData(callb));
+		},
+
+		/**
+		 * @function connection.action.sendNote
+		 * Sends to server note to be displayed on wall.
+		 * @param {String} note
+		 * Contents of the note.
+		 * @param {Function} callb
+		 * Called after sending a note.
+		 */
+		sendNote: function(note, callb) {
+			connection.action._base(
+				connection.action.types.get,
+				connectionLinks.post.note,
+				{note: note},
+				connection.receive.onSendNote(callb));
+		},
+
+		/**
+		 * @function connection.action.sendComment
+		 * Sends to server comment to specified material.
+		 * @param {String} materialId
+		 * Id of material to be commented.
+		 * @param {String} note
+		 * Contents of the comment.
+		 * @param {Function} callb
+		 * Called after sending a comment.
+		 */
+		sendComment: function(materialId, comment, callb) {
+			connection.action._base(
+				connection.action.types.get,
+				connectionLinks.post.comment,
+				{materialId: materialId, comment: comment},
+				connection.receive.onSendComment(callb));
 		}
 	},
 
+	/**
+	 * All below public receive functions are allowed to be overwritten by
+	 * developer to decide what to do with received data.
+	 */
 	receive: {
+		/**
+		 * @function connection.receive._base
+		 * Decides how to develop data received from server. When used to login
+		 * action, additionally inits websocket connection.
+		 * @param {Function} callb
+		 * Called with received data.
+		 * @param {Boolean} ifLogin
+		 * Specifies whether actual action is login.
+		 * @return {Function}
+		 * Function accepting one argument to be called in receive actions.
+		 * Allows user to decide what to do with received data.
+		 */
 		_base: function(callb, ifLogin) {
 			if (ifLogin) {
 				try {
-					connection.socket.init(connection.url.substring(0, connection.url.length - 4));
+					connection.socket.init(connection.getSocketUrl());
 				} catch(e) {
 					connection._callback(e);
 					connection.state = connection.states.disconnected;
@@ -205,33 +466,118 @@ var connection = {
 				}
 			}
 		},
+
+		/**
+		 * @function connection.receive._onPong
+		 * Called after pong answer is received.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
 		_onPong: function(callb) {
 			return connection.receive._base(callb);
 		},
+
+		/**
+		 * @function connection.receive.onLogin
+		 * Called after login answer is received.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
 		onLogin: function(callb) {
 			return connection.receive._base(callb, true);
 		},
+
+		/**
+		 * @function connection.receive.onRegister
+		 * Called after register answer is received.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
 		onRegister: function(callb) {
 			return connection.receive._base(callb);
 		},
+
+		/**
+		 * @function connection.receive.onCreateRoom
+		 * Called after answer is received.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
 		onCreateRoom: function(callb) {
 			return connection.receive._base(callb);
 		},
+
+		/**
+		 * @function connection.receive.onJoinRoom
+		 * Called after answer is received.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
 		onJoinRoom: function(callb) {
 			return connection.receive._base(callb);
 		},
+
+		/**
+		 * @function connection.receive.onReceiveRooms
+		 * Called after answer is received.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
 		onReceiveRooms: function(callb) {
 			return connection.receive._base(callb);
 		},
+
+		/**
+		 * @function connection.receive.onReceiveRoomData
+		 * Called after answer is received.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
 		onReceiveRoomData: function(callb) {
+			return connection.receive._base(callb);
+		},
+
+		/**
+		 * @function connection.receive.onSendNote
+		 * Called after answer is received.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
+		onSendNote: function(callb) {
+			return connection.receive._base(callb);
+		},
+
+		/**
+		 * @function connection.receive.onSendComment
+		 * Called after answer is received.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
+		onSendComment: function(callb) {
 			return connection.receive._base(callb);
 		}
 	},
 
+	/**
+	 * Part responsible for sending and downloading files.
+	 */
 	file: {
+		/**
+		 * Part responsible for sending files.
+		 */
 		upload: {
-			photo: function(imageSrc, onProgress) {
-				if (connection.url) {
+			/**
+			 * @function connection.file.upload.photo
+			 * Uploads photo to server onto url saved in parent object.
+			 * @param {String} imageSrc
+			 * Source of image in device's local storage.
+			 * @param {Function} onUpload
+			 * Called after successfull upload.
+			 * @param {Function} onProgress
+			 * Called when upload progress changes.
+			 */
+			photo: function(imageSrc, onUpload, onProgress) {
+				if (connection.getUrl()) {
 					var options = new FileUploadOptions();
 					options.fileKey="file";
 					options.fileName=imageSrc.substr(imageSrc.lastIndexOf('/')+1);
@@ -255,8 +601,8 @@ var connection = {
 					}
 					ft.upload(
 						imageSrc,
-						connection.url + connectionLinks.uploadFile,
-						connection.file.upload._success,
+						connection.getUrl() + connectionLinks.post.file,
+						connection.file.upload._success(onUpload),
 						connection.file.upload.fail,
 						options);
 				} else {
@@ -264,35 +610,57 @@ var connection = {
 				}
 			},
 
+			/**
+			 * @function connection.file.upload.onProgress
+			 * Possible global `on progress` function called when each
+			 * single photo is uploaded.
+			 * @param {Object} progressEvent
+			 * Progress event with values: loaded, total and lengthComputable.
+			 */
 			onProgress: undefined,
 
+			/**
+			 * @function connection.file.upload._onProgress
+			 * Called in connection.file.upload.photo while uploading photo. Allows to
+			 * add additional actions before running connection.file.upload.onProgress function.
+			 * @param {Object} progressEvent
+			 * Progress event with values: loaded, total and lengthComputable.
+			 */
 			_onProgress: function(progressEvent) {
 				if (connection.file.upload.onProgress) {
 					connection.file.upload.onProgress(progressEvent);
-				} else {
-					//old part of progress; to be moved to function docs
-					//On Android an iOS, lengthComputable is false for downloads that use gzip encoding.
-					/*if (progressEvent.lengthComputable) {
-						loadingStatus.setPercentage(progressEvent.loaded / progressEvent.total);
-					} else {
-						loadingStatus.increment();
-					}*/
 				}
 			},
 
-			success: undefined,
+			/**
+			 * @function connection.file.upload._success
+			 * Returns function to be called in connection.file.upload.photo
+			 * after successfull upload.
+			 * @param {Function} callb
+			 * Called with success response after successfull upload.
+			 * @return {Function}
+			 * Function to be called in connection.file.upload.photo with one value: message.
+			 * It has properties: responseCode, response, bytesSent and fullPath.
+			 */
+			_success: function(callb) {
+				return function(message) {
+					connection._callback(
+						"Code = " + message.responseCode + "\n" +
+						"Response = " + message.response + "\n" +
+						"Sent = " + message.bytesSent);
 
-			_success: function(message) {
-				connection._callback(
-					"Code = " + message.responseCode + "\n" +
-					"Response = " + message.response + "\n" +
-					"Sent = " + message.bytesSent);
-
-				if (connection.file.upload.success) {
-					connection.file.upload.success(message.response);
-				}
+					if (callb) {
+						callb(message.response);
+					}
+				};
 			},
 
+			/**
+			 * @function connection.file.upload.fail
+			 * Called in connection.file.upload.photo when upload fails.
+			 * @param {Object} error
+			 * Error message with values: code, source and target.
+			 */
 			fail: function(error) {
 				connection._callback(
 					"An error has occurred: Code = " + error.code + "\n" +
@@ -301,25 +669,61 @@ var connection = {
 			}
 		},
 
+		/**
+		 * Part responsible for downloading files.
+		 */
 		download: {
-			photo: function(fileUrl, filePath) {
-				if (connection.url) {
+			/**
+			 * @function connection.file.download.photo
+			 * Downloads photo from server onto typed url.
+			 * @param {String} fileUrl
+			 * Url of image to be downloaded.
+			 * @param {String} filePath
+			 * Path to save downloaded image.
+			 * @param {Function} onDownload
+			 * Called after successfull download.
+			 * @param {Function} onProgress
+			 * Called when download progress changes.
+			 */
+			photo: function(fileUrl, filePath, onDownload, onProgress) {
+				if (connection.getUrl()) {
 					var ft = new FileTransfer();
-					var uri = encodeURI(connection.url + connectionLinks.getPhoto + fileUrl);
+					var uri = encodeURI(connection.getUrl() + connectionLinks.getPhoto + fileUrl);
 
-					ft.onprogress = connection.file.download._onProgress;
+					if (onProgress) {
+						ft.onprogress = function(progressEvent) {
+							onProgress(progressEvent);
+							connection.file.download._onProgress(progressEvent);
+						};
+					} else {
+						ft.onprogress = connection.file.download._onProgress;
+					}
 					ft.download(
 						uri,		//link to download
 						filePath,	//file path to save
-						connection.file.download._success,
+						connection.file.download._success(onDownload),
 						connection.file.download.fail, false);
 				} else {
 					connection._callback('No url is set');
 				}
 			},
 
+			/**
+			 * @function connection.file.download.onProgress
+			 * Possible global `on progress` function called when each
+			 * single photo is downloaded.
+			 * @param {Object} progressEvent
+			 * Progress event with values: loaded, total and lengthComputable.
+			 */
 			onProgress: undefined,
 
+			/**
+			 * @function connection.file.download._onProgress
+			 * Called in connection.file.download.photo while downloading photo. Allows to
+			 * add additional actions before running connection.file.download.onProgress function.
+			 * @param {Object} progressEvent
+			 * Progress event with values: loaded, total and lengthComputable.
+			 */
 			_onProgress: function(progressEvent) {
 				if (connection.file.download.onProgress) {
 					connection.file.download.onProgress(progressEvent);
@@ -332,16 +736,36 @@ var connection = {
 				}
 			},
 
-			success: undefined,
+			/**
+			 * @function connection.file.download._success
+			 * Returns function to be called in connection.file.download.photo
+			 * after successfull download.
+			 * @param {Function} callb
+			 * Called with success response after successfull download.
+			 * @return {Function}
+			 * Function to be called in connection.file.download.photo with one value: message.
+			 * It has properties: responseCode, response, bytesSent and fullPath.
+			 */
+			_success: function(callb) {
+				return function(message) {
+					connection._callback(
+						"Code = " + message.responseCode + "\n" +
+						"Response = " + message.response + "\n" +
+						"Sent = " + message.bytesSent + "\n" +
+						"Path = " + message.fullPath);
 
-			_success: function(message) {
-				connection._callback("download complete: " + message.fullPath);
-
-				if (connection.file.download.success) {
-					connection.file.download.success(message);
-				}
+					if (callb) {
+						callb(message.response);
+					}
+				};
 			},
 
+			/**
+			 * @function connection.file.download.fail
+			 * Called in connection.file.download.photo when download fails.
+			 * @param {Object} error
+			 * Error message with values: code, source and target.
+			 */
 			fail: function(error) {
 				connection._callback(
 					"An error has occurred: Code = " + error.code + "\n" +
@@ -362,15 +786,27 @@ var connection = {
 		state: undefined,
 
 		init: function(link) {
+			connection.socket.close();
 			connection.socket.instance = io.connect(link);
 
 			connection.socket.state = connection.socket.states.open;
 
+			connection.socket.instance.on(webSocketBroadcast.pong, connection.socket.receive.onPing);
 			connection.socket.instance.on(webSocketBroadcast.enterRoom, connection.socket.receive._onEnterRoom);
 			connection.socket.instance.on(webSocketBroadcast.usersOnline, connection.socket.receive._onUsersOnline);
-			connection.socket.instance.on(webSocketBroadcast.newMaterial, connection.socket.receive._onNewMaterial);
+			connection.socket.instance.on(webSocketBroadcast.allMatetials, connection.socket.receive._onAllMatetials);
+			connection.socket.instance.on(webSocketBroadcast.allComments, connection.socket.receive._onAllComments);
 			connection.socket.instance.on(webSocketBroadcast.newUser, connection.socket.receive._onNewUser);
+			connection.socket.instance.on(webSocketBroadcast.newMaterial, connection.socket.receive._onNewMaterial);
 			connection.socket.instance.on(webSocketBroadcast.newComment, connection.socket.receive._onNewComment);
+		},
+
+		close: function() {
+			if (connection.socket.instance) {
+				connection.socket.instance.disconnect();
+
+				connection.socket.state = connection.socket.states.closed;
+			}
 		},
 
 		send: function(event, object) {
@@ -381,8 +817,8 @@ var connection = {
 			}
 		},
 
-		testSend: function(message) {
-			connection.socket.send(webSocketSend.test, message);
+		ping: function() {
+			connection.socket.send(webSocketSend.ping);
 		},
 
 		getConnectedUsers: function() {
@@ -397,6 +833,8 @@ var connection = {
 			onEnterRoom: undefined,
 
 			_onEnterRoom: function (data) {
+				//connection.socket.ping();
+
 				connection._callback('_onEnterRoom: ' + JSON.stringify(data));
 
 				if (connection.socket.receive.onEnterRoom) {
@@ -410,24 +848,35 @@ var connection = {
 				connection._callback('_onUsersOnline: ' + JSON.stringify(data));
 
 				if (connection.socket.receive.onUsersOnline) {
-					connection.socket.receive.onUsersOnline(data.data);
+					var toReturn = [];
+					for (var i in data.data) {
+						toReturn.push({
+							userId: data.data[i].id,
+							type: 'user',
+							data: data.data[i]
+						});
+					}
+					connection.socket.receive.onUsersOnline(toReturn);
 				}
 			},
 
-			onNewMaterial: undefined,
+			_onAllMatetials: function (data) {
+				connection._callback('_onAllMatetials: ' + JSON.stringify(data));
 
-			/**
-			 * In data.message is received message.
-			 */
-			_onNewMaterial: function (data) {
-				connection._callback(JSON.stringify(data));
+				if (connection.socket.receive._onNewMaterial) {
+					for (var i in data.data) {
+						connection.socket.receive._onNewMaterial(data.data[id]);
+					}
+				}
+			},
 
-				if (connection.socket.receive.onNewMaterial) {
-					connection.socket.receive.onNewMaterial({
-						userId: data.message.user,
-						type: 'photo',
-						data: connection.url + connectionLinks.get.photo + data.message
-					});
+			_onAllComments: function (data) {
+				connection._callback('_onAllComments: ' + JSON.stringify(data));
+
+				if (connection.socket.receive._onNewComment) {
+					for (var i in data.data) {
+						connection.socket.receive._onNewComment(data.data[id]);
+					}
 				}
 			},
 
@@ -448,6 +897,42 @@ var connection = {
 				}
 			},
 
+			onNewPhoto: undefined,
+
+			onNewNote: undefined,
+
+			/**
+			 * In data.message is received message.
+			 */
+			_onNewMaterial: function (data) {
+				alert('new material: ' + JSON.stringify(data));
+				connection._callback(JSON.stringify(data));
+alert(data.material.name.substring(
+					data.material.name.length - 5,
+					data.material.name.length - 1));
+				if (data.material.name.substring(
+					data.material.name.length - 5,
+					data.material.name.length - 1) === '.jpg') {
+						if (connection.socket.receive.onNewPhoto) {
+							connection.socket.receive.onNewPhoto({
+								id: data.material.id,
+								userId: data.material.UserId,
+								type: 'photo',
+								data: connection.getUrl() + connectionLinks.get.material + data.material.id
+							});
+						}
+				} else {
+					if (connection.socket.receive.onNewNote) {
+						connection.socket.receive.onNewNote({
+							id: data.material.id,
+							userId: data.material.UserId,
+							type: 'note',
+							data: connection.getUrl() + connectionLinks.get.material + data.material.id
+						});
+					}
+				}
+			},
+
 			onNewComment: undefined,
 
 			/**
@@ -458,12 +943,17 @@ var connection = {
 
 				if (connection.socket.receive.onNewComment) {
 					connection.socket.receive.onNewComment({
+						materialId: data.message.id,
 						userId: data.message.user,
 						type: 'comment',
-						target: connection.url + connectionLinks.get.photo + data.message,
+						target: connection.getUrl() + connectionLinks.get.photo + data.message,
 						data: data.message.data
 					});
 				}
+			},
+
+			onPing: function () {
+				connection._callback('pong');
 			}
 		}
 	}

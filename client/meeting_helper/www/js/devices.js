@@ -107,13 +107,14 @@ var devices = {
 
 				if (userCallback) {
 					userCallback(imageSrc);
-				} else {
+				}
 
-					if (devices.camera.success) {
-						devices.camera.success(imageSrc);
-					} else {
-						connection.file.upload.photo(imageSrc);
-					}
+				if (devices.camera.success) {
+					devices.camera.success(imageSrc);
+				}
+
+				if (!userCallback && !devices.camera.success) {
+					connection.file.upload.photo(imageSrc);
 				}
 			}
 		},
