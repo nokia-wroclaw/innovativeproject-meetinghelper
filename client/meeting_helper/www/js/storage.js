@@ -181,7 +181,7 @@ var storage = {
 	 * Usuwa użytkownika, gdy opuszcza pokój
 	 */
 	deleteUser: function(data) {
-		onlineUsers.delete(data.userId);
+		//onlineUsers.delete(data.userId);
 	},
 
 	/**
