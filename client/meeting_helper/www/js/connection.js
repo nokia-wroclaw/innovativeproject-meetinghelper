@@ -142,7 +142,9 @@ var connection = {
 	getSocketUrl: function() {
 		var url = connection.getUrl();
 		if (url) {
-			return url.substring(0, url.length - 4);
+			var socketUrl = url.substring(0, url.length - 4)
+			alert(socketUrl);
+			return socketUrl;
 		}
 	},
 
@@ -161,32 +163,24 @@ var connection = {
 		var stateChanged = false;
 		connection.action.ping(url, function(result) {
 			if (result === connectionAnswers.ping) {
-				if (!stateChanged) {
-					stateChanged = true;
-					connection.state = connection.states.established;
-					if (success) {
-						success();
-					}
-				}
+				answer(connection.states.established, success);
 			} else {
-				if (!stateChanged) {
-					stateChanged = true;
-					connection.state = connection.states.wrong_host;
-					if (failure) {
-						failure();
-					}
-				}
+				answer(connection.states.wrong_host, failure);
 			}
 		});
 		setTimeout(function() {
+			answer(connection.states.wrong_host, failure);
+		}, 3000);
+
+		var answer = function(state, callback) {
 			if (!stateChanged) {
 				stateChanged = true;
-				connection.state = connection.states.wrong_host;
-				if (failure) {
-					failure();
+				connection.state = state;
+				if (callback) {
+					callback();
 				}
 			}
-		}, 3000);
+		};
 	},
 
 	/**
@@ -439,25 +433,14 @@ var connection = {
 	receive: {
 		/**
 		 * @function connection.receive._base
-		 * Decides how to develop data received from server. When used to login
-		 * action, additionally inits websocket connection.
+		 * Decides how to develop data received from server.
 		 * @param {Function} callb
 		 * Called with received data.
-		 * @param {Boolean} ifLogin
-		 * Specifies whether actual action is login.
 		 * @return {Function}
 		 * Function accepting one argument to be called in receive actions.
 		 * Allows user to decide what to do with received data.
 		 */
-		_base: function(callb, ifLogin) {
-			if (ifLogin) {
-				try {
-					connection.socket.init(connection.getSocketUrl());
-				} catch(e) {
-					connection._callback(e);
-					connection.state = connection.states.disconnected;
-				}
-			}
+		_base: function(callb) {
 			return function(data) {
 				if (callb) {
 					callb(data);
@@ -785,20 +768,28 @@ var connection = {
 
 		state: undefined,
 
-		init: function(link) {
-			connection.socket.close();
-			connection.socket.instance = io.connect(link);
+		init: function(success, failure) {
+			try {
+				connection.socket.close();
+				connection.socket.instance = io.connect(connection.getSocketUrl());
 
-			connection.socket.state = connection.socket.states.open;
+				connection.socket.state = connection.socket.states.open;
 
-			connection.socket.instance.on(webSocketBroadcast.pong, connection.socket.receive.onPing);
-			connection.socket.instance.on(webSocketBroadcast.enterRoom, connection.socket.receive._onEnterRoom);
-			connection.socket.instance.on(webSocketBroadcast.usersOnline, connection.socket.receive._onUsersOnline);
-			connection.socket.instance.on(webSocketBroadcast.allMatetials, connection.socket.receive._onAllMatetials);
-			connection.socket.instance.on(webSocketBroadcast.allComments, connection.socket.receive._onAllComments);
-			connection.socket.instance.on(webSocketBroadcast.newUser, connection.socket.receive._onNewUser);
-			connection.socket.instance.on(webSocketBroadcast.newMaterial, connection.socket.receive._onNewMaterial);
-			connection.socket.instance.on(webSocketBroadcast.newComment, connection.socket.receive._onNewComment);
+				connection.socket.instance.on(webSocketBroadcast.pong, connection.socket.receive._onPing(success));
+				connection.socket.instance.on(webSocketBroadcast.enterRoom, connection.socket.receive._onEnterRoom);
+				connection.socket.instance.on(webSocketBroadcast.usersOnline, connection.socket.receive._onUsersOnline);
+				connection.socket.instance.on(webSocketBroadcast.allMatetials, connection.socket.receive._onAllMatetials);
+				connection.socket.instance.on(webSocketBroadcast.allComments, connection.socket.receive._onAllComments);
+				connection.socket.instance.on(webSocketBroadcast.newUser, connection.socket.receive._onNewUser);
+				connection.socket.instance.on(webSocketBroadcast.newMaterial, connection.socket.receive._onNewMaterial);
+				connection.socket.instance.on(webSocketBroadcast.newComment, connection.socket.receive._onNewComment);
+			} catch(e) {
+				connection._callback(e);
+				connection.state = connection.states.disconnected;
+				if (failure) {
+					failure();
+				}
+			}
 		},
 
 		close: function() {
@@ -952,8 +943,13 @@ alert(data.material.name.substring(
 				}
 			},
 
-			onPing: function () {
-				connection._callback('pong');
+			_onPing: function (success) {
+				return function() {
+					if (success) {
+						success();
+					}
+					connection._callback('pong');
+				}
 			}
 		}
 	}
