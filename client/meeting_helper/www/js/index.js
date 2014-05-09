@@ -26,6 +26,18 @@ var init = {
     initialize: function() {
         this.bindEvents();
     },
+    // Application Constructor
+    initializeWall: function() {
+        load('wall');
+        connection.socket.init(function() {
+            // todo: check socket ping
+            alert('socket inited');
+            main.enterRoom();
+        }, function() {
+            load('rooms');
+        });
+        main.enterRoom();
+    },
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
@@ -53,14 +65,7 @@ var init = {
 
         init.ready = true;
 
-        //TODO
-        //load('connecting');
-
-        connection.initUrl(function() {
-            load('login');
-        }, function() {
-            load('connection');
-        });
+        main.initUrl();
     },
 
     ready: false
