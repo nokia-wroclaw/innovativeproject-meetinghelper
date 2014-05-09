@@ -2,6 +2,10 @@
  * Script for switching contents
  */
 
+var contains = function(bigger, fragment) {
+	return bigger.indexOf(fragment) != -1;
+};
+
 // historyObj object
 historyObj = {
 	actualPage: undefined,
@@ -24,18 +28,20 @@ historyObj = {
 			if (route) {
 				load(route, true);
 			}
+		} else if (historyObj.pages.length === 0 && contains(window.location.href, "wall.html")) {
+			load("rooms", true);
 		}
 	}
 };
 
 function load(what, ifhistoryObj) {
-	/*if (historyObj.actualPage === "wall" && what !== "wall") {
-		// when we were on wall and want to load other page
+	if (what === "rooms" && contains(window.location.href, "wall.html")) {
+		// when we were on wall and want to load rooms page
 		window.location = 'index2.html';
-	} else if (historyObj.actualPage !== "wall" && what === "wall") {
+	} else if (what === "wall" && !contains(window.location.href, "wall.html")) {
 		// when we weren't on wall and want to load wall
-		window.location = 'loadWall.html';
-	}*/
+		window.location = 'wall.html';
+	}
 	switch(what) {
 		case "connection":
 			$( "#content" ).load( "loadConnect.html" );
@@ -52,8 +58,14 @@ function load(what, ifhistoryObj) {
 		case "wall":
 			$( "#content" ).load( "loadWall.html" );
 			break;
+		case "wallContent":
+			$( "#content" ).load( "loadWallContent.html" );
+			break;
+		case "connecting":
+			$( "#content" ).load( "loadWall.html" );
+			break;
 	}
-	if (!ifhistoryObj) {
+	if (!ifhistoryObj && what != "wall") {
 		historyObj.addTohistoryObj();
 	}
 	historyObj.setActualPage(what);
