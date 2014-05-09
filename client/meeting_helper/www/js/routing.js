@@ -17,7 +17,7 @@ historyObj = {
 	},
 
 	addTohistoryObj: function() {
-		if (historyObj.actualPage) {
+		if (historyObj.actualPage && historyObj.actualPage !== "wall" && historyObj.actualPage !== "connecting") {
 			historyObj.pages.push(historyObj.actualPage);
 		}
 	},
@@ -65,7 +65,7 @@ function load(what, ifhistoryObj) {
 			$( "#content" ).load( "loadWall.html" );
 			break;
 	}
-	if (!ifhistoryObj && what != "wall") {
+	if (!ifhistoryObj) {
 		historyObj.addTohistoryObj();
 	}
 	historyObj.setActualPage(what);
