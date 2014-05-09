@@ -233,13 +233,16 @@ var main = {
 
 connection.socket.receive.onEnterRoom = function(data) {
 	me.enteredRoom = data;
-    load('wallContent');
+    load('wallContent', function() {
+    	connection.socket.getConnectedUsers();
+    });
 };
 
 /**
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
 connection.socket.receive.onUsersOnline = function(data) {
+	alert('onUsersOnline ' + JSON.stringify(data));
 	// add new users
 };
 
@@ -247,6 +250,7 @@ connection.socket.receive.onUsersOnline = function(data) {
  * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
  */
 connection.socket.receive.onNewUser = function(data) {
+	alert('onNewUser ' + JSON.stringify(data));
 	// add new user
 };
 
