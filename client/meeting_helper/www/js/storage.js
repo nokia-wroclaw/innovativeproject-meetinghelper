@@ -123,9 +123,8 @@ var storage = {
 	 * Ustawia zmienną odpowiedzialną za wybór pokoju do wejścia
 	 */
 	setChosedRoomToEnter: function() {
-		var value = document.getElementById('serverRooms').getElementsByTagName('select')[0].value;
-		alert(value);
-		main.choseRoomToEnter(value);
+		var roomToEnter = document.getElementById('serverRooms').getElementsByTagName('select')[0].value;
+		main.choseRoomToEnter(roomToEnter);
 	},
 
 	/**
