@@ -142,8 +142,7 @@ var connection = {
 	getSocketUrl: function() {
 		var url = connection.getUrl();
 		if (url) {
-			var socketUrl = url.substring(0, url.length - 4)
-			alert(socketUrl);
+			var socketUrl = url.substring(0, url.length - 4);
 			return socketUrl;
 		}
 	},

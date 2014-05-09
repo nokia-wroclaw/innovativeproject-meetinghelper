@@ -192,7 +192,6 @@ var main = {
 	 */
 	enterRoom: function() {
 		var roomId = window.localStorage.getItem('chosedRoomToEnter');
-		alert('roomId: ' + roomId);
 		if (roomId) {
 			me.chosedRoomToEnter = roomId;
 			connection.socket.enterRoom(roomId);
