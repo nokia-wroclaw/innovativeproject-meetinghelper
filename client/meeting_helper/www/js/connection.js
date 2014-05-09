@@ -794,7 +794,10 @@ var connection = {
 
 		close: function() {
 			if (connection.socket.instance) {
-				connection.socket.instance.disconnect();
+				try {
+					connection.socket.instance.disconnect();
+				} catch(e) {
+				}
 
 				connection.socket.state = connection.socket.states.closed;
 			}
@@ -896,14 +899,10 @@ var connection = {
 			 * In data.message is received message.
 			 */
 			_onNewMaterial: function (data) {
-				alert('new material: ' + JSON.stringify(data));
 				connection._callback(JSON.stringify(data));
-alert(data.material.name.substring(
-					data.material.name.length - 5,
-					data.material.name.length - 1));
 				if (data.material.name.substring(
-					data.material.name.length - 5,
-					data.material.name.length - 1) === '.jpg') {
+					data.material.name.length - 4,
+					data.material.name.length) === '.jpg') {
 						if (connection.socket.receive.onNewPhoto) {
 							connection.socket.receive.onNewPhoto({
 								id: data.material.id,
@@ -918,7 +917,7 @@ alert(data.material.name.substring(
 							id: data.material.id,
 							userId: data.material.UserId,
 							type: 'note',
-							data: connection.getUrl() + connectionLinks.get.material + data.material.id
+							data: 'data.material.content'
 						});
 					}
 				}
