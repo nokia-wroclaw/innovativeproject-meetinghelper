@@ -84,7 +84,17 @@ var main = {
 		});
 	},
 
+	initUrl: function() {
+        load('connecting');
+        connection.initUrl(function() {
+            load('login');
+        }, function() {
+            load('connection');
+        });
+	},
+
 	setUrl: function(link) {
+        load('connecting');
 		var url = document.getElementById('url');
 		url.value = link;
 		connection.setUrl(link, function() {
@@ -93,6 +103,7 @@ var main = {
 			load('login');
 		}, function() {
 			alert('Connection failed');
+            load('connection');
 		});
 	},
 
@@ -167,13 +178,23 @@ var main = {
 		me.chosedRoomToEnter = chosedRoomToEnter;
 	},
 
+	goToWall: function() {
+		if (me.chosedRoomToEnter) {
+			window.localStorage.setItem('chosedRoomToEnter', me.chosedRoomToEnter);
+			load('wall');
+		} else {
+			alert('No room is chosen');
+		}
+	},
+
 	/**
 	 * Informuje serwer, że `wchodzi` do pokoju (do którego już wcześniej dołączył).
 	 */
 	enterRoom: function() {
-		var roomId = me.chosedRoomToEnter;
+		var roomId = window.localStorage.getItem('chosedRoomToEnter');
 		alert('roomId: ' + roomId);
 		if (roomId) {
+			me.chosedRoomToEnter = roomId;
 			connection.socket.enterRoom(roomId);
 		} else {
 			alert('No room is chosen');
@@ -188,7 +209,8 @@ var main = {
 		devices.qrCode.scan(function(roomId) {
 			// dołączenie do pokoju
 			main.joinRoom(roomId, function() {
-				main.enterRoom();
+				main.choseRoomToEnter(roomId);
+				main.goToWall();
 			});
 		});
 	}
@@ -196,7 +218,7 @@ var main = {
 
 connection.socket.receive.onEnterRoom = function(data) {
 	me.enteredRoom = data;
-	load('wall');
+    load('wallContent');
 };
 
 /**
