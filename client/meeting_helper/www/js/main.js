@@ -100,7 +100,9 @@ var main = {
             alert('socket inited');
             main.enterRoom();
         }, function() {
-            load('rooms');
+            load('rooms', function() {
+				main.getRooms();
+			});
         });
         main.enterRoom();
 	},
@@ -127,7 +129,9 @@ var main = {
 			//akcja wykonywana po odpowiedzi serwera
 			if (received.name === login) {//gdy jest ok
 				me.id = received.id;
-				load('rooms');
+				load('rooms', function() {
+					main.getRooms();
+				});
 			}
 		}, function(data) {
 			alert('Wrong username or password');

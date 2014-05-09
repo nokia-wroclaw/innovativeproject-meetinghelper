@@ -26,15 +26,15 @@ historyObj = {
 		if (historyObj.pages.length > 0) {
 			var route = historyObj.pages.pop();
 			if (route) {
-				load(route, true);
+				load(route, undefined, true);
 			}
 		} else if (historyObj.pages.length === 0 && contains(window.location.href, "wall.html")) {
-			load("rooms", true);
+			load("rooms", undefined, true);
 		}
 	}
 };
 
-function load(what, ifhistoryObj) {
+function load(what, action, ifhistoryObj) {
 	if (what === "rooms" && contains(window.location.href, "wall.html")) {
 		// when we were on wall and want to load rooms page
 		window.location = 'index2.html';
@@ -69,4 +69,8 @@ function load(what, ifhistoryObj) {
 		historyObj.addTohistoryObj();
 	}
 	historyObj.setActualPage(what);
+
+	if (action) {
+		action();
+	}
 }
