@@ -91,6 +91,8 @@ var main = {
 			url.value = link;
 
 			load('login');
+		}, function() {
+			alert('Connection failed');
 		});
 	},
 

@@ -56,17 +56,10 @@ var init = {
         //TODO
         //load('connecting');
 
-        var loaded = false;
         connection.initUrl(function() {
-            if (!loaded) {
-                load('login');
-                loaded = true;
-            }
+            load('login');
         }, function() {
-            if (!loaded) {
-                load('connection');
-                loaded = true;
-            }
+            load('connection');
         });
     },
 

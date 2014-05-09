@@ -158,22 +158,33 @@ var connection = {
 	 */
 	checkConnection: function(url, success, failure) {
 		connection.state = connection.states.connecting;
+		var stateChanged = false;
 		connection.action.ping(url, function(result) {
 			if (result === connectionAnswers.ping) {
-				connection.state = connection.states.established;
-				if (success) {
-					success();
+				if (!stateChanged) {
+					stateChanged = true;
+					connection.state = connection.states.established;
+					if (success) {
+						success();
+					}
 				}
 			} else {
-				connection.state = connection.states.wrong_host;
-				if (failure) {
-					failure();
+				if (!stateChanged) {
+					stateChanged = true;
+					connection.state = connection.states.wrong_host;
+					if (failure) {
+						failure();
+					}
 				}
 			}
 		});
 		setTimeout(function() {
-			if (failure) {
-				failure();
+			if (!stateChanged) {
+				stateChanged = true;
+				connection.state = connection.states.wrong_host;
+				if (failure) {
+					failure();
+				}
 			}
 		}, 3000);
 	},
