@@ -104,7 +104,8 @@ module.exports.JoinRoomByCode = function(req, res, next) {
 module.exports.EnterMeeting = function(req) {
     var meetingID = req.data.meetingID;
     var userID = req.session.user;
-     console.log("sesja socketa: "+ req.session.id)
+    console.log("sesja socketa: "+ req.session.id)
+    if(userID != undefined){
     User.find({where:{id: userID}})
     .then(function(user) {
         return user.getMeetings()
@@ -124,6 +125,10 @@ module.exports.EnterMeeting = function(req) {
             }
         })
     });
+    } else{
+            req.io.emit('noJoined', {data: meetingID});
+            console.log("błąd: "+ req.session.id) 
+    }
 };
 
 module.exports.IsRoom = function(req, res, next){

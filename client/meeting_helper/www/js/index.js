@@ -52,6 +52,15 @@ var init = {
         console.log('Received Event: ' + id);
 
         init.ready = true;
+
+        //TODO
+        //load('connecting');
+
+        connection.initUrl(function() {
+            load('login');
+        }, function() {
+            load('connection');
+        });
     },
 
     ready: false

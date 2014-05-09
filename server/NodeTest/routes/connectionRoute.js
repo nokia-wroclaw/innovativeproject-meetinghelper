@@ -33,7 +33,7 @@ module.exports.Connected = function (socket) {
         + ' connected! \n');
     //var intervalID = setInterval(function () {
     //    hs.session.reload( function () { 
-    //        hs.session.touch().save();
+    //      hs.session.touch().save();
     //    });
     //}, 60 * 1000);
     socket.on('disconnect', function () {

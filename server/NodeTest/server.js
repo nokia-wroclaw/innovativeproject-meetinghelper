@@ -76,17 +76,18 @@ app.post('/api/meetings/join', user.IsLogin, meeting.JoinRoom);
 app.post('/api/meetings/joinByCode', user.IsLogin, meeting.JoinRoomByCode);
 app.get('/api/meetings/list', user.IsLogin, meeting.GetRoomsList);
 
-
 app.get('/api/qrcode', qrcode.QRCode);
 app.get('/api/qrcode/:address/:port', qrcode.QRCodeGenerator);
 app.get('/api/qrcode/:groupCode', qrcode.QRCodeJoinGroup);
+
 
 app.post('/api/login', user.Login);
 app.post('/api/register', user.Register);
 app.get('/api/logout',  user.Logout);
 
-app.post('/api/materials/sendFile', user.IsLogin, meeting.IsRoom, material.SendFile);
 
+app.post('/api/materials/sendFile', user.IsLogin, meeting.IsRoom, material.SendFile);
+app.post('/api/materials/file/:materialID', user.IsLogin, meeting.IsRoom, material.DownloadFile);
 
 app.get('/api/reg', function(req, res) {
     	
