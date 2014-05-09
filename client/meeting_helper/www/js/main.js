@@ -93,6 +93,18 @@ var main = {
         });
 	},
 
+	initSocket: function() {
+		load('wall');
+        connection.socket.init(function() {
+            // todo: check socket ping
+            alert('socket inited');
+            main.enterRoom();
+        }, function() {
+            load('rooms');
+        });
+        main.enterRoom();
+	},
+
 	setUrl: function(link) {
         load('connecting');
 		var url = document.getElementById('url');

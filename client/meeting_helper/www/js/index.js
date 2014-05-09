@@ -28,15 +28,7 @@ var init = {
     },
     // Application Constructor
     initializeWall: function() {
-        load('wall');
-        connection.socket.init(function() {
-            // todo: check socket ping
-            alert('socket inited');
-            main.enterRoom();
-        }, function() {
-            load('rooms');
-        });
-        main.enterRoom();
+        main.initSocket();
     },
     // Bind Event Listeners
     //
