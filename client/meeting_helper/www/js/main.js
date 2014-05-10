@@ -88,9 +88,17 @@ var main = {
 	},
 
 	initUrl: function() {
-        load('connecting');
-        connection.initUrl(function() {
-            load('login');
+		load('connecting');
+		connection.initUrl(function() {
+			connection.action.home(function(data) {
+				if (data.id) {
+					load('rooms', function() {
+						main.getRooms();
+					});
+				} else {
+					load('login');
+				}
+			});
         }, function() {
             load('connection');
         });
