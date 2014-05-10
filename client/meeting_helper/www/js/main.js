@@ -206,6 +206,11 @@ var main = {
 		}
 	},
 
+	goToOnlineUsers: function() {
+		load('users');
+		storage.showOnlineUsers();
+	},
+
 	/**
 	 * Informuje serwer, że `wchodzi` do pokoju (do którego już wcześniej dołączył).
 	 */
