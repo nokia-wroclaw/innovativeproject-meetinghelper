@@ -55,10 +55,8 @@ var devices = {
 			navigator.camera.getPicture(
 				devices.photoLibrary._success(userCallback),
 				devices.photoLibrary.fail, {
-					quality: 50,
 					destinationType: Camera.DestinationType.FILE_URI,
-					sourceType: 2,	// 0:Photo Library, 1=Camera, 2=Saved Album
-                    encodingType: 0
+					sourceType: 2	// 0:Photo Library, 1=Camera, 2=Saved Album
 			});
 		},
 
