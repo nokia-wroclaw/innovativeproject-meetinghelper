@@ -222,7 +222,14 @@ var connection = {
 				    xmlHttp.onreadystatechange = function() {
 						if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
 						    if (correctCallb) {
-						    	correctCallb(JSON.parse(xmlHttp.responseText));
+						    	var parsed;
+						    	try {
+						    		parsed = JSON.parse(xmlHttp.responseText);
+						    	} catch(e) {
+						    		connection._callback('parsed error: ' + e);
+						    		parsed = {};
+						    	}
+						    	correctCallb(parsed);
 						    } else {
 						    	connection._callback(xmlHttp.responseText);
 						    }
