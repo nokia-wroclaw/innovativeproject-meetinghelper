@@ -79,6 +79,9 @@ var main = {
 		connection.action.getRooms(function(received) {
 			// received zawiera listę elementów, np. {id: 0, name: 'room', folderName: 'room'}
 			// instersuje nas id po którym dołączamy i name które wyświetlamy
+			if (received.length > 0) {
+				main.choseRoomToEnter(received[0].id);
+			}
 			storage.showRooms(received);
 
 		});
