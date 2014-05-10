@@ -92,9 +92,7 @@ var main = {
 		connection.initUrl(function() {
 			connection.action.home(function(data) {
 				if (data.id) {
-					load('rooms', function() {
-						main.getRooms();
-					});
+					load('rooms', true);
 				} else {
 					load('login');
 				}
@@ -111,9 +109,7 @@ var main = {
             alert('socket inited');
             main.enterRoom();
         }, function() {
-            load('rooms', function() {
-				main.getRooms();
-			});
+            load('rooms', true);
         });
         main.enterRoom();
 	},
@@ -140,9 +136,7 @@ var main = {
 			//akcja wykonywana po odpowiedzi serwera
 			if (received.name === login) {//gdy jest ok
 				me.id = received.id;
-				load('rooms', function() {
-					main.getRooms();
-				});
+				load('rooms', true);
 			}
 		}, function(data) {
 			alert('Wrong username or password');
@@ -247,11 +241,16 @@ var main = {
 	}
 };
 
+routing.registerAction('rooms', function() {
+	main.getRooms();
+});
+routing.registerAction('wallContent', function() {
+	connection.socket.getConnectedUsers();
+});
+
 connection.socket.receive.onEnterRoom = function(data) {
 	me.enteredRoom = data;
-    load('wallContent', function() {
-    	connection.socket.getConnectedUsers();
-    });
+    load('wallContent', true);
 };
 
 /**
