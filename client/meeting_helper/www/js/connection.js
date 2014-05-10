@@ -284,9 +284,7 @@ var connection = {
 				connection.action.types.get,
 				connectionLinks.get.home,
 				null,
-				connection.receive._onHome(callb),
-				undefined,
-				true);
+				connection.receive._onHome(callb));
 		},
 
 		/**
