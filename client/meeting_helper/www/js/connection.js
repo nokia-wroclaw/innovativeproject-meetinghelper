@@ -780,6 +780,7 @@ var connection = {
 				connection.socket.instance.on(webSocketBroadcast.allMatetials, connection.socket.receive._onAllMatetials);
 				connection.socket.instance.on(webSocketBroadcast.allComments, connection.socket.receive._onAllComments);
 				connection.socket.instance.on(webSocketBroadcast.newUser, connection.socket.receive._onNewUser);
+				connection.socket.instance.on(webSocketBroadcast.removeUser, connection.socket.receive._onRemoveUser);
 				connection.socket.instance.on(webSocketBroadcast.newMaterial, connection.socket.receive._onNewMaterial);
 				connection.socket.instance.on(webSocketBroadcast.newComment, connection.socket.receive._onNewComment);
 			} catch(e) {
@@ -890,6 +891,23 @@ var connection = {
 				}
 			},
 
+			onRemoveUser: undefined,
+
+			/**
+			 * In data.message is received message.
+			 */
+			_onRemoveUser: function (data) {
+				connection._callback('_onRemoveUser: ' + JSON.stringify(data));
+
+				if (connection.socket.receive.onRemoveUser) {
+					connection.socket.receive.onRemoveUser({
+						userId: data.id,
+						type: 'user',
+						data: data
+					});
+				}
+			},
+
 			onNewPhoto: undefined,
 
 			onNewNote: undefined,
@@ -943,6 +961,7 @@ var connection = {
 
 			_onPing: function (success) {
 				return function() {
+					alert('pong');
 					if (success) {
 						success();
 					}
