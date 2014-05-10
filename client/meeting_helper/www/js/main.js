@@ -246,34 +246,27 @@ connection.socket.receive.onUsersOnline = function(data) {
 	// add new users
 };
 
-/**
- * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
- */
 connection.socket.receive.onNewUser = function(data) {
 	alert('onNewUser ' + JSON.stringify(data));
 	// add new user
 };
 
-/**
- * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
- */
+connection.socket.receive.onRemoveUser = function(data) {
+	alert('onRemoveUser ' + JSON.stringify(data));
+	// remove user
+};
+
 connection.socket.receive.onNewPhoto = function(data) {
-	alert('new photo: ' + JSON.stringify(data));
+	alert('onNewPhoto: ' + JSON.stringify(data));
     storage.addNewData(data);
 };
 
-/**
- * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
- */
 connection.socket.receive.onNewNote = function(data) {
-	alert('new note: ' + JSON.stringify(data));
+	alert('onNewNote: ' + JSON.stringify(data));
     storage.addNewData(data);
 };
 
-/**
- * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
- */
 connection.socket.receive.onNewComment = function(data) {
-	alert('new comment: ' + JSON.stringify(data));
-    //tutaj akcja na otrzymanie nowego komentarza
+	alert('onNewComment: ' + JSON.stringify(data));
+    // add new comment
 };

@@ -59,6 +59,7 @@ var webSocketBroadcast = {
 	allMatetials: 'allMatetials',
 	allComments: 'allComments',
 	newUser: 'newUser',
+	removeUser: 'removeUser',
 	newMaterial: 'newMaterial',
 	newComment: 'newComment'
 };
