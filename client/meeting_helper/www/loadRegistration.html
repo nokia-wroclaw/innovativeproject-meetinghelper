@@ -6,24 +6,39 @@
 </div>
 <div id="body">
 	<br><br>
-	<img alt="Register icon" width="128" height="128" src="img/add_user.png">
-	<br><br>
-	<span class="white_text">login</span>
+	<img alt="Register icon" width="40%" src="img/add_user.png">
+	<br><br><br>
+	
+	<div class="input-group">
+	  <span class="input-group-addon">login</span>
+	  <input type="text" id="login" class="form-control">
+	</div>
+
 	<br>
-	<input type="text" id="login" value="">
-	<br><br>
-	<span class="white_text">password</span>
+	
+	<div class="input-group">
+	  <span class="input-group-addon">password</span>
+	  <input type="password" id="password" class="form-control">
+	</div>
+	
 	<br>
-	<input type="password" id="password" value="">
-	<br><br>
-	<span class="white_text">repeat password</span>
+	
+	<div class="input-group">
+	  <span class="input-group-addon">repeat password</span>
+	  <input type="password" id="password2" class="form-control">
+	</div>
+
 	<br>
-	<input type="password" id="password2" value="">
-	<br><br>
-	<button onclick="main.register(document.getElementById('login').value, document.getElementById('password').value, document.getElementById('password2').value)">
-		<img alt="OK" width="50" height="50" src="img/accept.png">
-	</button>
-	<br><br>
-	<span class="white_text" onclick="load('login')">Back to login</span>
+	<br>
+	<div class="btn-group">
+		<button type="button" class="btn btn-default btn-lg" onclick="load('login')">
+		  <span class="glyphicon glyphicon-chevron-left"></span> Go to login
+		</button>
+	
+		<button type="button" class="btn btn-default btn-lg" onclick="main.register(document.getElementById('login').value, document.getElementById('password').value, document.getElementById('password2').value)"">
+		  <span class="glyphicon glyphicon-ok"></span> Register
+		</button>
+	</div>
+
 	<br><br>
 </div>

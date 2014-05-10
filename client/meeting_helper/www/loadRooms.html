@@ -6,36 +6,33 @@
 </div>
 <div id="body">
 	<br><br>
-	<img alt="Rooms icon" width="128" height="128" src="img/rooms.png">
+	<img alt="Rooms icon" width="40%" src="img/rooms.png">
 	<br><br>
-	<button onclick="main.getRooms()">
-		Show rooms
-	</button><br>
+	<span class="white_text">available rooms</span><br>
+	<br>
 	<div id="serverRooms">
 		<select></select>
 	</div>
-	<br><br>
-	<span class="white_text">room name</span>
 	<br>
-	<input type="text" id="roomName" value="">
-	<br><br>
-	<!-- Tworzy nowy pokój i dołącza do niego -->
-	<button onclick="main.createRoom(document.getElementById('roomName').value)">
-		<img alt="Create room" width="50" height="50" src="img/accept.png">
+	<button type="button" class="btn btn-default btn-lg" onclick="main.getRooms()">
+	  <span class="glyphicon glyphicon-refresh"></span> Refresh
 	</button>
 	<br><br>
-	<!-- Wchodzi do nowego pokoju -->
-	<button onclick="main.goToWall()">
-		<img alt="Join room" width="50" height="50" src="img/enter_room.png">
-	</button>
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	<!-- To przenieść do wybrania pokoju z listy. Jako argument podaje się ID pokoju -->
-	<!-- <button onclick="main.choseRoomToEnter(roomToEnterId)">
-		<img alt="Enter room" width="50" height="50" src="img/enter_room.png">
-	</button> -->
-	<br><br>
-	<!-- Dołącza i wchodzi do nowego zeskanowanego pokoju -->
-	<button onclick="main.scanRoomQrCode()">
-		<img alt="Scan QRCode" src="img/qrcode.png">
-	</button>
+	<br>
+	
+	<div class="input-group">
+	  <span class="input-group-addon">Room name</span>
+	  <input type="text" id="roomName" class="form-control">
+	</div>
+
+	<br>
+	
+	<div class="btn-group btn-group-lg">
+	  <!-- Tworzy nowy pokój i dołącza do niego -->
+	  <button type="button" class="btn btn-default" onclick="main.createRoom(document.getElementById('roomName').value)"><span class="glyphicon glyphicon-plus"></span>Create</button>
+	  <!-- Wchodzi do nowego pokoju -->
+	  <button type="button" class="btn btn-default" onclick="main.goToWall()"><span class="glyphicon glyphicon-share-alt"></span>Enter</button>
+	  <!-- Dołącza i wchodzi do nowego zeskanowanego pokoju -->
+	  <button type="button" class="btn btn-default" onclick="main.scanRoomQrCode()"><span class="glyphicon glyphicon-qrcode"></span>Scan QR-Code</button>
+	</div>
 </div>
