@@ -1,26 +1,33 @@
-<div id="bar">
-	<img alt="logo" height="30" src="img/logo2.png" width="30">
-	<span class="meeting_small">Meeting</span><span class="helper_small">Helper</span>
-	&nbsp;&nbsp;&nbsp;Login
-</div>
-<div id="body">
-	<br><br>
-	<img alt="Login icon" width="64" height="64" src="img/login.png">
-	<br><br>
-	<span class="white_text">login</span>
-	<br>
-	<input type="text" id="login" value="test"/>
-	<br><br>
-	<span class="white_text">password</span>
-	<br>
-	<input type="password" id="password" value="test"/>
-	<br><br>
-	<button onclick="main.login(document.getElementById('login').value, document.getElementById('password').value)">
-		<img alt="OK" width="50" height="50" src="img/accept.png">
-	</button>
-	<br><br>
-	<!--<span class="white_text" onclick="load('rooms')">Go to rooms</span>-->
-	<br><br>
-	<span class="white_text" onclick="load('registration')">Create new account</span>
-	<br><br>
-</div>
+	<link rel="stylesheet" type="text/css" href="index.css" />
+	<div id="bar">
+		<img alt="logo" height="30" src="img/logo2.png" width="30">
+		<span class="meeting_small">Meeting</span><span class="helper_small">Helper</span>
+		&nbsp;&nbsp;&nbsp;Login
+	</div>
+	<div id="body">
+		<br><br>
+		<img alt="Login icon" width="40%" src="img/login.png">
+		<br><br>
+	
+		<div class="input-group">
+		  <span class="input-group-addon">login</span>
+		  <input type="text" id="login" class="form-control" placeholder="Username">
+		</div>
+		<br>
+		
+		<div class="input-group">
+		  <span class="input-group-addon">pass</span>
+		  <input type="password" id="password" class="form-control" placeholder="Username">
+		</div>
+		
+		<br><br>
+	
+	<div class="btn-group">
+		<button type="button" class="btn btn-default btn-lg" onclick="main.login(document.getElementById('login').value, document.getElementById('password').value)">
+		  <span class="glyphicon glyphicon-ok"></span> Log in
+		</button>
+	
+		<button type="button" class="btn btn-default" onclick="load('registration')">
+		  <span class="glyphicon glyphicon-user"></span> Add user
+		</button>
+	</div>
