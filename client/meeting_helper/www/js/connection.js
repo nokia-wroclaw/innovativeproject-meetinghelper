@@ -222,7 +222,14 @@ var connection = {
 				    xmlHttp.onreadystatechange = function() {
 						if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
 						    if (correctCallb) {
-						    	correctCallb(JSON.parse(xmlHttp.responseText));
+						    	var parsed;
+						    	try {
+						    		parsed = JSON.parse(xmlHttp.responseText);
+						    	} catch(e) {
+						    		connection._callback('parsed error: ' + e);
+						    		parsed = {};
+						    	}
+						    	correctCallb(parsed);
 						    } else {
 						    	connection._callback(xmlHttp.responseText);
 						    }
@@ -264,6 +271,22 @@ var connection = {
 					connection._callback(e);
 			    }
 			}
+		},
+
+		/**
+		 * @function connection.action.home
+		 * Checks if user is logged in.
+		 * @param {Function} callb
+		 * Called after receiving login answer.
+		 */
+		home: function(callb) {
+			connection.action._base(
+				connection.action.types.get,
+				connectionLinks.get.home,
+				null,
+				connection.receive._onHome(callb),
+				undefined,
+				true);
 		},
 
 		/**
@@ -447,6 +470,16 @@ var connection = {
 					connection._callback(data);
 				}
 			}
+		},
+
+		/**
+		 * @function connection.receive._onHome
+		 * Called after home answer is received.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
+		_onHome: function(callb) {
+			return connection.receive._base(callb);
 		},
 
 		/**

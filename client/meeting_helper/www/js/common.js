@@ -18,6 +18,7 @@ var common = {
  */
  var connectionLinks = {
  	get: {
+ 		home: '',
 		ping: 'ping',
 		photos: 'getPhotos',
 		material: 'materials/file/',

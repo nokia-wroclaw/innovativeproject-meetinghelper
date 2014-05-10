@@ -34,7 +34,19 @@ historyObj = {
 	}
 };
 
-function load(what, action, ifhistoryObj) {
+var routing = {
+	memory: {},
+	registerAction: function(type, action) {
+		routing.memory[type] = action;
+	},
+	runAction: function(type) {
+		if (routing.memory[type]) {
+			routing.memory[type]();
+		}
+	}
+};
+
+function load(what, ifAction, ifhistoryObj) {
 	if (what === "rooms" && contains(window.location.href, "wall.html")) {
 		// when we were on wall and want to load rooms page
 		window.location = 'index2.html';
@@ -64,13 +76,16 @@ function load(what, action, ifhistoryObj) {
 		case "connecting":
 			$( "#content" ).load( "loadWall.html" );
 			break;
+		case "users":
+			$( "#content" ).load( "loadUsers.html" );
+			break;
 	}
 	if (!ifhistoryObj) {
 		historyObj.addTohistoryObj();
 	}
 	historyObj.setActualPage(what);
 
-	if (action) {
-		action();
+	if (ifAction) {
+		routing.runAction(what);
 	}
 }

@@ -88,9 +88,15 @@ var main = {
 	},
 
 	initUrl: function() {
-        load('connecting');
-        connection.initUrl(function() {
-            load('login');
+		load('connecting');
+		connection.initUrl(function() {
+			connection.action.home(function(data) {
+				if (data.id) {
+					load('rooms', true);
+				} else {
+					load('login');
+				}
+			});
         }, function() {
             load('connection');
         });
@@ -103,9 +109,7 @@ var main = {
             alert('socket inited');
             main.enterRoom();
         }, function() {
-            load('rooms', function() {
-				main.getRooms();
-			});
+            load('rooms', true);
         });
         main.enterRoom();
 	},
@@ -132,9 +136,7 @@ var main = {
 			//akcja wykonywana po odpowiedzi serwera
 			if (received.name === login) {//gdy jest ok
 				me.id = received.id;
-				load('rooms', function() {
-					main.getRooms();
-				});
+				load('rooms', true);
 			}
 		}, function(data) {
 			alert('Wrong username or password');
@@ -185,7 +187,9 @@ var main = {
 				if (received) {
 					main.choseRoomToEnter(roomId);
 				}
-				callb(received);
+				if (callb) {
+					callb(received);
+				}
 			});
 		}
 	},
@@ -204,6 +208,11 @@ var main = {
 		} else {
 			alert('No room is chosen');
 		}
+	},
+
+	goToOnlineUsers: function() {
+		load('users');
+		storage.showOnlineUsers();
 	},
 
 	/**
@@ -227,18 +236,22 @@ var main = {
 		devices.qrCode.scan(function(roomId) {
 			// dołączenie do pokoju
 			main.joinRoom(roomId, function() {
-				main.choseRoomToEnter(roomId);
 				main.goToWall();
 			});
 		});
 	}
 };
 
+routing.registerAction('rooms', function() {
+	main.getRooms();
+});
+routing.registerAction('wallContent', function() {
+	connection.socket.getConnectedUsers();
+});
+
 connection.socket.receive.onEnterRoom = function(data) {
 	me.enteredRoom = data;
-    load('wallContent', function() {
-    	connection.socket.getConnectedUsers();
-    });
+    load('wallContent', true);
 };
 
 /**
