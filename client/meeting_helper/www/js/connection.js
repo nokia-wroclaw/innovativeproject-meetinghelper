@@ -274,6 +274,22 @@ var connection = {
 		},
 
 		/**
+		 * @function connection.action.home
+		 * Checks if user is logged in.
+		 * @param {Function} callb
+		 * Called after receiving login answer.
+		 */
+		home: function(callb) {
+			connection.action._base(
+				connection.action.types.get,
+				connectionLinks.get.home,
+				null,
+				connection.receive._onHome(callb),
+				undefined,
+				true);
+		},
+
+		/**
 		 * @function connection.action.ping
 		 * Sends ping request to server.
 		 * @param {String} link
@@ -454,6 +470,16 @@ var connection = {
 					connection._callback(data);
 				}
 			}
+		},
+
+		/**
+		 * @function connection.receive._onHome
+		 * Called after home answer is received.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
+		_onHome: function(callb) {
+			return connection.receive._base(callb);
 		},
 
 		/**
