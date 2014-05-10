@@ -187,7 +187,9 @@ var main = {
 				if (received) {
 					main.choseRoomToEnter(roomId);
 				}
-				callb(received);
+				if (callb) {
+					callb(received);
+				}
 			});
 		}
 	},
@@ -234,7 +236,6 @@ var main = {
 		devices.qrCode.scan(function(roomId) {
 			// dołączenie do pokoju
 			main.joinRoom(roomId, function() {
-				main.choseRoomToEnter(roomId);
 				main.goToWall();
 			});
 		});
