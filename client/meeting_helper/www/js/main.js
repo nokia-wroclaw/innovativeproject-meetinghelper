@@ -92,6 +92,7 @@ var main = {
 		connection.initUrl(function() {
 			connection.action.home(function(data) {
 				if (data.id) {
+					historyObj.addTohistoryObj('login');
 					load('rooms', true);
 				} else {
 					load('login');

@@ -16,8 +16,10 @@ historyObj = {
 		historyObj.actualPage = page;
 	},
 
-	addTohistoryObj: function() {
-		if (historyObj.actualPage && historyObj.actualPage !== "wall" && historyObj.actualPage !== "connecting") {
+	addTohistoryObj: function(page) {
+		if (page) {
+			historyObj.pages.push(page);
+		} else if (historyObj.actualPage && historyObj.actualPage !== "wall" && historyObj.actualPage !== "connecting") {
 			historyObj.pages.push(historyObj.actualPage);
 		}
 	},
@@ -26,10 +28,10 @@ historyObj = {
 		if (historyObj.pages.length > 0) {
 			var route = historyObj.pages.pop();
 			if (route) {
-				load(route, undefined, true);
+				load(route, true, true);
 			}
 		} else if (historyObj.pages.length === 0 && contains(window.location.href, "wall.html")) {
-			load("rooms", undefined, true);
+			load("rooms", true, true);
 		}
 	}
 };
