@@ -87,7 +87,7 @@ app.get('/api/logout',  user.Logout);
 
 
 app.post('/api/materials/sendFile', user.IsLogin, meeting.IsRoom, material.SendFile);
-app.post('/api/materials/file/:materialID', user.IsLogin, meeting.IsRoom, material.DownloadFile);
+app.get('/api/materials/file/:materialID', user.IsLogin, meeting.IsRoom, material.DownloadFile);
 
 app.get('/api/reg', function(req, res) {
     	

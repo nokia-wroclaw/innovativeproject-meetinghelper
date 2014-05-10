@@ -13,7 +13,11 @@ var Dictionary = require('../dictionary/dictionary.js');
 var clients = [];
 
 module.exports.HelloWorld = function(req, res) {
-    res.endSuccess("Server v0.7");
+    if(req.session.user){
+        res.endSuccess({id:req.session.user});
+    } else {
+        res.endSuccess("Server v0.10");
+    }
 };
 
 module.exports.Ping = function(req, res) {
