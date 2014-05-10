@@ -43,7 +43,7 @@ module.exports.SendFile = function(req, res, next) {
 
 
 module.exports.DownloadFile = function(req, res, next) {
-    var materialID = req.param.materialID;
+    var materialID = req.params.materialID;
     Material.find({where:{id: materialID}})
     .then(function(material) {
         var meeting = material.getMeeting();
