@@ -64,6 +64,9 @@ function load(what, action, ifhistoryObj) {
 		case "connecting":
 			$( "#content" ).load( "loadWall.html" );
 			break;
+		case "users":
+			$( "#content" ).load( "loadUsers.html" );
+			break;
 	}
 	if (!ifhistoryObj) {
 		historyObj.addTohistoryObj();
