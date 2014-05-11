@@ -12,12 +12,17 @@ historyObj = {
 
 	pages: new Array(),
 
-	setActualPage: function(page) {
+	setActualPage: function(page, ifhistoryObj) {
+		if (!ifhistoryObj && historyObj.actualPage !== page) {
+			historyObj.addTohistoryObj();
+		}
 		historyObj.actualPage = page;
 	},
 
-	addTohistoryObj: function() {
-		if (historyObj.actualPage && historyObj.actualPage !== "wall" && historyObj.actualPage !== "connecting") {
+	addTohistoryObj: function(page) {
+		if (page) {
+			historyObj.pages.push(page);
+		} else if (historyObj.actualPage && historyObj.actualPage !== "wall" && historyObj.actualPage !== "connecting") {
 			historyObj.pages.push(historyObj.actualPage);
 		}
 	},
@@ -26,10 +31,12 @@ historyObj = {
 		if (historyObj.pages.length > 0) {
 			var route = historyObj.pages.pop();
 			if (route) {
-				load(route, undefined, true);
+				load(route, true, true);
 			}
 		} else if (historyObj.pages.length === 0 && contains(window.location.href, "wall.html")) {
-			load("rooms", undefined, true);
+			load("rooms", true, true);
+		} else if (historyObj.pages.length === 0 && contains(window.location.href, "index2.html")) {
+			devices.action.exit();
 		}
 	}
 };
@@ -80,10 +87,7 @@ function load(what, ifAction, ifhistoryObj) {
 			$( "#content" ).load( "loadUsers.html" );
 			break;
 	}
-	if (!ifhistoryObj) {
-		historyObj.addTohistoryObj();
-	}
-	historyObj.setActualPage(what);
+	historyObj.setActualPage(what, ifhistoryObj);
 
 	if (ifAction) {
 		routing.runAction(what);

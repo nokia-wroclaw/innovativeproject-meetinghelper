@@ -32,8 +32,6 @@ var storage = {
 	 */
 	addNewData: function(data) {
 		dataFromServer.push(data);
-		//dataFromServer[dataFromServer.length] = [dataFromServer.length, data.type, data.data, data.userId];
-		//data.id = dataFromServer.length-1;
 		switch (data.type) {
 			case "photo":
 				storage.addNewPhoto(data);
@@ -112,8 +110,8 @@ var storage = {
 		textArea.setAttribute("cols", "50");
 		textArea.setAttribute("rows", "1");
 		textArea.setAttribute("placeholder", "Enter your comment here ...");
-		textArea.setAttribute("onfocus", "main.expandCommentBox(" + data.id + ")");
-		textArea.setAttribute("onblur", "main.contractCommentBox(" + data.id + ")");
+		textArea.setAttribute("onfocus", "storage.expandCommentBox(" + data.id + ")");
+		textArea.setAttribute("onblur", "storage.contractCommentBox(" + data.id + ")");
 		formNode.appendChild(textArea);
 		document.getElementById('myImageCamera').appendChild(formNode);
 		document.getElementById('myImageCamera').appendChild(document.createElement("br"));
@@ -131,14 +129,14 @@ var storage = {
 	 * Zapisuje adres ostatniego zalogowanego serwera
 	 */
 	setCurrentServerAddress: function(serverAddress) {
-		localStorage.setItem("serverAddress", serverAddress);
+		window.localStorage.setItem("serverAddress", serverAddress);
 	},
 
 	/**
 	 * Pobiera adres ostatniego zalogowanego serwera
 	 */
 	getCurrentServerAddress: function() {
-		return localStorage.getItem("serverAddress");
+		return window.localStorage.getItem("serverAddress");
 	},
 
 	/**
@@ -173,7 +171,6 @@ var storage = {
 	 * Dodaje nowego użytkownika, który wchodzi do pokoju
 	 */
 	addNewUser: function(data) {
-		//onlineUsers[onlineUsers.length] = [data.userId, data.type, data.data];
 		onlineUsers.push(data);
 	},
 
@@ -181,7 +178,7 @@ var storage = {
 	 * Usuwa użytkownika, gdy opuszcza pokój
 	 */
 	deleteUser: function(data) {
-		//onlineUsers.delete(data.userId);
+		delete onlineUsers[data.userId];
 	},
 
 	/**
@@ -191,7 +188,7 @@ var storage = {
 		onlineUsers = [];
 		for (var user in receivedUsers)
 		{
-			onlineUsers.push(receivedUsers[room]);
+			onlineUsers.push(receivedUsers[user]);
 		}
 	},
 

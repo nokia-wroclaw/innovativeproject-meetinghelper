@@ -25,7 +25,7 @@ var common = {
 		user: 'user/',
 		rooms: {
 			all: 'meetings/list',
-			data: 'meetings/data'
+			data: 'materials/getAll'
 		}
 	},
 
