@@ -12,7 +12,10 @@ historyObj = {
 
 	pages: new Array(),
 
-	setActualPage: function(page) {
+	setActualPage: function(page, ifhistoryObj) {
+		if (!ifhistoryObj && historyObj.actualPage !== page) {
+			historyObj.addTohistoryObj();
+		}
 		historyObj.actualPage = page;
 	},
 
@@ -84,10 +87,7 @@ function load(what, ifAction, ifhistoryObj) {
 			$( "#content" ).load( "loadUsers.html" );
 			break;
 	}
-	if (!ifhistoryObj) {
-		historyObj.addTohistoryObj();
-	}
-	historyObj.setActualPage(what);
+	historyObj.setActualPage(what, ifhistoryObj);
 
 	if (ifAction) {
 		routing.runAction(what);

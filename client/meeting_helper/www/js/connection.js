@@ -83,7 +83,7 @@ var connection = {
 	initUrl: function(success, failure) {
 		connection.state = connection.states.unknown_host;
 		if (!connection.url) {
-			connection.url = window.localStorage.getItem('url');
+			connection.url = storage.getCurrentServerAddress();
 		}
 		if (!connection.url) {
 			connection.url = common.defaultUrl;
@@ -113,7 +113,7 @@ var connection = {
 
 		connection.checkConnection(url, function() {
 			connection.url = url;
-			window.localStorage.setItem('url', url);
+			storage.setCurrentServerAddress(url);
 			if (success) {
 				success();
 			}
@@ -128,7 +128,7 @@ var connection = {
 	 */
 	getUrl: function() {
 		if (!connection.url) {
-			connection.url = window.localStorage.getItem('url');
+			connection.url = storage.getCurrentServerAddress();
 		}
 		return connection.url;
 	},
@@ -403,11 +403,11 @@ var connection = {
 		 * @param {Function} callb
 		 * Called with received data.
 		 */
-		getRoomData: function(roomId, callb) {
+		getRoomData: function(callb) {
 			connection.action._base(
 				connection.action.types.get,
 				connectionLinks.get.rooms.data,
-				{roomId: roomId},
+				null,
 				connection.receive.onReceiveRoomData(callb));
 		},
 
@@ -547,7 +547,29 @@ var connection = {
 		 * Called with received data.
 		 */
 		onReceiveRoomData: function(callb) {
-			return connection.receive._base(callb);
+			return connection.receive._base(function(data) {
+				var toReturn = [];
+				for (var i in data) {
+					if (data[i].name.substring(
+						data[i].name.length - 4,
+						data[i].name.length) === '.jpg') {
+							toReturn.push({
+								id: data[i].id,
+								userId: data[i].UserId,
+								type: 'photo',
+								data: connection.getUrl() + connectionLinks.get.material + data[i].id
+							});
+					} else {
+						toReturn.push({
+							id: data[i].id,
+							userId: data[i].UserId,
+							type: 'note',
+							data: 'data.content'
+						});
+					}
+				}
+				callb(toReturn);
+			});
 		},
 
 		/**
@@ -808,8 +830,6 @@ var connection = {
 				connection.socket.instance.on(webSocketBroadcast.pong, connection.socket.receive._onPing(success));
 				connection.socket.instance.on(webSocketBroadcast.enterRoom, connection.socket.receive._onEnterRoom);
 				connection.socket.instance.on(webSocketBroadcast.usersOnline, connection.socket.receive._onUsersOnline);
-				connection.socket.instance.on(webSocketBroadcast.allMatetials, connection.socket.receive._onAllMatetials);
-				connection.socket.instance.on(webSocketBroadcast.allComments, connection.socket.receive._onAllComments);
 				connection.socket.instance.on(webSocketBroadcast.newUser, connection.socket.receive._onNewUser);
 				connection.socket.instance.on(webSocketBroadcast.removeUser, connection.socket.receive._onRemoveUser);
 				connection.socket.instance.on(webSocketBroadcast.newMaterial, connection.socket.receive._onNewMaterial);
@@ -887,26 +907,6 @@ var connection = {
 						connection.socket.receive.onUsersOnline(toReturn);
 					}
 				} catch(e) {
-				}
-			},
-
-			_onAllMatetials: function (data) {
-				connection._callback('_onAllMatetials: ' + JSON.stringify(data));
-
-				if (connection.socket.receive._onNewMaterial) {
-					for (var i in data.data) {
-						connection.socket.receive._onNewMaterial(data.data[id]);
-					}
-				}
-			},
-
-			_onAllComments: function (data) {
-				connection._callback('_onAllComments: ' + JSON.stringify(data));
-
-				if (connection.socket.receive._onNewComment) {
-					for (var i in data.data) {
-						connection.socket.receive._onNewComment(data.data[id]);
-					}
 				}
 			},
 
@@ -995,11 +995,15 @@ var connection = {
 				}
 			},
 
+			onPing: undefined,
+
 			_onPing: function (success) {
 				return function() {
-					alert('pong');
 					if (success) {
 						success();
+					}
+					if (connection.socket.receive.onPing) {
+						connection.socket.receive.onPing();
 					}
 					connection._callback('pong');
 				}

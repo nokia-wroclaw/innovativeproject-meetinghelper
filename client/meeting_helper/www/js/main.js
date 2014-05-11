@@ -106,13 +106,11 @@ var main = {
 	initSocket: function() {
 		load('wall');
         connection.socket.init(function() {
-            // todo: check socket ping
-            alert('socket inited');
-            main.enterRoom();
+        	connection.state = connection.states.established;
         }, function() {
-            load('rooms', true);
+            load('rooms');
         });
-        main.enterRoom();
+        connection.socket.ping();
 	},
 
 	setUrl: function(link) {
@@ -240,20 +238,38 @@ var main = {
 				main.goToWall();
 			});
 		});
+	},
+
+	getRoomData: function() {
+		connection.action.getRoomData(function(data) {
+			alert('getRoomData' + JSON.stringify(data));
+			//obsłużenie odbioru wszystkich danych
+		});
 	}
 };
 
 routing.registerAction('rooms', function() {
 	main.getRooms();
 });
-routing.registerAction('wallContent', function() {
+routing.registerAction('wall', function() {
 	connection.socket.getConnectedUsers();
+	main.getRoomData();
+
+    load('wallContent', true);
+});
+routing.registerAction('wallContent', function() {
+	//storage.coś - akcje ustawiające wygląd po przełączeniu widoku
+	// w celu jego ponownego ustawienia
 });
 
 connection.socket.receive.onEnterRoom = function(data) {
 	// data consists of: meetingID, name
 	me.enteredRoom = data;
-    load('wallContent', true);
+	load('wall', true);
+};
+
+connection.socket.receive.onPing = function() {
+    main.enterRoom();
 };
 
 /**

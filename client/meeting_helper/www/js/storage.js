@@ -129,14 +129,14 @@ var storage = {
 	 * Zapisuje adres ostatniego zalogowanego serwera
 	 */
 	setCurrentServerAddress: function(serverAddress) {
-		localStorage.setItem("serverAddress", serverAddress);
+		window.localStorage.setItem("serverAddress", serverAddress);
 	},
 
 	/**
 	 * Pobiera adres ostatniego zalogowanego serwera
 	 */
 	getCurrentServerAddress: function() {
-		return localStorage.getItem("serverAddress");
+		return window.localStorage.getItem("serverAddress");
 	},
 
 	/**
