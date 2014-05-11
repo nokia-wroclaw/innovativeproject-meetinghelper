@@ -32,8 +32,6 @@ var storage = {
 	 */
 	addNewData: function(data) {
 		dataFromServer.push(data);
-		//dataFromServer[dataFromServer.length] = [dataFromServer.length, data.type, data.data, data.userId];
-		//data.id = dataFromServer.length-1;
 		switch (data.type) {
 			case "photo":
 				storage.addNewPhoto(data);
@@ -112,8 +110,8 @@ var storage = {
 		textArea.setAttribute("cols", "50");
 		textArea.setAttribute("rows", "1");
 		textArea.setAttribute("placeholder", "Enter your comment here ...");
-		textArea.setAttribute("onfocus", "main.expandCommentBox(" + data.id + ")");
-		textArea.setAttribute("onblur", "main.contractCommentBox(" + data.id + ")");
+		textArea.setAttribute("onfocus", "storage.expandCommentBox(" + data.id + ")");
+		textArea.setAttribute("onblur", "storage.contractCommentBox(" + data.id + ")");
 		formNode.appendChild(textArea);
 		document.getElementById('myImageCamera').appendChild(formNode);
 		document.getElementById('myImageCamera').appendChild(document.createElement("br"));
