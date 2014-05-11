@@ -14,3 +14,16 @@ testosterone
   .post('/api/register', {login:"test", password:"test"}, function (res) {
     assert.equal(res.statusCode, 200);
   })
+  .post('/api/login', {login:"test", password:"test"}, function (res) {
+    assert.equal(res.statusCode, 200);
+  })
+  
+  
+  .get('/api/logout', function (res) {
+    assert.equal(res.statusCode, 200);
+  })
+  
+  .get('/api/photoExist/:photoName', function (res) {
+    assert.equal(res.statusCode, 200);
+  })
+  
