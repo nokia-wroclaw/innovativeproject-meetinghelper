@@ -261,16 +261,19 @@ connection.socket.receive.onEnterRoom = function(data) {
  */
 connection.socket.receive.onUsersOnline = function(data) {
 	alert('onUsersOnline ' + JSON.stringify(data));
+	storage.getAllOnlineUsers(data);
 	// add new users
 };
 
 connection.socket.receive.onNewUser = function(data) {
 	alert('onNewUser ' + JSON.stringify(data));
+	storage.addNewUser(data);
 	// add new user
 };
 
 connection.socket.receive.onRemoveUser = function(data) {
 	alert('onRemoveUser ' + JSON.stringify(data));
+	storage.deleteUser(data);
 	// remove user
 };
 
@@ -286,5 +289,6 @@ connection.socket.receive.onNewNote = function(data) {
 
 connection.socket.receive.onNewComment = function(data) {
 	alert('onNewComment: ' + JSON.stringify(data));
+	storage.addNewData(data);
     // add new comment
 };
