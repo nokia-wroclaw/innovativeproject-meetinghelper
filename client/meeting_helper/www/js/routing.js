@@ -32,6 +32,8 @@ historyObj = {
 			}
 		} else if (historyObj.pages.length === 0 && contains(window.location.href, "wall.html")) {
 			load("rooms", true, true);
+		} else if (historyObj.pages.length === 0 && contains(window.location.href, "index2.html")) {
+			devices.action.exit();
 		}
 	}
 };
