@@ -149,5 +149,17 @@ var devices = {
 		fail: function(fail) {
 			devices._callback(fail);
 		}
+	},
+
+	action: {
+		exit: function() {
+			alert('powinno się zaraz zamknąć');
+			navigator.notification.confirm('Do you really want to exit?',
+				function(buttonIndex) {
+					if (buttonIndex === 2) {
+						navigator.app.exitApp();
+					}
+				}, 'Exit', 'No,Yes');
+		}
 	}
 };

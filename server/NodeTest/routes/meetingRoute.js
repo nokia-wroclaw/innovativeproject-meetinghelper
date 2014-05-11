@@ -113,15 +113,13 @@ module.exports.EnterMeeting = function(req) {
             access = false;
             meetings.forEach(function(meeting) {
                 if(meeting.id == meetingID)
-                    access = true;
+                    access = meeting;
             })
-           return access;
-        })
-        .then(function(access){
-            if(access) {
-                req.session.rom = meetingID;
+           if(access) {
+                req.session.room = meetingID;
+                req.session.save();
                 req.io.join(meetingID);
-                req.io.emit('joined', {data: meetingID});
+                req.io.emit('joined', {meetingID: meetingID, name: access.name});
             }
         })
     });

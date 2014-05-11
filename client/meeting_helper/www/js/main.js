@@ -106,13 +106,11 @@ var main = {
 	initSocket: function() {
 		load('wall');
         connection.socket.init(function() {
-            // todo: check socket ping
-            alert('socket inited');
-            main.enterRoom();
+        	connection.state = connection.states.established;
         }, function() {
-            load('rooms', true);
+            load('rooms');
         });
-        main.enterRoom();
+        connection.socket.ping();
 	},
 
 	setUrl: function(link) {
@@ -240,19 +238,38 @@ var main = {
 				main.goToWall();
 			});
 		});
+	},
+
+	getRoomData: function() {
+		connection.action.getRoomData(function(data) {
+			alert('getRoomData' + JSON.stringify(data));
+			//obsłużenie odbioru wszystkich danych
+		});
 	}
 };
 
 routing.registerAction('rooms', function() {
 	main.getRooms();
 });
-routing.registerAction('wallContent', function() {
+routing.registerAction('wall', function() {
 	connection.socket.getConnectedUsers();
+	main.getRoomData();
+
+    load('wallContent', true);
+});
+routing.registerAction('wallContent', function() {
+	//storage.coś - akcje ustawiające wygląd po przełączeniu widoku
+	// w celu jego ponownego ustawienia
 });
 
 connection.socket.receive.onEnterRoom = function(data) {
+	// data consists of: meetingID, name
 	me.enteredRoom = data;
-    load('wallContent', true);
+	load('wall', true);
+};
+
+connection.socket.receive.onPing = function() {
+    main.enterRoom();
 };
 
 /**
@@ -260,16 +277,19 @@ connection.socket.receive.onEnterRoom = function(data) {
  */
 connection.socket.receive.onUsersOnline = function(data) {
 	alert('onUsersOnline ' + JSON.stringify(data));
+	storage.getAllOnlineUsers(data);
 	// add new users
 };
 
 connection.socket.receive.onNewUser = function(data) {
 	alert('onNewUser ' + JSON.stringify(data));
+	storage.addNewUser(data);
 	// add new user
 };
 
 connection.socket.receive.onRemoveUser = function(data) {
 	alert('onRemoveUser ' + JSON.stringify(data));
+	storage.deleteUser(data);
 	// remove user
 };
 
@@ -285,5 +305,6 @@ connection.socket.receive.onNewNote = function(data) {
 
 connection.socket.receive.onNewComment = function(data) {
 	alert('onNewComment: ' + JSON.stringify(data));
+	storage.addNewData(data);
     // add new comment
 };
