@@ -251,6 +251,7 @@ routing.registerAction('wallContent', function() {
 });
 
 connection.socket.receive.onEnterRoom = function(data) {
+	// data consists of: meetingID, name
 	me.enteredRoom = data;
     load('wallContent', true);
 };

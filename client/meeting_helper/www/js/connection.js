@@ -869,19 +869,24 @@ var connection = {
 
 			onUsersOnline: undefined,
 
-			_onUsersOnline: function (data) {
-				connection._callback('_onUsersOnline: ' + JSON.stringify(data));
+			_onUsersOnline: function (received) {
+				connection._callback('_onUsersOnline: ' + JSON.stringify(received));
+				try {
+					var data = JSON.parse(received);
 
-				if (connection.socket.receive.onUsersOnline) {
-					var toReturn = [];
-					for (var i in data.data) {
-						toReturn.push({
-							userId: data.data[i].id,
-							type: 'user',
-							data: data.data[i]
-						});
+					if (connection.socket.receive.onUsersOnline) {
+						var toReturn = [];
+						for (var i in data) {
+							toReturn.push({
+								userId: data[i].userID,
+								type: 'user',
+								name: data[i].name,
+								data: data[i]
+							});
+						}
+						connection.socket.receive.onUsersOnline(toReturn);
 					}
-					connection.socket.receive.onUsersOnline(toReturn);
+				} catch(e) {
 				}
 			},
 
