@@ -49,6 +49,7 @@ module.exports.Login = function(req, res, next) {
         if(user)
         {
             req.session.user = user.id;
+            req.session.userFull = user;
             req.session.save();
             res.endSuccess(user);
             console.log("\n sesja podczas logowania: "+ req.session.id + "\n")
@@ -61,6 +62,7 @@ module.exports.Login = function(req, res, next) {
 module.exports.Logout = function(req, res, next) {
     delete req.session.user;
     delete req.session.room;
+    delete req.session.userFull;
     req.session.save();
     res.endSuccess(true);
 }
@@ -71,9 +73,10 @@ module.exports.UsersOnline = function(req){
     var clients = [];
     app.io.sockets.clients(req.session.room).forEach(function(socket) {
         if(socket.handshake.session.user)
-            clients.push({ userId: socket.handshake.session.user});
+            clients.push({ userID: socket.handshake.session.user, name: socket.handshake.session.userFull.name});
     })
-    req.io.emit('usersOnline', new Success(clients).JSON());
+
+    req.io.emit('usersOnline', JSON.stringify(clients));
 }
 
 

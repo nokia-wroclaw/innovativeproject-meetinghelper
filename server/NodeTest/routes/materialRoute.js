@@ -46,9 +46,20 @@ module.exports.DownloadFile = function(req, res, next) {
     var materialID = req.params.materialID;
     Material.find({where:{id: materialID}})
     .then(function(material) {
-        var meeting = material.getMeeting();
-        var newPath = "events\\"+ meeting.folderName +"\\"+ materialfilename;
+        Meeting.find({where:{id: material.MeetingId}})
+        .then(function(meeting) {
+        var newPath = "events\\"+ meeting.folderName +"\\"+ material.fileName;
         res.sendfile(newPath);
+        });
     });
 };
+
+module.exports.GetAll = function(req, res, next) {
+    var meetingID = req.session.room;
+    Material.findAll({where:{MeetingId : meetingID}})
+    .then(function(materials) {
+        res.endSuccess(materials);
+    });
+};
+
 

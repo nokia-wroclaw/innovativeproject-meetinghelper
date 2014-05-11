@@ -25,10 +25,7 @@ module.exports.Ping = function(req, res) {
 };
 
 module.exports.SocketPing = function(req){
-    if(req.session.user)
-        req.io.emit('pong', new Success(req.session.user).JSON());
-    else
-        req.io.emit('pong', new Error("403").JSON());
+        req.io.emit('pong', JSON.stringify("PONG"));
 };
 
 module.exports.Connected = function (socket) {
