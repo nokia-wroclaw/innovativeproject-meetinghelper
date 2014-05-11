@@ -171,7 +171,6 @@ var storage = {
 	 * Dodaje nowego użytkownika, który wchodzi do pokoju
 	 */
 	addNewUser: function(data) {
-		//onlineUsers[onlineUsers.length] = [data.userId, data.type, data.data];
 		onlineUsers.push(data);
 	},
 
@@ -179,7 +178,7 @@ var storage = {
 	 * Usuwa użytkownika, gdy opuszcza pokój
 	 */
 	deleteUser: function(data) {
-		//onlineUsers.delete(data.userId);
+		delete onlineUsers[data.userId];
 	},
 
 	/**
@@ -189,7 +188,7 @@ var storage = {
 		onlineUsers = [];
 		for (var user in receivedUsers)
 		{
-			onlineUsers.push(receivedUsers[room]);
+			onlineUsers.push(receivedUsers[user]);
 		}
 	},
 
