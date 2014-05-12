@@ -1,16 +1,32 @@
+/**
+ * Part of application responsible for data storage and showing stored data
+ */
+
+/**
+ * Hash with stored data received from server.
+ */
 var dataFromServer = [];
 
+/**
+ * Hash with stored online users data.
+ */
 var onlineUsers = [];
 
+/**
+ * Hash with stored rooms data.
+ */
 var rooms = [];
 
 /**
- * Funkcje zapisujące pobrane z serwera elementy w tablicach
- * i wyświatlające te dane dla użytkownika.
+ * 'storage' ...
  */
 var storage = {
 	/**
-	 * Zapisuje listę pokoi w tablicy oraz wyświetla je na stronie w sekcji serverRooms
+	 * @function storage.showRooms
+	 * Save rooms in rooms array.
+	 * Show stored data on web page in section with id 'serverRooms'.
+	 * @param {Array[Object]} receivedRooms
+	 * Rooms received from server {{Integer} receivedRooms.id, {String} receivedRooms.name, {String} receivedRooms.folderName}.
 	 */
 	showRooms: function(receivedRooms) {
 		var roomList = document.createElement("select");
@@ -28,7 +44,11 @@ var storage = {
 	},
 
 	/**
-	 * Dodawanie nowych danych do tablicy
+	 * @function storage.addNewData
+	 * Add new object to array dataFromServer.
+	 * Invoke adding function depends of data type.
+	 * @param {Object} data
+	 * Data received from server {{Integer} data.id, {Integer} data.userId, {String} data.type, {String} data.data}.
 	 */
 	addNewData: function(data) {
 		dataFromServer.push(data);
@@ -48,7 +68,11 @@ var storage = {
 	},
 
 	/**
-	 * Dodawanie nowych zdjęć
+	 * @function storage.addNewPhoto
+	 * Add new photo on web page in section with id 'myImageCamera'.
+	 * Invoke function adding comment box.
+	 * @param {Object} data
+	 * Data forwarded by storage.addNewData.
 	 */
 	addNewPhoto: function(data) {
 		var image = document.createElement("img");
@@ -59,26 +83,39 @@ var storage = {
 		image.src = data.data;
 		var element = document.getElementById('myImageCamera');
 		element.appendChild(image);
-		storage.addCommentBox(data);
+		storage.addCommentBox(data.id);
 	},
 
 	/**
-	 * Dodawanie nowych notatek tekstowych jako paragraf
+	 * @function storage.addNewMessage
+	 * Add new note as paragraph on web page in section with id 'myImageCamera'.
+	 * @param {Object} data
+	 * Data forwarded by storage.addNewData.
 	 */
 	addNewMessage: function(data) {
 		var message = document.createElement("p");
 		message.appendChild(document.createTextNode(data.data));
 		var element = document.getElementById('myImageCamera');
 		element.appendChild(message);
-		storage.addCommentBox(data);
+		storage.addCommentBox(data.id);
 	},
 
+	/**
+	 * @function storage.addNewComment
+	 * Add new comment after data with proper id.
+	 * @param {Object} data
+	 * Data forwarded by storage.addNewData.
+	 */
 	addNewComment: function(data) {
 		var comment = document.getElementById(data.id);
 	},
 	
 	/**
-	 * Po kliknięciu na commentBox jest rozszerzany i zostaje dodany przycisk "Submit"
+	 * @function storage.expandCommentBox
+	 * After event expand comment box with proper id.
+	 * Button 'Submit' will appear.
+	 * @param {Integer} id
+	 * Id of comment box.
 	 */
 	expandCommentBox: function(id) {
 		var item = document.getElementById(id);
@@ -90,7 +127,11 @@ var storage = {
 	},
 	
 	/**
-	 * Utrata focusu przez commentBox cofa w/w zmiany
+	 * @function storage.contractCommentBox
+	 * After event contract comment box with proper id.
+	 * Button 'Submit' will disappear.
+	 * @param {Integer} id
+	 * Id of comment box.
 	 */
 	contractCommentBox: function(id) {
 		var item = document.getElementById(id);
@@ -100,25 +141,30 @@ var storage = {
 	},
 
 	/**
-	 * Dodaje commentBox pod dodanym elementem (brak implementacji komentarzy)
+	 * @function storage.addCommentBox
+	 * Add comment box after each new data received from server.
+	 * @param {Integer} id 
+	 * Data id which will be assigned as comment box id.
 	 */
-	addCommentBox: function(data) {
+	addCommentBox: function(id) {
 		var formNode = document.createElement("form");
-		formNode.setAttribute("id", data.id);
+		formNode.setAttribute("id", id);
 		formNode.setAttribute("method", "post");
 		var textArea = document.createElement("textarea");
 		textArea.setAttribute("cols", "50");
 		textArea.setAttribute("rows", "1");
 		textArea.setAttribute("placeholder", "Enter your comment here ...");
-		textArea.setAttribute("onfocus", "storage.expandCommentBox(" + data.id + ")");
-		textArea.setAttribute("onblur", "storage.contractCommentBox(" + data.id + ")");
+		textArea.setAttribute("onfocus", "storage.expandCommentBox(" + id + ")");
+		textArea.setAttribute("onblur", "storage.contractCommentBox(" + id + ")");
 		formNode.appendChild(textArea);
 		document.getElementById('myImageCamera').appendChild(formNode);
 		document.getElementById('myImageCamera').appendChild(document.createElement("br"));
 	},
 
 	/**
-	 * Ustawia zmienną odpowiedzialną za wybór pokoju do wejścia
+	 * @function storage.setChosedRoomToEnter
+	 * Get value of chosen room.
+	 * Send this value to main.choseRoomToEnter
 	 */
 	setChosedRoomToEnter: function() {
 		var roomToEnter = document.getElementById('serverRooms').getElementsByTagName('select')[0].value;
@@ -126,63 +172,87 @@ var storage = {
 	},
 
 	/**
-	 * Zapisuje adres ostatniego zalogowanego serwera
+	 * @function storage.setServerAddress
+	 * Set address of the current server in localStorage.
+	 * @param {String} serverAddress
+	 * Address of the server to store.
 	 */
-	setCurrentServerAddress: function(serverAddress) {
+	setServerAddress: function(serverAddress) {
 		window.localStorage.setItem("serverAddress", serverAddress);
 	},
 
 	/**
-	 * Pobiera adres ostatniego zalogowanego serwera
+	 * @function storage.getServerAddress
+	 * Get from localStorage address of last logged server.
+	 * @return 
 	 */
-	getCurrentServerAddress: function() {
+	getServerAddress: function() {
 		return window.localStorage.getItem("serverAddress");
 	},
 
 	/**
-	 * Zapisuje login ostatnio zalogowanego użytkownika
+	 * @function storage.setUserLogin
+	 * Set login of the current user in localStorage.
+	 * @param {String} login
+	 * User login to store.
 	 */
-	setLastUserLogin: function(login) {
-		localStorage.setItem("userLogin", login);
+	setUserLogin: function(login) {
+		window.localStorage.setItem("userLogin", login);
 	},
 
 	/**
-	 * Pobiera login ostatnio zalogowanego użytkownika
+	 * @function storage.getUserLogin
+	 * Get from localStorage login of last used user.
 	 */
-	getLastUserLogin: function() {
-		return localStorage.getItem("userLogin");
+	getUserLogin: function() {
+		return window.localStorage.getItem("userLogin");
 	},
 
 	/**
-	 * Zapisuje hasło ostatno zalogowanego użytkownika
+	 * @function storage.setUserPassword
+	 * Set password of the current user in localStorage.
+	 * @param {String} password
+	 * User password to store.
 	 */
-	setLastUserPassword: function(password) {
-		localStorage.setItem("userPassword", password);
+	setUserPassword: function(password) {
+		window.localStorage.setItem("userPassword", password);
 	},
 
 	/**
-	 * Pobiera hasło ostatnio zalogowanego użytkownika
+	 * @function storage.getUserPassword
+	 * Get from localStorage password of last used user.
 	 */
-	getLastUserPassword: function() {
-		return localStorage.getItem("userPassword");
+	getUserPassword: function() {
+		return window.localStorage.getItem("userPassword");
 	},
 
 	/**
-	 * Dodaje nowego użytkownika, który wchodzi do pokoju
+	 * @function storage.addNewUser
+	 * Add new user who have entered into room.
+	 * @param {Object} data
+	 * New entered user data {{Integer} data.id, {String} data.type, {String} data.data}.
 	 */
 	addNewUser: function(data) {
 		onlineUsers.push(data);
 	},
 
 	/**
-	 * Usuwa użytkownika, gdy opuszcza pokój
+	 * @function storage.deleteUser
+	 * Delete user when leaving room.
+	 * @param {Object} data
+	 * Data of deleted user.
 	 */
 	deleteUser: function(data) {
 		delete onlineUsers[data.userId];
 	},
 
 	/**
-	 * Wywoływana po wejściu do pokoju, pobiera wszystkich użytkowników obecnych w pokoju
+	 * @function storage.getAllOnlineUsers
+	 * Invoke once after enter into room.
+	 * Get all currently online users in entered room
+	 * and store this data in onlineUsers array.
+	 * @param {Array[Object]} receivedUsers
+	 * Array of currently online users {{Integer} data.id, {String} data.type, {String} data.name, {String} data.data}.
 	 */
 	getAllOnlineUsers: function(receivedUsers) {
 		onlineUsers = [];
@@ -193,7 +263,9 @@ var storage = {
 	},
 
 	/**
-	 * Wyświetla wszysktich użytkowników online w pokoju
+	 * @function storage.showOnlineUsers
+	 * Invoke after load page loadUsers.html.
+	 * Get all currently online users in room.
 	 */
 	showOnlineUsers: function() {
 		var users = document.getElementById('onlineUsers');
