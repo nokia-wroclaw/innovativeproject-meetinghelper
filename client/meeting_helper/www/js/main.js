@@ -210,8 +210,7 @@ var main = {
 	},
 
 	goToOnlineUsers: function() {
-		load('users');
-		storage.showOnlineUsers();
+		load('users', true);
 	},
 
 	/**
@@ -260,6 +259,9 @@ routing.registerAction('wall', function() {
 routing.registerAction('wallContent', function() {
 	//storage.coś - akcje ustawiające wygląd po przełączeniu widoku
 	// w celu jego ponownego ustawienia
+});
+routing.registerAction('users', function() {
+	storage.showOnlineUsers();
 });
 
 connection.socket.receive.onEnterRoom = function(data) {

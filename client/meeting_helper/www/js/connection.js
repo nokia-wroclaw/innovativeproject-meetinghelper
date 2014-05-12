@@ -83,7 +83,7 @@ var connection = {
 	initUrl: function(success, failure) {
 		connection.state = connection.states.unknown_host;
 		if (!connection.url) {
-			connection.url = storage.getCurrentServerAddress();
+			connection.url = storage.getServerAddress();
 		}
 		if (!connection.url) {
 			connection.url = common.defaultUrl;
@@ -113,7 +113,7 @@ var connection = {
 
 		connection.checkConnection(url, function() {
 			connection.url = url;
-			storage.setCurrentServerAddress(url);
+			storage.setServerAddress(url);
 			if (success) {
 				success();
 			}
@@ -128,7 +128,7 @@ var connection = {
 	 */
 	getUrl: function() {
 		if (!connection.url) {
-			connection.url = storage.getCurrentServerAddress();
+			connection.url = storage.getServerAddress();
 		}
 		return connection.url;
 	},
