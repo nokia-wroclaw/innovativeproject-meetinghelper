@@ -1,24 +1,46 @@
 /**
  * Script for switching contents
  */
-
+	/**
+	 * @function routing.contains
+	 * checks if current URL is the same
+	 * @param {function} bigger
+	 * current URL
+	 * @param {function} fragment
+	 * defines page to check if is the same
+	 */
 var contains = function(bigger, fragment) {
 	return bigger.indexOf(fragment) != -1;
 };
 
-// historyObj object
+	 /**
+	* Defines current navigation between sites
+	*/
 historyObj = {
 	actualPage: undefined,
 
 	pages: new Array(),
-
+	
+	/**
+	 * @function setActualPage
+	 * sets actual page if different than current
+	 * @param {function} page
+	 * page to be set as current
+	 * @param {function} ifhistoryObj
+	 * checks if page was used before
+	 */
 	setActualPage: function(page, ifhistoryObj) {
 		if (!ifhistoryObj && historyObj.actualPage !== page) {
 			historyObj.addTohistoryObj();
 		}
 		historyObj.actualPage = page;
 	},
-
+	/**
+	 * @function addTohistoryObj
+	 * adds page to historyObj
+	 * @param {function} page
+	 * page to be added to historyObj
+	 */
 	addTohistoryObj: function(page) {
 		if (page) {
 			historyObj.pages.push(page);
@@ -26,7 +48,10 @@ historyObj = {
 			historyObj.pages.push(historyObj.actualPage);
 		}
 	},
-
+	/**
+	 * @function back
+	 * navigates user to earlier page, if window contains index2.html then exits
+	 */
 	back: function() {
 		if (historyObj.pages.length > 0) {
 			var route = historyObj.pages.pop();
@@ -40,19 +65,42 @@ historyObj = {
 		}
 	}
 };
-
+	/**
+	* Reacts when action is made by user
+	*/
 var routing = {
 	memory: {},
+	/**
+	 * @function registerAction
+	 * registers actions made by user
+	 * @param {function} action
+	 * action made by user
+	 */
 	registerAction: function(type, action) {
 		routing.memory[type] = action;
 	},
+	/**
+	 * @function runAction
+	 * runs action made by user
+	 * @param {function} type
+	 * type - current action
+	 */
 	runAction: function(type) {
 		if (routing.memory[type]) {
 			routing.memory[type]();
 		}
 	}
 };
-
+	/**
+	 * @function load
+	 * loads content that is set to current user action
+	 * @param {function} what
+	 * defines current user case
+	 * @param {function} ifAction
+	 * checks if user had made an action
+	 * @param {function} ifhistoryObj
+	 * checks if page was used before
+	 */
 function load(what, ifAction, ifhistoryObj) {
 	if (what === "rooms" && contains(window.location.href, "wall.html")) {
 		// when we were on wall and want to load rooms page
