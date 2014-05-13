@@ -5,15 +5,16 @@ var me = {
 };
 
 /**
- * Funkcje, od których oczekujemy odpowiedzi, wywołujemy,
- * podając w nich jako argument funkcję, która ma zostać wywołana
- * po otrzymaniu oczekiwanych danych.
+ * Function from which we demand respond, recall,
+ * giving them as parameters functions which need to be recalled
+ * after receiving expected data.
  */
 var main = {
 	/**
-	 * Robi zdjęcie, wysyła na serwer i wyświetla na wallu.
+	 * @function main.takePicture
+	 * Take picture then send it to the server and present on a wall
 	 * @param {Number} quality
-	 * Jakość wykonywanego zdjęcia z zakresu [1, 100].
+	 * Quality of photos is in range [1, 100].
 	 */
 	takePicture: function(quality) {
 		devices.camera.takePicture(quality, function(imageSrc) {
@@ -28,9 +29,10 @@ var main = {
 	},
 
 	/**
-	 * Pobiera zdjęcie, wysyła na serwer i wyświetla na wallu.
+	 * @function main.loadPicture
+	 * Load picture then send it to the server and present on a wall
 	 * @param {Number} quality
-	 * Jakość wykonywanego zdjęcia z zakresu [1, 100].
+	 * Quality of photos is in range [1, 100].
 	 */
 	loadPicture: function() {
 		devices.photoLibrary.take(function(imageSrc) {
@@ -43,8 +45,9 @@ var main = {
 		});
 	},
 
-	/**
-	 * Skanuje kod webserwera, nawiązuje połączenie websocketa i zapisuje zeskanowane dane do inputa.
+	 /**
+	 * @function main.initialQrCode
+	 * Scan QR Code of webmaster, get connection of websocket and save scaned data to input
 	 */
 	initialQrCode: function() {
 		devices.qrCode.scan(function(result) {
@@ -54,8 +57,9 @@ var main = {
 		}, true);
 	},
 
-	/**
-	 * Skanuje kod i uruchamia jedynie alerta.
+	 /**
+	 * @function main.scanAnyQrCode
+	 * Scan QR Code of webmaster and start alert only
 	 */
 	scanAnyQrCode: function() {
 		devices.qrCode.scan(function(result) {
@@ -63,8 +67,9 @@ var main = {
 		});
 	},
 
-	/**
-	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
+	 /**
+	 * @function main.getMac
+	 * Download data of device mac and recall with this mac an alert
 	 */
 	getMac: function() {
 		devices.mac.get(function(result) {
@@ -72,8 +77,9 @@ var main = {
 		});
 	},
 
-	/**
-	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
+	 /**
+	 * @function main.getRooms
+	 * Download data of rooms
 	 */
 	getRooms: function() {
 		connection.action.getRooms(function(received) {
@@ -87,6 +93,10 @@ var main = {
 		});
 	},
 
+	/**
+	 * @function main.initUrl
+	 * Initialize url
+	 */
 	initUrl: function() {
 		load('connecting');
 		connection.initUrl(function() {
@@ -102,7 +112,11 @@ var main = {
             load('connection');
         });
 	},
-
+	 
+	 /**
+	 * @function main.initSocket
+	 * Initialize socket
+	 */
 	initSocket: function() {
 		load('wall');
         connection.socket.init(function() {
@@ -113,6 +127,12 @@ var main = {
         connection.socket.ping();
 	},
 
+	 /**
+	 * @function main.setUrl
+	 * Set url to login
+	 * @param {String} link
+	 * link to login
+	 */
 	setUrl: function(link) {
         load('connecting');
 		var url = document.getElementById('url');
@@ -127,31 +147,41 @@ var main = {
 		});
 	},
 
-	/**
-	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
+	 /**
+	 * @function main.login
+	 * Login to system
+	 * @param {String} login
+	 * user login
+	 * @param {String} password
+	 * user password
 	 */
 	login: function(login, password) {
 		connection.action.login(login, password, function(received) {
-			//akcja wykonywana po odpowiedzi serwera
-			if (received.name === login) {//gdy jest ok
+			if (received.name === login) {//when everything is correct
 				me.id = received.id;
 				load('rooms', true);
 			}
-		}, function(data) {
+		}, function(data) { //in case of wrong input data
 			alert('Wrong username or password');
 		});
 	},
 
-	/**
-	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
+	 /**
+	 * @function main.login
+	 * Register in system
+	 * @param {String} login
+	 * user login
+	 * @param {String} password
+	 * user password
+	 * @param {String} password2
+	 * user password (confirmation)
 	 */
 	register: function(login, password, password2) {
 		connection.action.register(login, password, password2, function(received) {
-			//akcja wykonywana po odpowiedzi serwera
-			if (received) {//gdy jest ok
+			if (received) {//when everything is correct
 				load('login');
 			}
-		}, function(data) {
+		}, function(data) {//in case of wrong input data or data already exist in database
 			if (data) {
 				alert(data);
 			} else {
@@ -161,7 +191,10 @@ var main = {
 	},
 
 	/**
-	 * Pobiera dane mac urządzenia i wywołuje z nimi alerta.
+	 * @function main.createRoom
+	 * Create room
+	 * @param {String} roomName
+	 * Name of the room which user want to createElement
 	 */
 	createRoom: function(roomName) {
 		main.choseRoomToEnter();
@@ -177,8 +210,13 @@ var main = {
 		});
 	},
 
+
 	/**
-	 * Dołącza i wchodzi do wybranego pokoju.
+	 * @function main.joinRoom
+	 * Join and enter to current room
+	 * @param {int} roomId
+	 * ID of current room
+	 * @param {} callb
 	 */
 	joinRoom: function(roomId, callb) {
 		if (roomId) {
@@ -195,12 +233,19 @@ var main = {
 	},
 
 	/**
-	 * Ustawia pokój, do którego wejść.
+	 * @function main.choseRoomToEnter
+	 * Set room to which one user want to join
+	 * @param {int} choseRoomToEnter
+	 * User chosen room
 	 */
 	choseRoomToEnter: function(chosedRoomToEnter) {
 		me.chosedRoomToEnter = chosedRoomToEnter;
 	},
 
+	/**
+	 * @function main.goToWall
+	 * Move to wall view
+	 */
 	goToWall: function() {
 		if (me.chosedRoomToEnter) {
 			window.localStorage.setItem('chosedRoomToEnter', me.chosedRoomToEnter);
@@ -210,12 +255,17 @@ var main = {
 		}
 	},
 
+	/**
+	 * @function main.goToOnlineUsers
+	 * Present list of online users
+	 */
 	goToOnlineUsers: function() {
 		load('users', true);
 	},
 
-	/**
-	 * Informuje serwer, że `wchodzi` do pokoju (do którego już wcześniej dołączył).
+	 /**
+	 * @function main.enterRoom
+	 * Inform the server that user enter to already joined room
 	 */
 	enterRoom: function() {
 		var roomId = window.localStorage.getItem('chosedRoomToEnter');
@@ -227,19 +277,24 @@ var main = {
 		}
 	},
 
-	/**
-	 * Skanuje kod, dołącza do pokoju i wchodzi do niego.
+	 /**
+	 * @function main.scanRoomQrCode
+	 * Scan QR code to current room and join this room
 	 */
 	scanRoomQrCode: function() {
-		// skanowanie
+		// scan
 		devices.qrCode.scan(function(roomId) {
-			// dołączenie do pokoju
+			// join
 			main.joinRoom(roomId, function() {
 				main.goToWall();
 			});
 		});
 	},
 
+	 /**
+	 * @function main.getRoomData
+	 * Download all of current room data
+	 */
 	getRoomData: function() {
 		connection.action.getRoomData(function(data) {
 			alert('getRoomData' + JSON.stringify(data));
@@ -248,6 +303,12 @@ var main = {
 	}
 };
 
+	 /**
+	 * @function routing.registerAction
+	 * Get rooms
+	 * Get room data (wall)
+	 * Present wall data
+	 */
 routing.registerAction('rooms', function() {
 	main.getRooms();
 });
@@ -258,54 +319,99 @@ routing.registerAction('wall', function() {
     load('wallContent', true);
 });
 routing.registerAction('wallContent', function() {
-	//storage.coś - akcje ustawiające wygląd po przełączeniu widoku
-	// w celu jego ponownego ustawienia
+	//storage.* - action of setting view after changing view
+	// to set it again
 });
 routing.registerAction('users', function() {
 	storage.showOnlineUsers();
 });
 
+	 /**
+	 * @function connection.socket.receive.onEnterRoom
+	 * Get data while user entered the current room
+	 * @param {int, String} data
+	 * Data consists of meetingID and name
+	 */
 connection.socket.receive.onEnterRoom = function(data) {
-	// data consists of: meetingID, name
 	me.enteredRoom = data;
 	load('wall', true);
 };
 
+	 /**
+	 * @function connection.socket.receive.onPing
+	 * Get data while user Ping
+	 */
 connection.socket.receive.onPing = function() {
     main.enterRoom();
 };
 
 /**
- * Elementy otrzymane od websocketa obecnie obsługuje się u nas w ten sposób:
+ * Elements received from websocket is supported by functions below:
  */
+ 	 /**
+	 * @function connection.socket.receive.onUsersOnline
+	 * Add new user to OnlineUsers
+	 * @param {} data 
+	 * Data which contain user data
+	 */
 connection.socket.receive.onUsersOnline = function(data) {
 	alert('onUsersOnline ' + JSON.stringify(data));
 	storage.getAllOnlineUsers(data);
 	// add new users
 };
 
+ 	 /**
+	 * @function connection.socket.receive.onNewUser
+	 * Alert about new user online
+	 * @param {} data 
+	 * Data which contain user data
+	 */
 connection.socket.receive.onNewUser = function(data) {
 	alert('onNewUser ' + JSON.stringify(data));
 	storage.addNewUser(data);
 	// add new user
 };
 
+ 	 /**
+	 * @function connection.socket.receive.onRemoveUser
+	 * Delete user from OnlineUsers list
+	 * @param {} data 
+	 * Data which contain user data
+	 */
 connection.socket.receive.onRemoveUser = function(data) {
 	alert('onRemoveUser ' + JSON.stringify(data));
 	storage.deleteUser(data);
 	// remove user
 };
 
+ 	 /**
+	 * @function connection.socket.receive.onNewPhoto
+	 * Alert about new photo
+	 * @param {} data 
+	 * Data which contain information about photo
+	 */
 connection.socket.receive.onNewPhoto = function(data) {
 	alert('onNewPhoto: ' + JSON.stringify(data));
     storage.addNewData(data);
 };
 
+ 	 /**
+	 * @function connection.socket.receive.onNewNote
+	 * Alert about new note
+	 * @param {} data 
+	 * Data which contain information about note
+	 */
 connection.socket.receive.onNewNote = function(data) {
 	alert('onNewNote: ' + JSON.stringify(data));
     storage.addNewData(data);
 };
 
+ 	 /**
+	 * @function connection.socket.receive.onNewComment
+	 * Alert about new comment
+	 * @param {} data 
+	 * Data which contain information about comment
+	 */
 connection.socket.receive.onNewComment = function(data) {
 	alert('onNewComment: ' + JSON.stringify(data));
 	storage.addNewData(data);

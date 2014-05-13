@@ -22,29 +22,47 @@
  * under the License.
  */
 var init = {
-    // Application Constructor
+
+	 /**
+	 * @function init.initialize
+	 * Application constructor
+	 */
     initialize: function() {
         this.bindEvents();
     },
-    // Application Constructor
+
+	 /**
+	 * @function init.initializeWall
+	 * Application Constructor
+	 */
     initializeWall: function() {
         main.initSocket();
     },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
+
+ 	/**
+	 * @function init.bindEvents
+	 * Bind any events that are required on startup. Common events are:
+	 * 'load', 'deviceready', 'offline', and 'online'.
+	 */
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
     },
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicity call 'init.receivedEvent(...);'
+
+ 	/**
+	 * @function init.onDeviceReady
+	 * deviceready Event Handler: The scope of 'this' is the event. In order to call the 'receivedEvent'
+	 * function, we must explicity call 'init.receivedEvent(...);'
+	 */
     onDeviceReady: function() {
         init.receivedEvent('deviceready');
     },
-    // Update DOM on a Received Event
+    // 
+	 /**
+	 * @function init.receivedEvent
+	 * Update DOM on a Received Event
+	 * @param {int} id
+	 * id of element
+	 */
     receivedEvent: function(id) {
         var parentElement = document.getElementById(id);
         //var listeningElement = parentElement.querySelector('.listening');

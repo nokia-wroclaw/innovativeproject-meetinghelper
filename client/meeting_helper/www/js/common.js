@@ -1,6 +1,9 @@
-/**
- * Default callback.
- */
+  	/**
+	 * @function callback
+	 * Default callback
+	 * @param {String} message
+	 * Alert
+	 */
  var callback = function(message) {
 	//alert(message);
 	console.log(message);

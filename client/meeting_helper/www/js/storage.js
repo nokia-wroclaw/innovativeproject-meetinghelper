@@ -18,10 +18,16 @@ var onlineUsers = [];
 var rooms = [];
 
 /**
- * 'storage' ...
+ * Function which save downloaded data from server in tables
+ * and present them for users.
  */
+ 
+/**
+ * Object which contain information about current meeting
+ */ 
 var storage = {
-	/**
+
+ 	/**
 	 * @function storage.showRooms
 	 * Save rooms in rooms array.
 	 * Show stored data on web page in section with id 'serverRooms'.
@@ -29,6 +35,9 @@ var storage = {
 	 * Rooms received from server {{Integer} receivedRooms.id, {String} receivedRooms.name, {String} receivedRooms.folderName}.
 	 */
 	showRooms: function(receivedRooms) {
+	/**
+	* `roomlist` is an object responsible for storing list of rooms
+	*/
 		var roomList = document.createElement("select");
 		rooms = [];
 		for (var room in receivedRooms) {
@@ -43,7 +52,7 @@ var storage = {
 		serverRooms.appendChild(roomList);
 	},
 
-	/**
+	 /**
 	 * @function storage.addCreatedRoom
 	 * 
 	 * @param {Object} room
@@ -81,21 +90,25 @@ var storage = {
 	addNewData: function(data) {
 		dataFromServer.push(data);
 		switch (data.type) {
+			// Add photo
 			case "photo":
 				storage.addNewPhoto(data);
 				break;
+			// Add note
 			case "note":
 				storage.addNewMessage(data);
 				break;
+			// Add comment
 			case "comment":
 				storage.addNewComment(data);
 				break;
+			// Other option (unknown data)
 			default:
 				alert("Unknown data received");
 		}
 	},
 
-	/**
+	 /**
 	 * @function storage.addNewPhoto
 	 * Add new photo on web page in section with id 'myImageCamera'.
 	 * Invoke function adding comment box.
@@ -114,7 +127,7 @@ var storage = {
 		storage.addCommentBox(data.id);
 	},
 
-	/**
+	 /**
 	 * @function storage.addNewMessage
 	 * Add new note as paragraph on web page in section with id 'myImageCamera'.
 	 * @param {Object} data
@@ -138,7 +151,7 @@ var storage = {
 		var comment = document.getElementById(data.id);
 	},
 	
-	/**
+	 /**
 	 * @function storage.expandCommentBox
 	 * After event expand comment box with proper id.
 	 * Button 'Submit' will appear.
@@ -154,7 +167,7 @@ var storage = {
 		item.getElementsByTagName("input")[0].setAttribute("value", "Submit");
 	},
 	
-	/**
+	 /**
 	 * @function storage.contractCommentBox
 	 * After event contract comment box with proper id.
 	 * Button 'Submit' will disappear.
@@ -168,7 +181,7 @@ var storage = {
 		item.getElementsByTagName("textarea")[0].setAttribute("rows", "1");
 	},
 
-	/**
+	 /**
 	 * @function storage.addCommentBox
 	 * Add comment box after each new data received from server.
 	 * @param {Integer} id 
@@ -189,7 +202,7 @@ var storage = {
 		document.getElementById('myImageCamera').appendChild(document.createElement("br"));
 	},
 
-	/**
+	 /**
 	 * @function storage.setChosedRoomToEnter
 	 * Get value of chosen room.
 	 * Send this value to main.choseRoomToEnter
@@ -198,8 +211,8 @@ var storage = {
 		var roomToEnter = document.getElementById('serverRooms').getElementsByTagName('select')[0].value;
 		main.choseRoomToEnter(roomToEnter);
 	},
-
-	/**
+	
+	 /**
 	 * @function storage.setServerAddress 
 	 * Set address of the current server in localStorage.
 	 * @param {String} serverAddress
@@ -209,7 +222,7 @@ var storage = {
 		window.localStorage.setItem("serverAddress", serverAddress);
 	},
 
-	/**
+	 /**
 	 * @function storage.getServerAddress
 	 * Get from localStorage address of last logged server.
 	 * @return 
@@ -218,7 +231,8 @@ var storage = {
 		return window.localStorage.getItem("serverAddress");
 	},
 
-	/**
+
+	 /**
 	 * @function storage.setUserLogin
 	 * Set login of the current user in localStorage.
 	 * @param {String} login
@@ -228,7 +242,7 @@ var storage = {
 		window.localStorage.setItem("userLogin", login);
 	},
 
-	/**
+	 /**
 	 * @function storage.getUserLogin
 	 * Get from localStorage login of last used user.
 	 */
@@ -236,17 +250,17 @@ var storage = {
 		return window.localStorage.getItem("userLogin");
 	},
 
-	/**
+	 /**
 	 * @function storage.setUserPassword
 	 * Set password of the current user in localStorage.
 	 * @param {String} password
 	 * User password to store.
-	 */
+	 */ 
 	setUserPassword: function(password) {
 		window.localStorage.setItem("userPassword", password);
 	},
 
-	/**
+	 /**
 	 * @function storage.getUserPassword
 	 * Get from localStorage password of last used user.
 	 */
@@ -254,7 +268,7 @@ var storage = {
 		return window.localStorage.getItem("userPassword");
 	},
 
-	/**
+	 /**
 	 * @function storage.addNewUser
 	 * Add new user who have entered into room.
 	 * @param {Object} data
@@ -264,7 +278,7 @@ var storage = {
 		onlineUsers.push(data);
 	},
 
-	/**
+	 /**
 	 * @function storage.deleteUser
 	 * Delete user when leaving room.
 	 * @param {Object} data
@@ -274,7 +288,7 @@ var storage = {
 		delete onlineUsers[data.userId];
 	},
 
-	/**
+	 /**
 	 * @function storage.getAllOnlineUsers
 	 * Invoke once after enter into room.
 	 * Get all currently online users in entered room
@@ -290,7 +304,7 @@ var storage = {
 		}
 	},
 
-	/**
+	 /**
 	 * @function storage.showOnlineUsers
 	 * Invoke after load page loadUsers.html.
 	 * Get all currently online users in room.
