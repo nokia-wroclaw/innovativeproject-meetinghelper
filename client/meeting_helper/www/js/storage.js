@@ -44,6 +44,34 @@ var storage = {
 	},
 
 	/**
+	 * @function storage.addCreatedRoom
+	 * 
+	 * @param {Object} room
+	 * Data about just created room.
+	 */
+	addCreatedRoom: function(room) {
+		var roomList = document.getElementById("serverRooms").getElementsByTagName("select")[0];
+		var newRoom = document.createElement("option");
+		newRoom.setAttribute("value", room.id);
+		newRoom.appendChild(document.createTextNode(room.name));
+		roomList.appendChild(newRoom);
+		roomList.value = room.id;
+	},
+
+	/**
+	 * @function storage.addAllRoomData
+	 * 
+	 * @param {Array[Object]} receivedData
+	 * 
+	 */
+	addAllRoomData: function (receivedData) {
+		dataFromServer = [];
+		for (var data in receivedData) {
+			storage.addNewData(receivedData[data]);
+		}
+	},
+
+	/**
 	 * @function storage.addNewData
 	 * Add new object to array dataFromServer.
 	 * Invoke adding function depends of data type.
@@ -172,7 +200,7 @@ var storage = {
 	},
 
 	/**
-	 * @function storage.setServerAddress
+	 * @function storage.setServerAddress 
 	 * Set address of the current server in localStorage.
 	 * @param {String} serverAddress
 	 * Address of the server to store.

@@ -167,7 +167,7 @@ var main = {
 		main.choseRoomToEnter();
 		connection.action.createRoom(roomName, function(received) {
 			var roomId = received.id;
-			main.joinRoom(roomId, function(answer) {
+			main.joinRoom(received, function(answer) {
 				if (answer) {
 					alert('Room created');
 				} else {
@@ -182,9 +182,10 @@ var main = {
 	 */
 	joinRoom: function(roomId, callb) {
 		if (roomId) {
-			connection.action.joinRoom(roomId, function(received) {
+			connection.action.joinRoom(roomId.id, function(received) {
 				if (received) {
-					main.choseRoomToEnter(roomId);
+					storage.addCreatedRoom(roomId);
+					//main.choseRoomToEnter(roomId);
 				}
 				if (callb) {
 					callb(received);
@@ -242,7 +243,7 @@ var main = {
 	getRoomData: function() {
 		connection.action.getRoomData(function(data) {
 			alert('getRoomData' + JSON.stringify(data));
-			//obsłużenie odbioru wszystkich danych
+			storage.addAllRoomData(data);
 		});
 	}
 };
