@@ -11,6 +11,15 @@ var me = {
  */
 var main = {
 	/**
+	 * @function main.userCallback
+	 * Types way of sending action callback to user.
+	 * By now it's an alert, but allows easy change.
+	 */
+	userCallback: function(message) {
+		alert(message);
+	},
+
+	/**
 	 * @function main.takePicture
 	 * Take picture then send it to the server and present on a wall
 	 * @param {Number} quality
@@ -55,16 +64,6 @@ var main = {
 			main.setUrl(result);
 
 		}, true);
-	},
-
-	 /**
-	 * @function main.scanAnyQrCode
-	 * Scan QR Code of webmaster and start alert only
-	 */
-	scanAnyQrCode: function() {
-		devices.qrCode.scan(function(result) {
-			alert(result);
-		});
 	},
 
 	 /**
@@ -165,7 +164,7 @@ var main = {
 				load('rooms', true);
 			}
 		}, function(data) { //in case of wrong input data
-			alert('Wrong username or password');
+			main.userCallback('Wrong username or password');
 		});
 	},
 
@@ -186,9 +185,9 @@ var main = {
 			}
 		}, function(data) {//in case of wrong input data or data already exist in database
 			if (data) {
-				alert(data);
+				main.userCallback(data);
 			} else {
-				alert('Login already registered');
+				main.userCallback('Login already registered');
 			}
 		});
 	},
@@ -207,9 +206,9 @@ var main = {
 			main.joinRoom(received, function(answer) {
 				callback(answer);
 				if (answer) {
-					alert('Room successfully created');
+					main.userCallback('Room successfully created');
 				} else {
-					alert('Creating room failed');
+					main.userCallback('Creating room failed');
 				}
 			});
 		});
@@ -269,7 +268,7 @@ var main = {
 			window.localStorage.setItem('selectedRoomToEnter', me.selectedRoomToEnter);
 			load('wall');
 		} else {
-			alert('No room is selected');
+			main.userCallback('No room is selected');
 		}
 	},
 
@@ -292,7 +291,7 @@ var main = {
 			me.selectedRoomToEnter = roomId;
 			connection.socket.enterRoom(roomId);
 		} else {
-			alert('No room is chosen');
+			main.userCallback('No room is selected');
 		}
 	},
 
@@ -314,7 +313,7 @@ var main = {
 	 */
 	getRoomData: function() {
 		connection.action.getRoomData(function(data) {
-			alert('getRoomData' + JSON.stringify(data));
+			callback('getRoomData' + JSON.stringify(data));
 			storage.addAllRoomData(data);
 		});
 	}
@@ -351,7 +350,7 @@ routing.registerAction('login', function() {
 routing.registerAction('connection', function() {
 	// we can add here any additional connection information
 	// to connection page
-	alert('Connection failed');
+	main.userCallback('Connection failed');
 });
 
 	 /**
@@ -384,7 +383,7 @@ connection.socket.receive.onPing = function() {
 	 * Data which contain user data
 	 */
 connection.socket.receive.onUsersOnline = function(data) {
-	alert('onUsersOnline ' + JSON.stringify(data));
+	callback('onUsersOnline ' + JSON.stringify(data));
 	storage.getAllOnlineUsers(data);
 	// add new users
 };
@@ -396,7 +395,7 @@ connection.socket.receive.onUsersOnline = function(data) {
 	 * Data which contain user data
 	 */
 connection.socket.receive.onNewUser = function(data) {
-	alert('onNewUser ' + JSON.stringify(data));
+	callback('onNewUser ' + JSON.stringify(data));
 	storage.addNewUser(data);
 	// add new user
 };
@@ -408,7 +407,7 @@ connection.socket.receive.onNewUser = function(data) {
 	 * Data which contain user data
 	 */
 connection.socket.receive.onRemoveUser = function(data) {
-	alert('onRemoveUser ' + JSON.stringify(data));
+	callback('onRemoveUser ' + JSON.stringify(data));
 	storage.deleteUser(data);
 	// remove user
 };
@@ -420,7 +419,7 @@ connection.socket.receive.onRemoveUser = function(data) {
 	 * Data which contain information about photo
 	 */
 connection.socket.receive.onNewPhoto = function(data) {
-	alert('onNewPhoto: ' + JSON.stringify(data));
+	callback('onNewPhoto: ' + JSON.stringify(data));
     storage.addNewData(data);
 };
 
@@ -431,7 +430,7 @@ connection.socket.receive.onNewPhoto = function(data) {
 	 * Data which contain information about note
 	 */
 connection.socket.receive.onNewNote = function(data) {
-	alert('onNewNote: ' + JSON.stringify(data));
+	callback('onNewNote: ' + JSON.stringify(data));
     storage.addNewData(data);
 };
 
@@ -442,7 +441,7 @@ connection.socket.receive.onNewNote = function(data) {
 	 * Data which contain information about comment
 	 */
 connection.socket.receive.onNewComment = function(data) {
-	alert('onNewComment: ' + JSON.stringify(data));
+	callback('onNewComment: ' + JSON.stringify(data));
 	storage.addNewData(data);
     // add new comment
 };

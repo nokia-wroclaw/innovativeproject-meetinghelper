@@ -153,7 +153,7 @@ var devices = {
 
 	action: {
 		exit: function() {
-			alert('powinno się zaraz zamknąć');
+			callback('powinno się zaraz zamknąć');
 			navigator.notification.confirm('Do you really want to exit?',
 				function(buttonIndex) {
 					if (buttonIndex === 2) {
