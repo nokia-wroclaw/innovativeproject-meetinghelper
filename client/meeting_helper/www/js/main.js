@@ -1,6 +1,6 @@
 var me = {
 	id: undefined,
-	chosedRoomToEnter: undefined,
+	selectedRoomToEnter: undefined,
 	enteredRoom: undefined
 };
 
@@ -86,7 +86,7 @@ var main = {
 			// received zawiera listę elementów, np. {id: 0, name: 'room', folderName: 'room'}
 			// instersuje nas id po którym dołączamy i name które wyświetlamy
 			if (received.length > 0) {
-				main.choseRoomToEnter(received[0].id);
+				main.selectRoomToEnter(received[0].id);
 			}
 			storage.showRooms(received);
 
@@ -200,7 +200,7 @@ var main = {
 	 * Name of the room which user want to createElement
 	 */
 	createRoom: function(roomName) {
-		main.choseRoomToEnter();
+		main.selectRoomToEnter();
 		connection.action.createRoom(roomName, function(received) {
 			var roomId = received.id;
 			console.log(JSON.stringify(received));
@@ -249,13 +249,13 @@ var main = {
 	},
 
 	/**
-	 * @function main.choseRoomToEnter
+	 * @function main.selectRoomToEnter
 	 * Set room to which one user want to join
-	 * @param {int} choseRoomToEnter
+	 * @param {int} selectRoomToEnter
 	 * User chosen room
 	 */
-	choseRoomToEnter: function(chosedRoomToEnter) {
-		me.chosedRoomToEnter = chosedRoomToEnter;
+	selectRoomToEnter: function(selectedRoomToEnter) {
+		me.selectedRoomToEnter = selectedRoomToEnter;
 	},
 
 	/**
@@ -263,10 +263,10 @@ var main = {
 	 * Move to wall view
 	 */
 	goToWall: function() {
-		var roomToEnter = storage.getChosedRoomToEnter();
+		var roomToEnter = storage.getSelectedRoomToEnter();
 		main.choseRoomToEnter(roomToEnter);
-		if (me.chosedRoomToEnter) {
-			window.localStorage.setItem('chosedRoomToEnter', me.chosedRoomToEnter);
+		if (me.selectedRoomToEnter) {
+			window.localStorage.setItem('selectedRoomToEnter', me.selectedRoomToEnter);
 			load('wall');
 		} else {
 			alert('No room is selected');
@@ -287,9 +287,9 @@ var main = {
 	 * Runned on the wall page, after receiving ping answer.
 	 */
 	enterRoom: function() {
-		var roomId = window.localStorage.getItem('chosedRoomToEnter');
+		var roomId = window.localStorage.getItem('selectedRoomToEnter');
 		if (roomId) {
-			me.chosedRoomToEnter = roomId;
+			me.selectedRoomToEnter = roomId;
 			connection.socket.enterRoom(roomId);
 		} else {
 			alert('No room is chosen');

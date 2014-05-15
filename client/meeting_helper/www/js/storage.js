@@ -203,11 +203,11 @@ var storage = {
 	},
 
 	 /**
-	 * @function storage.getChosedRoomToEnter
+	 * @function storage.getSelectedRoomToEnter
 	 * Get value of chosen room.
-	 * Send this value to main.choseRoomToEnter
+	 * Send this value to main.selectRoomToEnter
 	 */
-	getChosedRoomToEnter: function() {
+	getSelectedRoomToEnter: function() {
 		var roomToEnter = document.getElementById('serverRooms').getElementsByTagName('select')[0].value;
 		return roomToEnter;
 	},
