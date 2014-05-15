@@ -237,6 +237,18 @@ var main = {
 	},
 
 	/**
+	 * @function main.joinRoomById
+	 * Join and and go to wall of typed room
+	 * @param {int} roomId
+	 * ID of selected room
+	 */
+	joinRoomById: function(roomId) {
+		main.joinRoom({id: roomId, name: 'already typed room'}, function(answer) {
+			main.goToWall();
+		});
+	},
+
+	/**
 	 * @function main.choseRoomToEnter
 	 * Set room to which one user want to join
 	 * @param {int} choseRoomToEnter
@@ -292,10 +304,7 @@ var main = {
 	scanRoomQrCode: function() {
 		// scan
 		devices.qrCode.scan(function(roomId) {
-			// join
-			main.joinRoom({id: roomId, name: 'already scanned room'}, function(answer) {
-				main.goToWall();
-			});
+			main.joinRoomById(roomId);
 		});
 	},
 
