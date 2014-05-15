@@ -263,7 +263,7 @@ var main = {
 	 */
 	goToWall: function() {
 		var roomToEnter = storage.getSelectedRoomToEnter();
-		main.choseRoomToEnter(roomToEnter);
+		main.selectRoomToEnter(roomToEnter);
 		if (me.selectedRoomToEnter) {
 			window.localStorage.setItem('selectedRoomToEnter', me.selectedRoomToEnter);
 			load('wall');
