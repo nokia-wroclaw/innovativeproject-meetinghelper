@@ -202,6 +202,7 @@ var main = {
 		main.choseRoomToEnter();
 		connection.action.createRoom(roomName, function(received) {
 			var roomId = received.id;
+			console.log(JSON.stringify(received));
 			main.joinRoom(received, function(answer) {
 				if (answer) {
 					alert('Room created');
@@ -287,7 +288,7 @@ var main = {
 		// scan
 		devices.qrCode.scan(function(roomId) {
 			// join
-			main.joinRoom(roomId, function() {
+			main.joinRoom({id: roomId, name: 'new'}, function() {
 				main.goToWall();
 			});
 		});
