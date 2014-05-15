@@ -136,6 +136,16 @@ var main = {
 	 */
 	setUrl: function(link) {
         load('connecting');
+		if (!(link.substring(link.length - 5) === '/api/')) {
+			if (link.substring(link.length - 4) === '/api') {
+				link = link + '/';
+			} else if (link.substring(link.length - 1) === '/') {
+				link = link + 'api/';
+			} else {
+				link = link + '/api/';
+			}
+		}
+
 		var url = document.getElementById('url');
 		url.value = link;
 		connection.setUrl(link, function() {

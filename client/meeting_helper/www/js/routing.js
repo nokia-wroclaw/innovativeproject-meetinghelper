@@ -44,7 +44,7 @@ historyObj = {
 	addTohistoryObj: function(page) {
 		if (page) {
 			historyObj.pages.push(page);
-		} else if (historyObj.actualPage && historyObj.actualPage !== "wall" && historyObj.actualPage !== "connecting") {
+		} else if (historyObj.actualPage && historyObj.actualPage !== "wall" && historyObj.actualPage !== "connection" && historyObj.actualPage !== "connecting") {
 			historyObj.pages.push(historyObj.actualPage);
 		}
 	},

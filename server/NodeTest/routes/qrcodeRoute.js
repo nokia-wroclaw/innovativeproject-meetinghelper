@@ -8,7 +8,7 @@ var room = "PWRMeeting"
 
 
 module.exports.QRCode = function(req, res) {
-    var code = qr.image("http://"+ ip.address() +":"+ port +"/api/", { type: 'svg' });
+    var code = qr.image("http://"+ ip.address() +":"+ port, { type: 'svg' });
     res.type('svg');
     code.pipe(res);
 }
