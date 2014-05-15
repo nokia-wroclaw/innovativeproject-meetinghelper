@@ -105,7 +105,7 @@ var main = {
 					historyObj.addTohistoryObj('login');
 					load('rooms', true);
 				} else {
-					load('login');
+					load('login', true);
 				}
 			});
         }, function() {
@@ -140,7 +140,7 @@ var main = {
 		connection.setUrl(link, function() {
 			url.value = link;
 
-			load('login');
+			load('login', true);
 		}, function() {
 			alert('Connection failed');
             load('connection');
@@ -159,6 +159,8 @@ var main = {
 		connection.action.login(login, password, function(received) {
 			if (received.name === login) {//when everything is correct
 				me.id = received.id;
+				storage.setUserLogin(login);
+				storage.setUserPassword(password);
 				load('rooms', true);
 			}
 		}, function(data) { //in case of wrong input data
@@ -179,7 +181,7 @@ var main = {
 	register: function(login, password, password2) {
 		connection.action.register(login, password, password2, function(received) {
 			if (received) {//when everything is correct
-				load('login');
+				load('login', true);
 			}
 		}, function(data) {//in case of wrong input data or data already exist in database
 			if (data) {
@@ -324,6 +326,9 @@ routing.registerAction('wallContent', function() {
 });
 routing.registerAction('users', function() {
 	storage.showOnlineUsers();
+});
+routing.registerAction('login', function() {
+	//storage.initLoginData
 });
 
 	 /**
