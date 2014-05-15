@@ -203,13 +203,13 @@ var storage = {
 	},
 
 	 /**
-	 * @function storage.setChosedRoomToEnter
+	 * @function storage.getChosedRoomToEnter
 	 * Get value of chosen room.
 	 * Send this value to main.choseRoomToEnter
 	 */
-	setChosedRoomToEnter: function() {
+	getChosedRoomToEnter: function() {
 		var roomToEnter = document.getElementById('serverRooms').getElementsByTagName('select')[0].value;
-		main.choseRoomToEnter(roomToEnter);
+		return roomToEnter;
 	},
 	
 	 /**

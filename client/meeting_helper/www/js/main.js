@@ -119,12 +119,14 @@ var main = {
 	 */
 	initSocket: function() {
 		load('wall');
-        connection.socket.init(function() {
-        	connection.state = connection.states.established;
-        }, function() {
-            load('rooms');
-        });
-        connection.socket.ping();
+		connection.socket.init(function() {
+			connection.state = connection.states.established;
+		}, function() {
+			// Here we do not have to type second argument, because
+			// It changes *.html page and this new page loads rooms with argument.
+			load('rooms');
+		});
+		connection.socket.ping();
 	},
 
 	 /**
@@ -142,8 +144,7 @@ var main = {
 
 			load('login', true);
 		}, function() {
-			alert('Connection failed');
-            load('connection');
+            load('connection', true);
 		});
 	},
 
@@ -204,8 +205,9 @@ var main = {
 			var roomId = received.id;
 			console.log(JSON.stringify(received));
 			main.joinRoom(received, function(answer) {
+				callback(answer);
 				if (answer) {
-					alert('Room created');
+					alert('Room successfully created');
 				} else {
 					alert('Creating room failed');
 				}
@@ -226,10 +228,9 @@ var main = {
 			connection.action.joinRoom(roomId.id, function(received) {
 				if (received) {
 					storage.addCreatedRoom(roomId);
-					//main.choseRoomToEnter(roomId);
-				}
-				if (callb) {
-					callb(received);
+					if (callb) {
+						callb(received);
+					}
 				}
 			});
 		}
@@ -250,11 +251,13 @@ var main = {
 	 * Move to wall view
 	 */
 	goToWall: function() {
+		var roomToEnter = storage.getChosedRoomToEnter();
+		main.choseRoomToEnter(roomToEnter);
 		if (me.chosedRoomToEnter) {
 			window.localStorage.setItem('chosedRoomToEnter', me.chosedRoomToEnter);
 			load('wall');
 		} else {
-			alert('No room is chosen');
+			alert('No room is selected');
 		}
 	},
 
@@ -268,7 +271,8 @@ var main = {
 
 	 /**
 	 * @function main.enterRoom
-	 * Inform the server that user enter to already joined room
+	 * Inform the server that user enter to already joined room.
+	 * Runned on the wall page, after receiving ping answer.
 	 */
 	enterRoom: function() {
 		var roomId = window.localStorage.getItem('chosedRoomToEnter');
@@ -282,13 +286,14 @@ var main = {
 
 	 /**
 	 * @function main.scanRoomQrCode
-	 * Scan QR code to current room and join this room
+	 * Scan QR code to current room and join this room.
+	 * Immediately goes to wall.
 	 */
 	scanRoomQrCode: function() {
 		// scan
 		devices.qrCode.scan(function(roomId) {
 			// join
-			main.joinRoom({id: roomId, name: 'new'}, function() {
+			main.joinRoom({id: roomId, name: 'already scanned room'}, function(answer) {
 				main.goToWall();
 			});
 		});
@@ -316,6 +321,9 @@ routing.registerAction('rooms', function() {
 	main.getRooms();
 });
 routing.registerAction('wall', function() {
+	// Here should be displaying room name from storage
+	// (which was set in connection.socket.receive.onEnterRoom())
+
 	connection.socket.getConnectedUsers();
 	main.getRoomData();
 
@@ -331,14 +339,20 @@ routing.registerAction('users', function() {
 routing.registerAction('login', function() {
 	//storage.initLoginData
 });
+routing.registerAction('connection', function() {
+	// we can add here any additional connection information
+	// to connection page
+	alert('Connection failed');
+});
 
 	 /**
 	 * @function connection.socket.receive.onEnterRoom
-	 * Get data while user entered the current room
+	 * Load wall to get data while user entered the current room
 	 * @param {int, String} data
 	 * Data consists of meetingID and name
 	 */
 connection.socket.receive.onEnterRoom = function(data) {
+	// Here we should assign data to storage
 	me.enteredRoom = data;
 	load('wall', true);
 };

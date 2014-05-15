@@ -6,7 +6,11 @@
 	 */
  var callback = function(message) {
 	//alert(message);
-	console.log(message);
+	if (typeof(message) === 'Object') {
+		console.log(JSON.stringify(message));
+	} else {
+		console.log(message);
+	}
  };
 
 /**
