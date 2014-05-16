@@ -54,7 +54,7 @@ var main = {
 		});
 	},
 
-	 /**
+	/**
 	 * @function main.initialQrCode
 	 * Scan QR Code of webmaster, get connection of websocket and save scaned data to input
 	 */
@@ -66,7 +66,7 @@ var main = {
 		}, true);
 	},
 
-	 /**
+	/**
 	 * @function main.getMac
 	 * Download data of device mac and recall with this mac an alert
 	 */
@@ -76,7 +76,7 @@ var main = {
 		});
 	},
 
-	 /**
+	/**
 	 * @function main.getRooms
 	 * Download data of rooms
 	 */
@@ -112,7 +112,7 @@ var main = {
         });
 	},
 	 
-	 /**
+	/**
 	 * @function main.initSocket
 	 * Initialize socket
 	 */
@@ -128,7 +128,7 @@ var main = {
 		connection.socket.ping();
 	},
 
-	 /**
+	/**
 	 * @function main.setUrl
 	 * Set url to login
 	 * @param {String} link
@@ -157,7 +157,7 @@ var main = {
 		});
 	},
 
-	 /**
+	/**
 	 * @function main.login
 	 * Login to system
 	 * @param {String} login
@@ -178,7 +178,7 @@ var main = {
 		});
 	},
 
-	 /**
+	/**
 	 * @function main.login
 	 * Register in system
 	 * @param {String} login
@@ -290,7 +290,7 @@ var main = {
 		load('users', true);
 	},
 
-	 /**
+	/**
 	 * @function main.enterRoom
 	 * Inform the server that user enter to already joined room.
 	 * Runned on the wall page, after receiving ping answer.
@@ -305,7 +305,7 @@ var main = {
 		}
 	},
 
-	 /**
+	/**
 	 * @function main.scanRoomQrCode
 	 * Scan QR code to current room and join this room.
 	 * Immediately goes to wall.
@@ -317,7 +317,7 @@ var main = {
 		});
 	},
 
-	 /**
+	/**
 	 * @function main.getRoomData
 	 * Download all of current room data
 	 */
@@ -329,12 +329,12 @@ var main = {
 	}
 };
 
-	 /**
-	 * @function routing.registerAction
-	 * Get rooms
-	 * Get room data (wall)
-	 * Present wall data
-	 */
+/**
+ * @function routing.registerAction
+ * Get rooms
+ * Get room data (wall)
+ * Present wall data
+ */
 routing.registerAction('rooms', function() {
 	main.getRooms();
 });
@@ -363,22 +363,22 @@ routing.registerAction('connection', function() {
 	main.userCallback('Connection failed');
 });
 
-	 /**
-	 * @function connection.socket.receive.onEnterRoom
-	 * Load wall to get data while user entered the current room
-	 * @param {int, String} data
-	 * Data consists of meetingID and name
-	 */
+/**
+ * @function connection.socket.receive.onEnterRoom
+ * Load wall to get data while user entered the current room
+ * @param {int, String} data
+ * Data consists of meetingID and name
+ */
 connection.socket.receive.onEnterRoom = function(data) {
 	// Here we should assign data to storage
 	me.enteredRoom = data;
 	load('wall', true);
 };
 
-	 /**
-	 * @function connection.socket.receive.onPing
-	 * Get data while user Ping
-	 */
+/**
+ * @function connection.socket.receive.onPing
+ * Get data while user Ping
+ */
 connection.socket.receive.onPing = function() {
     main.enterRoom();
 };
@@ -386,70 +386,70 @@ connection.socket.receive.onPing = function() {
 /**
  * Elements received from websocket is supported by functions below:
  */
- 	 /**
-	 * @function connection.socket.receive.onUsersOnline
-	 * Add new user to OnlineUsers
-	 * @param {} data 
-	 * Data which contain user data
-	 */
+/**
+ * @function connection.socket.receive.onUsersOnline
+ * Add new user to OnlineUsers
+ * @param {} data 
+ * Data which contain user data
+ */
 connection.socket.receive.onUsersOnline = function(data) {
 	callback('onUsersOnline ' + JSON.stringify(data));
 	storage.getAllOnlineUsers(data);
 	// add new users
 };
 
- 	 /**
-	 * @function connection.socket.receive.onNewUser
-	 * Alert about new user online
-	 * @param {} data 
-	 * Data which contain user data
-	 */
+/**
+ * @function connection.socket.receive.onNewUser
+ * Alert about new user online
+ * @param {} data 
+ * Data which contain user data
+ */
 connection.socket.receive.onNewUser = function(data) {
 	callback('onNewUser ' + JSON.stringify(data));
 	storage.addNewUser(data);
 	// add new user
 };
 
- 	 /**
-	 * @function connection.socket.receive.onRemoveUser
-	 * Delete user from OnlineUsers list
-	 * @param {} data 
-	 * Data which contain user data
-	 */
+/**
+ * @function connection.socket.receive.onRemoveUser
+ * Delete user from OnlineUsers list
+ * @param {} data 
+ * Data which contain user data
+ */
 connection.socket.receive.onRemoveUser = function(data) {
 	callback('onRemoveUser ' + JSON.stringify(data));
 	storage.deleteUser(data);
 	// remove user
 };
 
- 	 /**
-	 * @function connection.socket.receive.onNewPhoto
-	 * Alert about new photo
-	 * @param {} data 
-	 * Data which contain information about photo
-	 */
+/**
+ * @function connection.socket.receive.onNewPhoto
+ * Alert about new photo
+ * @param {} data 
+ * Data which contain information about photo
+ */
 connection.socket.receive.onNewPhoto = function(data) {
 	callback('onNewPhoto: ' + JSON.stringify(data));
     storage.addNewData(data);
 };
 
- 	 /**
-	 * @function connection.socket.receive.onNewNote
-	 * Alert about new note
-	 * @param {} data 
-	 * Data which contain information about note
-	 */
+/**
+ * @function connection.socket.receive.onNewNote
+ * Alert about new note
+ * @param {} data 
+ * Data which contain information about note
+ */
 connection.socket.receive.onNewNote = function(data) {
 	callback('onNewNote: ' + JSON.stringify(data));
     storage.addNewData(data);
 };
 
- 	 /**
-	 * @function connection.socket.receive.onNewComment
-	 * Alert about new comment
-	 * @param {} data 
-	 * Data which contain information about comment
-	 */
+/**
+ * @function connection.socket.receive.onNewComment
+ * Alert about new comment
+ * @param {} data 
+ * Data which contain information about comment
+ */
 connection.socket.receive.onNewComment = function(data) {
 	callback('onNewComment: ' + JSON.stringify(data));
 	storage.addNewData(data);
