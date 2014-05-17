@@ -14,9 +14,14 @@
 		<select></select>
 	</div>
 	<br>
-	<button type="button" class="btn btn-default btn-lg" onclick="main.getRooms()">
-	  <span class="glyphicon glyphicon-refresh"></span> Refresh
-	</button>
+	
+	<div class="btn-group btn-group-lg">
+		<!-- Wchodzi do nowego pokoju -->
+		<button type="button" class="btn btn-success" onclick="main.goToWall()"><span class="glyphicon glyphicon-share-alt"></span>Enter</button>
+		<button type="button" class="btn btn-default" onclick="main.getRooms()">
+		  <span class="glyphicon glyphicon-refresh"></span> Refresh
+		</button>
+	</div>
 	<br><br>
 	<br>
 	
@@ -30,9 +35,7 @@
 	<div class="btn-group btn-group-lg">
 	  <!-- Tworzy nowy pokój i dołącza do niego -->
 	  <button type="button" class="btn btn-default" onclick="main.createRoom(document.getElementById('roomName').value)"><span class="glyphicon glyphicon-plus"></span>Create</button>
-	  <!-- Wchodzi do nowego pokoju -->
-	  <button type="button" class="btn btn-default" onclick="main.goToWall()"><span class="glyphicon glyphicon-share-alt"></span>Enter</button>
 	  <!-- Dołącza i wchodzi do nowego zeskanowanego pokoju -->
-	  <button type="button" class="btn btn-default" onclick="main.scanRoomQrCode()"><span class="glyphicon glyphicon-qrcode"></span>Scan QR-Code</button>
+	  <button type="button" class="btn btn-default" onclick="main.scanRoomQrCode()"><span class="glyphicon glyphicon-qrcode"></span>Scan</button>
 	</div>
 </div>

@@ -2,9 +2,28 @@
 <div id="bar">
 	<img alt="logo" height="30" src="img/logo2.png" width="30">
 	<span class="meeting_small">Meeting</span><span class="helper_small">Helper</span>
-    &nbsp;&nbsp;&nbsp;<img alt="" height="35" src="img/camera.png" width="35" onclick="main.takePicture(75)">
-    &nbsp;&nbsp;&nbsp;<img alt="" height="35" src="img/camera.png" width="35" onclick="main.loadPicture()">
-    <img alt="" height="35" src="img/user.png" width="35" onclick="main.goToOnlineUsers()">
+    &nbsp;&nbsp;&nbsp;Room&nbsp;
+    
+    <div class="btn-group">
+		<button type="button" class="btn btn-success" onclick="main.takePicture(75)">
+		  <span class="glyphicon glyphicon-camera"></span>
+		</button>
+	
+		<button type="button" class="btn btn-default" onclick="main.loadPicture()">
+		  <span class="glyphicon glyphicon-picture"></span>
+		</button>
+		
+		<button type="button" class="btn btn-default" onclick="main.insertNote()"> <!-- not yet implemented -->
+		  <span class="glyphicon glyphicon-font"></span>
+		</button>
+
+		<button type="button" class="btn btn-info" onclick="main.goToOnlineUsers()">
+		  <span class="glyphicon glyphicon-user"></span>
+		</button>
+
+	</div>
+
+    
 </div>
 <div id="body">
 	<br><br>

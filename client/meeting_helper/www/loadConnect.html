@@ -6,31 +6,23 @@
 			</div>
 			<div id="body">
 				<br>
-				<img alt="QRCode icon" width="128" height="128" src="img/qrcode_scan.png">
+				<img alt="QRCode icon" width="50%" src="img/qrcode_scan.png">
 				<br><br>
-				<span class="white_text">Scan QR Code to connect to the server <br>
-				or type it's address below</span>
+				<span class="white_text">Scan QR Code or<br>
+				type server address below</span>
+				<br>
 				<br><br>
-				<button onclick="main.initialQrCode()" style="width: 140px; height: 140px">
-					<img alt="Camera icon" width="128" height="128" src="img/camera_icon.png">
+				<button type="button" class="btn btn-default btn-lg" onclick="main.initialQrCode()">
+				  <img alt="Camera icon" width="128" height="128" src="img/camera_icon.png">
 				</button>
-				<br><br>
-				<span class="white_text">Server address</span>
+				<br><br><br><br>
+				<div class="input-group">
+				  <span class="input-group-addon">address</span>
+				  <input type="text" id="url" class="form-control" value="">
+				</div>
 				<br>
-				<input type="text" id="url" value="" style="width: 182px">
-				<br><br>
-				<button onclick="main.setUrl(document.getElementById('url').value)">
-					<img alt="OK" height="50" width="50" src="img/accept.png">
+				<button type="button" class="btn btn-default btn-lg btn-success" onclick="main.setUrl(document.getElementById('url').value)">
+				  <span class="glyphicon glyphicon-flash"></span> Connect
 				</button>
-				<br>
-				<br>
-				<br>
-				<button onclick="connection.action.hello()">
-					hello
-				</button>
-        		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        		<button onclick="main.getMac()">
-        			MAC
-        		</button>
-		        <br><br>
+				<br><br><br>
 			</div>
