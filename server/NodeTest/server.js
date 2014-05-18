@@ -243,7 +243,7 @@ app.get('/api/generateDatabase', function(req, res) {
    sequelize
   .sync({ force: true })
   .complete(function(err) {
-    res.end("Wygenerowano bazê danych");
+    res.endSuccess("Wygenerowano bazê danych");
     console.log("Wygenerowano bazê danych");
   })
 });
