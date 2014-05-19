@@ -226,6 +226,30 @@ app.post('/api/materials/sendFile', user.IsLogin, meeting.IsRoom, material.SendF
 */
 app.get('/api/materials/file/:materialID', user.IsLogin, meeting.IsRoom, material.DownloadFile);
 
+/*
+* Description: Comment material
+* Requirement: logged, in meeting
+* POST arguments:
+*       - materialID(integer)
+*       - content(string)
+* return:         
+*       - comment (object)
+*/
+app.post('/api/materials/comments/add', user.IsLogin, meeting.IsRoom, material.Comment);
+
+/*
+* Description: get comments for material
+* Requirement: logged, in meeting
+* GET arguments:
+*       - materialID(integer)
+*       - content(string)
+* return:         
+*       - comment (object)
+*/
+app.get('/api/materials/comments/:materialID', user.IsLogin, meeting.IsRoom, material.GetComment);
+
+
+
 
 /*
 * Description: Test login

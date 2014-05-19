@@ -2,6 +2,7 @@
 var Model = require('../models/model.js');
 var Meeting = Model.Meeting;
 var Material = Model.Material;
+var Comment = Model.Comment;
 
 module.exports.SendFile = function(req, res, next) {
 
@@ -61,5 +62,47 @@ module.exports.GetAll = function(req, res, next) {
         res.endSuccess(materials);
     });
 };
+
+module.exports.Comment = function(req, res, next) {
+    var userID = req.session.user;
+    var materialID = req.body.materialID;
+    var content = req.body.content;
+    Material.find({where:{id : materialID}})
+    .then(function(material) {
+        if(material)
+        {
+            var comment =  Comment.create({
+                name: content,
+                like: 0,
+                UserId: userID,
+                MaterialId: material.id
+                }).then(function(comment){
+                    if(comment){
+                        res.endSuccess(comment);
+                        req.io.broadcast('newComment', {
+                            comment: comment
+                        });
+                    } else
+                        res.endError(Dictionary.commentNotCreate); 
+                });
+        }
+        else
+            res.endError(Dictionary.materialNotFind); 
+    });
+};
+
+module.exports. material.GetComment = function(req, res, next) {
+    var userID = req.session.user;
+    var materialID = req.param.materialID;
+    Material.find({where:{id : materialID}})
+    .then(function(materials) {
+        if(material)
+           res.endSuccess(material.getComments());
+        else
+            res.endError(Dictionary.materialNotFind); 
+    });
+};
+
+
 
 

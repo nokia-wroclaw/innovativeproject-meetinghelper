@@ -30,16 +30,14 @@ module.exports.SocketPing = function(req){
 
 module.exports.Connected = function (socket) {
     var hs = socket.handshake;
-    console.log('\n A socket with sessionID ' + hs.sessionID 
-        + ' connected! \n');
+    console.log('\n A socket with sessionID ' + hs.sessionID + ' connected! \n');
     //var intervalID = setInterval(function () {
     //    hs.session.reload( function () { 
     //      hs.session.touch().save();
     //    });
     //}, 60 * 1000);
     socket.on('disconnect', function () {
-        console.log('\n A socket with sessionID ' + hs.sessionID 
-            + ' disconnected! \n ');
+        console.log('\n A socket with sessionID ' + hs.sessionID + ' disconnected! \n ');
     });
  
 };

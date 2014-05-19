@@ -5,6 +5,8 @@
             invalidData: "Invalid data",
             meetingNotCreated : "Meeting not created",
             folderNotCreate: "Folder not created",
+            commentNotCreate: "Comment not created",
+            materialNotFind: "Material not find"
 
     };
 
