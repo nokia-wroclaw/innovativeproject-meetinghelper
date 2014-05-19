@@ -46,7 +46,7 @@ var common = {
 		},
 		file: 'materials/sendFile',
 		note: 'materials/sendNote',
-		comment: 'materials/sendComment'
+		comment: 'materials/comments/add'
 	}
 };
 

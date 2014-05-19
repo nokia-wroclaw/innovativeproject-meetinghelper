@@ -441,7 +441,7 @@ var connection = {
 			connection.action._base(
 				connection.action.types.get,
 				connectionLinks.post.comment,
-				{materialId: materialId, comment: comment},
+				{materialID: materialId, content: comment},
 				connection.receive.onSendComment(callb));
 		}
 	},
@@ -986,11 +986,10 @@ var connection = {
 
 				if (connection.socket.receive.onNewComment) {
 					connection.socket.receive.onNewComment({
-						materialId: data.message.id,
-						userId: data.message.user,
+						materialId: data.comment.MaterialId,
+						userId: data.comment.UserId,
 						type: 'comment',
-						target: connection.getUrl() + connectionLinks.get.photo + data.message,
-						data: data.message.data
+						data: data.comment.name
 					});
 				}
 			},
