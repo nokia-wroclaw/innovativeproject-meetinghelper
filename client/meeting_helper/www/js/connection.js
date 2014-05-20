@@ -953,17 +953,15 @@ var connection = {
 			 */
 			_onNewMaterial: function (data) {
 				connection._callback(JSON.stringify(data));
-				if (data.material.name.substring(
-					data.material.name.length - 4,
-					data.material.name.length) === '.jpg') {
-						if (connection.socket.receive.onNewPhoto) {
-							connection.socket.receive.onNewPhoto({
-								id: data.material.id,
-								userId: data.material.UserId,
-								type: 'photo',
-								data: connection.getUrl() + connectionLinks.get.material + data.material.id
-							});
-						}
+				if (data.type === 'photo') {
+					if (connection.socket.receive.onNewPhoto) {
+						connection.socket.receive.onNewPhoto({
+							id: data.material.id,
+							userId: data.material.UserId,
+							type: 'photo',
+							data: connection.getUrl() + connectionLinks.get.material + data.material.id
+						});
+					}
 				} else {
 					if (connection.socket.receive.onNewNote) {
 						connection.socket.receive.onNewNote({

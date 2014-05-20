@@ -25,12 +25,13 @@ module.exports.SendFile = function(req, res, next) {
                 orginalFileName : file.name,
                 like: 0,
                 UserId: userID,
-                MeetingId: roomID
+                MeetingId: roomID,
                 }).then(function(material){
                     if(material){
                         res.endSuccess(newfilename);
                         req.io.broadcast('newMaterial', {
-                            material: material
+                            material: material,
+                            type: 'photo'
                         })
                     } else
                         res.endError(Dictionary.materialNotCreated); 
@@ -91,7 +92,7 @@ module.exports.Comment = function(req, res, next) {
     });
 };
 
-module.exports. material.GetComment = function(req, res, next) {
+module.exports.GetComment = function(req, res, next) {
     var userID = req.session.user;
     var materialID = req.param.materialID;
     Material.find({where:{id : materialID}})
