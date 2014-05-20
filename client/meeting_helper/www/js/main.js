@@ -211,8 +211,6 @@ var main = {
 	createRoom: function(roomName) {
 		main.selectRoomToEnter();
 		connection.action.createRoom(roomName, function(received) {
-			var roomId = received.id;
-			console.log(JSON.stringify(received));
 			main.joinRoom(received, function(answer) {
 				callback(answer);
 				if (answer) {
@@ -228,15 +226,15 @@ var main = {
 	/**
 	 * @function main.joinRoom
 	 * Join and enter to current room
-	 * @param {int} roomId
-	 * ID of current room
+	 * @param {int} room
+	 * Data of current room
 	 * @param {} callb
 	 */
-	joinRoom: function(roomId, callb) {
-		if (roomId) {
-			connection.action.joinRoom(roomId.id, function(received) {
+	joinRoom: function(room, callb) {
+		if (room) {
+			connection.action.joinRoom(room.id, function(received) {
 				if (received) {
-					storage.addCreatedRoom(roomId);
+					storage.addCreatedRoom(room);
 					if (callb) {
 						callb(received);
 					}
