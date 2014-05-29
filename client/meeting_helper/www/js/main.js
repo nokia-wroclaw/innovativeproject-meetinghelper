@@ -348,10 +348,10 @@ routing.registerAction('wallContent', function() {
 	storage.displayRoomData();
 	//storage.* - action of setting view after changing view
 	// to set it again
-});
+}, true);
 routing.registerAction('users', function() {
 	storage.showOnlineUsers();
-});
+}, true);
 routing.registerAction('login', function() {
 	//storage.initLoginData
 });

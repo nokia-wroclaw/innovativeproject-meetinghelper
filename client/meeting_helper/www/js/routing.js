@@ -76,8 +76,10 @@ var routing = {
 	 * @param {function} action
 	 * action made by user
 	 */
-	registerAction: function(type, action) {
-		routing.memory[type] = action;
+	registerAction: function(type, action, delay) {
+		routing.memory[type] = {};
+		routing.memory[type].action = action;
+		routing.memory[type].delay = delay;
 	},
 	/**
 	 * @function runAction
@@ -86,8 +88,14 @@ var routing = {
 	 * type - current action
 	 */
 	runAction: function(type) {
-		if (routing.memory[type]) {
-			routing.memory[type]();
+		if (routing.memory[type].action) {
+			if (routing.memory[type].delay) {
+				setTimeout(function() {
+					routing.memory[type].action();
+				}, 500);
+			} else {
+				routing.memory[type].action();
+			}
 		}
 	}
 };
