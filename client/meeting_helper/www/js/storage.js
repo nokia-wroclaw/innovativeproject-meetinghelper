@@ -333,8 +333,17 @@ var storage = {
 		actualRoom = room;
 	},
 
+	getRoom: function() {
+		return actualRoom;
+	},
+
 	setRoomName: function() {
 		var roomPlace = document.getElementById('roomName');
 		roomPlace.appendChild(document.createTextNode(actualRoom.name));
+	},
+
+	displayQrCode: function(url) {
+		var element = document.getElementById('myQrCode');
+		element.data = url;
 	}
 };

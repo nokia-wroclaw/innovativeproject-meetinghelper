@@ -329,6 +329,10 @@ var main = {
 			callback('getRoomData' + JSON.stringify(data));
 			storage.addAllRoomData(data);
 		});
+	},
+
+	showRoomQrCode: function() {
+		load('qrCode', true);
 	}
 };
 
@@ -365,6 +369,11 @@ routing.registerAction('connection', function() {
 	// to connection page
 	main.userCallback('Connection failed');
 });
+routing.registerAction('qrCode', function() {
+	storage.displayQrCode(storage.getServerAddress() +
+		connectionLinks.get.qrCode +
+		storage.getRoom().meetingID);
+}, true);
 
 /**
  * @function connection.socket.receive.onEnterRoom
