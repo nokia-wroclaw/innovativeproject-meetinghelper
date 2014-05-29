@@ -78,7 +78,13 @@ var storage = {
 	addAllRoomData: function (receivedData) {
 		dataFromServer = [];
 		for (var data in receivedData) {
-			storage.addNewData(receivedData[data]);
+			dataFromServer.push(receivedData[data]);
+		}
+	},
+
+	displayRoomData: function() {
+		for (var data in dataFromServer) {
+			storage.addNewData(dataFromServer[data], true);
 		}
 	},
 
@@ -89,8 +95,10 @@ var storage = {
 	 * @param {Object} data
 	 * Data received from server {{Integer} data.id, {Integer} data.userId, {String} data.type, {String} data.data}.
 	 */
-	addNewData: function(data) {
-		dataFromServer.push(data);
+	addNewData: function(data, displayOnly) {
+		if (!displayOnly) {
+			dataFromServer.push(data);
+		}
 		switch (data.type) {
 			// Add photo
 			case "photo":

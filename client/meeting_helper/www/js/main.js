@@ -344,6 +344,8 @@ routing.registerAction('wall', function() {
 });
 routing.registerAction('wallContent', function() {
 	storage.setRoomName();
+
+	storage.displayRoomData();
 	//storage.* - action of setting view after changing view
 	// to set it again
 });
