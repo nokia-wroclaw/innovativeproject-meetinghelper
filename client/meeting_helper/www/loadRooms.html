@@ -38,4 +38,11 @@
 	  <!-- Dołącza i wchodzi do nowego zeskanowanego pokoju -->
 	  <button type="button" class="btn btn-default" onclick="main.scanRoomQrCode()"><span class="glyphicon glyphicon-qrcode"></span>Scan</button>
 	</div>
+
+	<br>
+	
+	<div class="input-group btn-group-lg">
+	  <input type="text" id="roomId" class="form-control">
+	  <button type="button" class="btn btn-default" onclick="main.joinRoomById(document.getElementById('roomName').value)"><span class="glyphicon glyphicon-share-alt"></span>Enter by id</button>
+	</div>
 </div>
