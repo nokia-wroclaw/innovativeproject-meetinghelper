@@ -38,8 +38,11 @@ var main = {
 	},
 
 	sendNote: function(data) {
-		console.log('sendNote');
 		connection.action.sendNote(data);
+	},
+
+	sendComment: function(materialId, comment) {
+		connection.action.sendComment(materialId, comment);
 	},
 
 	/**

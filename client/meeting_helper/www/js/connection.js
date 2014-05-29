@@ -439,7 +439,7 @@ var connection = {
 		 */
 		sendComment: function(materialId, comment, callb) {
 			connection.action._base(
-				connection.action.types.get,
+				connection.action.types.post,
 				connectionLinks.post.comment,
 				{materialID: materialId, content: comment},
 				connection.receive.onSendComment(callb));
