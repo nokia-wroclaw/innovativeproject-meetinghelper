@@ -6,7 +6,8 @@ var Materials = sequelize.define('Materials', {
         fileName: Sequelize.STRING,
         orginalFileName: Sequelize.STRING,
         like: Sequelize.INTEGER,
-
+        context: Sequelize.STRING,
+        type: Sequelize.STRING
     }, {
         
     });

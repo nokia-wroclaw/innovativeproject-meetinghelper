@@ -73,7 +73,18 @@ module.exports.UsersOnline = function(req){
     var clients = [];
     app.io.sockets.clients(req.session.room).forEach(function(socket) {
         if(socket.handshake.session.user)
-            clients.push({ userID: socket.handshake.session.user, name: socket.handshake.session.userFull.name});
+        {
+            isset = false;
+            for (var i = 0; i < clients.length; i++) {
+                if (clients[i].userID == socket.handshake.session.user) {
+                    isset = true;
+                    break;
+                }
+            }
+            if(!isset){
+                clients.push({ userID: socket.handshake.session.user, name: socket.handshake.session.userFull.name});
+            }
+        }
     })
 
     req.io.emit('usersOnline', JSON.stringify(clients));

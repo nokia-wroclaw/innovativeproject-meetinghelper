@@ -4,7 +4,7 @@ var sequelize = require('./db.js').Sequelize;
 var Meeting = sequelize.define('Meetings', {
         name: Sequelize.STRING,
         folderName : Sequelize.STRING,
-        accessCode : Sequelize.STRING,
+        accessCode : Sequelize.STRING
     }, {
         
     });
