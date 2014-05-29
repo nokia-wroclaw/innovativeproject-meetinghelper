@@ -345,5 +345,11 @@ var storage = {
 	displayQrCode: function(url) {
 		var element = document.getElementById('myQrCode');
 		element.data = url;
+	},
+
+	initLoginData: function() {
+		console.log(storage.getUserLogin() + ' ' + storage.getUserPassword());
+		document.getElementById('login').value = storage.getUserLogin();
+		document.getElementById('password').value = storage.getUserPassword();
 	}
 };

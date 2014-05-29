@@ -196,6 +196,8 @@ var main = {
 	register: function(login, password, password2) {
 		connection.action.register(login, password, password2, function(received) {
 			if (received) {//when everything is correct
+				storage.setUserLogin(login);
+				storage.setUserPassword(password);
 				load('login', true);
 			}
 		}, function(data) {//in case of wrong input data or data already exist in database
@@ -355,15 +357,13 @@ routing.registerAction('wallContent', function() {
 	storage.setRoomName();
 
 	storage.displayRoomData();
-	//storage.* - action of setting view after changing view
-	// to set it again
 }, true);
 routing.registerAction('users', function() {
 	storage.showOnlineUsers();
 }, true);
 routing.registerAction('login', function() {
-	//storage.initLoginData
-});
+	storage.initLoginData();
+}, true);
 routing.registerAction('connection', function() {
 	// we can add here any additional connection information
 	// to connection page
