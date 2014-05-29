@@ -152,14 +152,22 @@ var devices = {
 	},
 
 	action: {
+		exitCounter: 0,
+
 		exit: function() {
-			callback('powinno się zaraz zamknąć');
-			navigator.notification.confirm('Do you really want to exit?',
-				function(buttonIndex) {
-					if (buttonIndex === 2) {
-						navigator.app.exitApp();
-					}
-				}, 'Exit', 'No,Yes');
+			if (devices.action.exitCounter > 0) {
+				if (navigator.app && navigator.app.exitApp) {
+					navigator.app.exitApp();
+				} else if (navigator.device && navigator.device.exitApp) {
+					navigator.device.exitApp();
+				}
+			} else {
+				devices.action.exitCounter++;
+				setTimeout(function() {
+					devices.action.exitCounter = 0;
+				}, 5000);
+				alert('Click once again to close app');
+			}
 		}
 	}
 };
