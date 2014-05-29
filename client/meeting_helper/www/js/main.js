@@ -37,6 +37,11 @@ var main = {
 		});
 	},
 
+	sendNote: function(data) {
+		console.log('sendNote');
+		connection.action.sendNote(data);
+	},
+
 	/**
 	 * @function main.loadPicture
 	 * Load picture then send it to the server and present on a wall

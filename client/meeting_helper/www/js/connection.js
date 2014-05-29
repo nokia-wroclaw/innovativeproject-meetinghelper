@@ -421,9 +421,9 @@ var connection = {
 		 */
 		sendNote: function(note, callb) {
 			connection.action._base(
-				connection.action.types.get,
+				connection.action.types.post,
 				connectionLinks.post.note,
-				{note: note},
+				{context: note},
 				connection.receive.onSendNote(callb));
 		},
 
