@@ -17,6 +17,8 @@ var onlineUsers = [];
  */
 var rooms = [];
 
+var actualRoom = undefined;
+
 /**
  * Function which save downloaded data from server in tables
  * and present them for users.
@@ -317,5 +319,14 @@ var storage = {
 			newUser.appendChild(document.createTextNode(onlineUsers[user].data));
 			users.appendChild(newUser);
 		}
+	},
+
+	setRoom: function(room) {
+		actualRoom = room;
+	},
+
+	setRoomName: function() {
+		var roomPlace = document.getElementById('roomName');
+		roomPlace.appendChild(document.createTextNode(actualRoom.name));
 	}
 };

@@ -878,12 +878,10 @@ var connection = {
 			onEnterRoom: undefined,
 
 			_onEnterRoom: function (data) {
-				//connection.socket.ping();
-
 				connection._callback('_onEnterRoom: ' + JSON.stringify(data));
 
 				if (connection.socket.receive.onEnterRoom) {
-					connection.socket.receive.onEnterRoom(data.data);
+					connection.socket.receive.onEnterRoom(data);
 				}
 			},
 

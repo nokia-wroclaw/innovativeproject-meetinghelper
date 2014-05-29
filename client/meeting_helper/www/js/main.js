@@ -337,15 +337,13 @@ routing.registerAction('rooms', function() {
 	main.getRooms();
 });
 routing.registerAction('wall', function() {
-	// Here should be displaying room name from storage
-	// (which was set in connection.socket.receive.onEnterRoom())
-
 	connection.socket.getConnectedUsers();
 	main.getRoomData();
 
     load('wallContent', true);
 });
 routing.registerAction('wallContent', function() {
+	storage.setRoomName();
 	//storage.* - action of setting view after changing view
 	// to set it again
 });
@@ -369,7 +367,7 @@ routing.registerAction('connection', function() {
  */
 connection.socket.receive.onEnterRoom = function(data) {
 	// Here we should assign data to storage
-	me.enteredRoom = data;
+	storage.setRoom(data);
 	load('wall', true);
 };
 
