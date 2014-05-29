@@ -226,6 +226,19 @@ app.post('/api/materials/sendFile', user.IsLogin, meeting.IsRoom, material.SendF
 */
 app.get('/api/materials/file/:materialID', user.IsLogin, meeting.IsRoom, material.DownloadFile);
 
+
+/*
+* Description: Send file to meeting
+* Requirement: logged, in meeting
+* POST arguments:
+*       - context
+* return:         
+*       - material (object)
+*/
+app.post('/api/materials/sendNote', user.IsLogin, meeting.IsRoom, material.SendNote);
+
+
+
 /*
 * Description: Comment material
 * Requirement: logged, in meeting

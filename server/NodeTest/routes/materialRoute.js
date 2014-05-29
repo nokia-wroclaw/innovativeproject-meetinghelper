@@ -24,6 +24,8 @@ module.exports.SendFile = function(req, res, next) {
                 fileName: newfilename,
                 orginalFileName : file.name,
                 like: 0,
+                context: "",
+                type: "photo",
                 UserId: userID,
                 MeetingId: roomID,
                 }).then(function(material){
@@ -31,7 +33,6 @@ module.exports.SendFile = function(req, res, next) {
                         res.endSuccess(newfilename);
                         req.io.broadcast('newMaterial', {
                             material: material,
-                            type: 'photo'
                         })
                     } else
                         res.endError(Dictionary.materialNotCreated); 
@@ -42,6 +43,40 @@ module.exports.SendFile = function(req, res, next) {
     });
 
 };
+
+
+module.exports.SendNote = function(req, res, next) {
+
+    userID = req.session.user;
+    roomID = req.session.room;
+    context = req.body.context;
+
+    Meeting.find({where:{id: roomID}})
+    .then(function (meeting){
+        var material = Material.create({
+            name: "",
+            fileName: "",
+            orginalFileName : "",
+            like: 0,
+            context: context,
+            type: "note",
+            UserId: userID,
+            MeetingId: roomID,
+            }).then(function(material){
+                if(material){
+                    res.endSuccess(material);
+                    req.io.broadcast('newMaterial', {
+                        material: material,
+                    })
+                } else
+                    res.endError(Dictionary.materialNotCreated); 
+            });
+        });    
+
+};
+
+
+
 
 
 module.exports.DownloadFile = function(req, res, next) {
