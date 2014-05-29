@@ -357,13 +357,13 @@ routing.registerAction('wallContent', function() {
 	storage.setRoomName();
 
 	storage.displayRoomData();
-}, true);
+}, 500);
 routing.registerAction('users', function() {
 	storage.showOnlineUsers();
-}, true);
+}, 500);
 routing.registerAction('login', function() {
 	storage.initLoginData();
-}, true);
+}, 100);
 routing.registerAction('connection', function() {
 	// we can add here any additional connection information
 	// to connection page

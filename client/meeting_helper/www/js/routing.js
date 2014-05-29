@@ -92,7 +92,7 @@ var routing = {
 			if (routing.memory[type].delay) {
 				setTimeout(function() {
 					routing.memory[type].action();
-				}, 500);
+				}, routing.memory[type].delay);
 			} else {
 				routing.memory[type].action();
 			}
