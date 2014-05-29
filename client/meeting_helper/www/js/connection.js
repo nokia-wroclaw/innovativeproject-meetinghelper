@@ -550,21 +550,19 @@ var connection = {
 			return connection.receive._base(function(data) {
 				var toReturn = [];
 				for (var i in data) {
-					if (data[i].name.substring(
-						data[i].name.length - 4,
-						data[i].name.length) === '.jpg') {
-							toReturn.push({
-								id: data[i].id,
-								userId: data[i].UserId,
-								type: 'photo',
-								data: connection.getUrl() + connectionLinks.get.material + data[i].id
-							});
-					} else {
+					if (data[i].type === 'photo') {
+						toReturn.push({
+							id: data[i].id,
+							userId: data[i].UserId,
+							type: 'photo',
+							data: connection.getUrl() + connectionLinks.get.material + data[i].id
+						});
+					} else if (data[i].type === 'note') {
 						toReturn.push({
 							id: data[i].id,
 							userId: data[i].UserId,
 							type: 'note',
-							data: 'data.content'
+							data: data[i].context
 						});
 					}
 				}
@@ -951,7 +949,7 @@ var connection = {
 			 */
 			_onNewMaterial: function (data) {
 				connection._callback(JSON.stringify(data));
-				if (data.type === 'photo') {
+				if (data.material.type === 'photo') {
 					if (connection.socket.receive.onNewPhoto) {
 						connection.socket.receive.onNewPhoto({
 							id: data.material.id,
@@ -960,13 +958,13 @@ var connection = {
 							data: connection.getUrl() + connectionLinks.get.material + data.material.id
 						});
 					}
-				} else {
+				} else if (data.material.type === 'note') {
 					if (connection.socket.receive.onNewNote) {
 						connection.socket.receive.onNewNote({
 							id: data.material.id,
 							userId: data.material.UserId,
 							type: 'note',
-							data: 'data.material.content'
+							data: data.material.context
 						});
 					}
 				}
