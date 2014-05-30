@@ -297,6 +297,23 @@ var main = {
 	goToOnlineUsers: function() {
 		load('users', true);
 	},
+	
+	/**
+	 * @function main.addNote
+	 * Load note input form
+	 */
+	goToAddNote: function() {
+		load('addNote', true);
+	},
+	
+	/**
+	 * @function main.addNote
+	 * Submit note and go back to the wall
+	 */
+	submitNote: function(tresc) {
+		main.sendNote(tresc);
+		load('wallContent', true);
+	},
 
 	/**
 	 * @function main.enterRoom

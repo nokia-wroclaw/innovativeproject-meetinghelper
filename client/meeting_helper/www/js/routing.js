@@ -145,6 +145,9 @@ function load(what, ifAction, ifhistoryObj) {
 		case "qrCode":
 			$( "#content" ).load( "loadQrCode.html" );
 			break;
+		case "addNote":
+			$( "#content" ).load( "loadNote.html" );
+			break;
 	}
 	historyObj.setActualPage(what, ifhistoryObj);
 

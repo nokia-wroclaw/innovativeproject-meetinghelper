@@ -90,6 +90,39 @@ body {
 			font-size: medium;
 		}
 
+.post {  /* frame for posts */
+	width: 95%;
+	background: black;
+	color: white;
+	
+	text-align: left;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.post_header {
+	padding-bottom: 5px;
+	font-weight: bold;	
+}
+
+.post_object {
+	text-align: center;
+}
+
+.post_comments {
+}
+
+.post_comment {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+#onlineUsers {
+	color: white;
+}
+
 #bar {  /* floating bar at the top */
 	height: 40px;
 	width: 100%;
@@ -112,8 +145,8 @@ body {
     text-align: center;
     margin: 0 0 0 0 auto;
     padding-top: 40px;
-    padding-right: 10%;
-    padding-left: 10%;
+    padding-right: 10px;
+    padding-left: 10px;
 }
 #img_cent{
 	
