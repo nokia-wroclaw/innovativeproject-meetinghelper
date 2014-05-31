@@ -10,7 +10,7 @@ var dataFromServer = [];
 /**
  * Hash with stored online users data.
  */
-var onlineUsers = [];
+var onlineUsers = {};
 
 /**
  * Hash with stored rooms data.
@@ -140,7 +140,7 @@ var storage = {
 		post.setAttribute('class', 'post');
 		var postHeader = document.createElement('div');
 		postHeader.setAttribute('class', 'post_header');
-		var text = document.createTextNode('#No' /*dataFromServer.length()*/; + ' by ' + onlineUsers[data.userId] + ' ' + 'current_time');
+		var text = document.createTextNode('#' + ' by ' + onlineUsers[data.userId].name + ' ' + 'current_time');
 		postHeader.appendChild(text);
 		var postObject = document.createElement('div');
 		postObject.setAttribute('class', 'post_object');
@@ -303,10 +303,10 @@ var storage = {
 	 * @function storage.addNewUser
 	 * Add new user who have entered into room.
 	 * @param {Object} data
-	 * New entered user data {{Integer} data.id, {String} data.type, {String} data.data}.
+	 * New entered user data {{Integer} data.userId, {String} data.type, {String} data.data}.
 	 */
 	addNewUser: function(data) {
-		onlineUsers.push(data);
+		onlineUsers[data.userId] = data;
 	},
 
 	/**
@@ -325,13 +325,13 @@ var storage = {
 	 * Get all currently online users in entered room
 	 * and store this data in onlineUsers array.
 	 * @param {Array[Object]} receivedUsers
-	 * Array of currently online users {{Integer} data.id, {String} data.type, {String} data.name, {String} data.data}.
+	 * Array of currently online users {{Integer} data.userId, {String} data.type, {String} data.name, {String} data.data}.
 	 */
 	getAllOnlineUsers: function(receivedUsers) {
-		onlineUsers = [];
+		onlineUsers = {};
 		for (var user in receivedUsers)
 		{
-			onlineUsers.push(receivedUsers[user]);
+			onlineUsers[receivedUsers[user].userId] = receivedUsers[user];
 		}
 	},
 
