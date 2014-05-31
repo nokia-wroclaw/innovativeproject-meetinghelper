@@ -99,75 +99,86 @@ var storage = {
 		if (!displayOnly) {
 			dataFromServer.push(data);
 		}
-		switch (data.type) {
-			// Add photo
-			case "photo":
-				storage.addNewPhoto(data);
-				break;
-			// Add note
-			case "note":
-				storage.addNewMessage(data);
-				break;
-			// Add comment
-			case "comment":
-				storage.addNewComment(data);
-				break;
-			// Other option (unknown data)
-			default:
-				alert("Unknown data received");
-		}
+		storage.addPost(data);
 	},
 
 	/**
-	 * @function storage.addNewPhoto
-	 * Add new photo on web page in section with id 'myImageCamera'.
+	 * @function storage.addPost
+	 * Add new photo on web page in section with id 'received'.
 	 * Invoke function adding comment box.
 	 * @param {Object} data
 	 * Data forwarded by storage.addNewData.
 	 */
-	addNewPhoto: function(data) {
-		/*var image = document.createElement("img");
-		image.setAttribute("alt", "photo");
-		image.setAttribute("style", "display:none;width:90%;margin-left:5%");
-		image.setAttribute("align", "center");
-		image.style.display = "block";
-		image.src = data.data;
-		var element = document.getElementById('myImageCamera');
-		element.appendChild(image);
-		storage.addCommentBox(data.id);*/
-
+	addPost: function(data) {
 		var post = document.createElement('div');
 		post.setAttribute('class', 'post');
-		var postHeader = document.createElement('div');
-		postHeader.setAttribute('class', 'post_header');
-		var text = document.createTextNode('#' + ' by ' + onlineUsers[data.userId].name + ' ' + 'current_time');
-		postHeader.appendChild(text);
-		var postObject = document.createElement('div');
-		postObject.setAttribute('class', 'post_object');
-		var image = document.createElement('img');
-		image.setAttribute('alt', '');
-		image.setAttribute('src', data.data);
-		image.setAttribute('width', '90%');
-		postObject.appendChild(image);
-		var postComments = document.createElement('div');
-		postComments.setAttribute('class', 'post_comments');
-
-		post.appendChild(postHeader);
-		post.appendChild(postObject);
-		post.appendChild(postComments);
+		post.appendChild(storage.addPostHeader(data));
+		post.appendChild(storage.addPostObject(data));
+		post.appendChild(storage.addPostComments(data));
 		document.getElementById('received').appendChild(post);
 	},
 
 	/**
-	 * @function storage.addNewMessage
-	 * Add new note as paragraph on web page in section with id 'myImageCamera'.
+	 * @function storage.addPostHeader
+	 *
+	 */
+	addPostHeader: function(data) {
+		var postHeader = document.createElement('div');
+		postHeader.setAttribute('class', 'post_header');
+		var text = document.createTextNode('#' + ' by ' + onlineUsers[data.userId].name + ' ' + 'current_time');
+		postHeader.appendChild(text);
+		return postHeader;
+	},
+
+	/**
+	 * @function storage.addPostObject
+	 *
+	 */
+	addPostObject: function(data) {
+		var postObject = document.createElement('div');
+		postObject.setAttribute('class', 'post_object');
+		switch (data.type) {
+			// Add photo
+			case 'photo':
+				var image = document.createElement('img');
+				image.setAttribute('alt', '');
+				image.setAttribute('src', data.data);
+				image.setAttribute('width', '90%');
+				postObject.appendChild(image);
+				break;
+			// Add note
+			case 'note':
+				break;
+			// Add comment
+			case 'comment':
+				break;
+			// Other option (unknown data)
+			default:
+				alert('Unknown data received');
+			}
+		return postObject;
+	},
+
+	/**
+	 * @function storage.addPostComments
+	 *
+	 */
+	addPostComments: function(data) {
+		var postComments = document.createElement('div');
+		postComments.setAttribute('class', 'post_comments');
+		return postComments;
+	},
+
+	/**
+	 * @function storage.addNewNote
+	 * Add new note as paragraph on web page in section with id 'received'.
 	 * @param {Object} data
 	 * Data forwarded by storage.addNewData.
 	 */
-	addNewMessage: function(data) {
+	addNewNote: function(data) {
 		var message = document.createElement("p");
 		message.appendChild(document.createTextNode(data.data));
-		var element = document.getElementById('myImageCamera');
+		var element = document.getElementById('received');
 		element.appendChild(message);
 		storage.addCommentBox(data.id);
 	},
