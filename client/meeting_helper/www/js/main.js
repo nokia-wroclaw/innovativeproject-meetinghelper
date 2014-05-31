@@ -28,12 +28,6 @@ var main = {
 	takePicture: function(quality) {
 		devices.camera.takePicture(quality, function(imageSrc) {
 			connection.file.upload.photo(imageSrc);
-
-			//main.addNewMyData('image', imageSrc);
-			//var image = document.getElementById('myImageCamera');
-			//image.style.display = 'block';
-
-			//image.src = imageSrc/*"data:image/jpeg;base64," + */;
 		});
 	},
 
