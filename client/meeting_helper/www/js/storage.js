@@ -5,7 +5,7 @@
 /**
  * Hash with stored data received from server.
  */
-var dataFromServer = [];
+var dataFromServer = {};
 
 /**
  * Hash with stored online users data.
@@ -15,7 +15,7 @@ var onlineUsers = {};
 /**
  * Hash with stored rooms data.
  */
-var rooms = [];
+var rooms = {};
 
 var actualRoom = undefined;
 
@@ -34,16 +34,17 @@ var storage = {
 	 * Save rooms in rooms array.
 	 * Show stored data on web page in section with id 'serverRooms'.
 	 * @param {Array[Object]} receivedRooms
-	 * Rooms received from server {{Integer} receivedRooms.id, {String} receivedRooms.name, {String} receivedRooms.folderName}.
+	 * Rooms received from server {{Integer} receivedRooms.id,
+	 * 		{String} receivedRooms.name, {String} receivedRooms.folderName}.
 	 */
 	showRooms: function(receivedRooms) {
 	/**
 	 * `roomlist` is an object responsible for storing list of rooms
 	 */
-		var roomList = document.createElement("select");
-		rooms = [];
+		var roomList = document.createElement('select');
+		rooms = {};
 		for (var room in receivedRooms) {
-			rooms.push(receivedRooms[room]);
+			rooms[receivedRooms[room].id] = receivedRooms[room];
 			var newOption = document.createElement("option");
 			newOption.setAttribute("value", receivedRooms[room].id);
 			newOption.appendChild(document.createTextNode(receivedRooms[room].name));
@@ -76,9 +77,9 @@ var storage = {
 	 * 
 	 */
 	addAllRoomData: function (receivedData) {
-		dataFromServer = [];
+		dataFromServer = {};
 		for (var data in receivedData) {
-			dataFromServer.push(receivedData[data]);
+			dataFromServer[receivedData[data].id] = receivedData[data];
 		}
 	},
 
@@ -93,11 +94,12 @@ var storage = {
 	 * Add new object to array dataFromServer.
 	 * Invoke adding function depends of data type.
 	 * @param {Object} data
-	 * Data received from server {{Integer} data.id, {Integer} data.userId, {String} data.type, {String} data.data}.
+	 * Data received from server {{Integer} data.id, {Integer} data.userId,
+	 * 		{String} data.type, {String} data.data}.
 	 */
 	addNewData: function(data, displayOnly) {
 		if (!displayOnly) {
-			dataFromServer.push(data);
+			dataFromServer[data.id] = data;
 		}
 		storage.addPost(data);
 	},
@@ -125,7 +127,8 @@ var storage = {
 	addPostHeader: function(data) {
 		var postHeader = document.createElement('div');
 		postHeader.setAttribute('class', 'post_header');
-		var text = document.createTextNode('#' + ' by ' + onlineUsers[data.userId].name + ' ' + 'current_time');
+		var text = document.createTextNode('#' + Object.keys(dataFromServer).length +
+			' by ' + onlineUsers[data.userId].name + ' ' + 'current_time');
 		postHeader.appendChild(text);
 		return postHeader;
 	},
@@ -336,7 +339,8 @@ var storage = {
 	 * Get all currently online users in entered room
 	 * and store this data in onlineUsers array.
 	 * @param {Array[Object]} receivedUsers
-	 * Array of currently online users {{Integer} data.userId, {String} data.type, {String} data.name, {String} data.data}.
+	 * Array of currently online users {{Integer} data.userId, {String} data.type,
+	 * 		{String} data.name, {String} data.data}.
 	 */
 	getAllOnlineUsers: function(receivedUsers) {
 		onlineUsers = {};
