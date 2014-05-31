@@ -88,7 +88,7 @@ body {
 			color: #FFFFFF;
 			font-weight: bold;
 			font-size: medium;
-		}
+}
 
 .post {  /* frame for posts */
 	width: 95%;
@@ -148,9 +148,8 @@ body {
     padding-right: 10px;
     padding-left: 10px;
 }
-#img_cent{
-	
-   
+
+#img_cent {
     margin-top: 20%;
   	height: 100%;
   	text-align: center;
@@ -161,5 +160,4 @@ body {
   	right: 0;
   	top: 0;
   	bottom: 0;
-    }
 }

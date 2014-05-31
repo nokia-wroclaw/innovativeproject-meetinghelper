@@ -126,7 +126,7 @@ var storage = {
 	 * Data forwarded by storage.addNewData.
 	 */
 	addNewPhoto: function(data) {
-		var image = document.createElement("img");
+		/*var image = document.createElement("img");
 		image.setAttribute("alt", "photo");
 		image.setAttribute("style", "display:none;width:90%;margin-left:5%");
 		image.setAttribute("align", "center");
@@ -134,7 +134,28 @@ var storage = {
 		image.src = data.data;
 		var element = document.getElementById('myImageCamera');
 		element.appendChild(image);
-		storage.addCommentBox(data.id);
+		storage.addCommentBox(data.id);*/
+
+		var post = document.createElement('div');
+		post.setAttribute('class', 'post');
+		var postHeader = document.createElement('div');
+		postHeader.setAttribute('class', 'post_header');
+		var text = document.createTextNode('#No' /*dataFromServer.length()*/; + ' by ' + onlineUsers[data.userId] + ' ' + 'current_time');
+		postHeader.appendChild(text);
+		var postObject = document.createElement('div');
+		postObject.setAttribute('class', 'post_object');
+		var image = document.createElement('img');
+		image.setAttribute('alt', '');
+		image.setAttribute('src', data.data);
+		image.setAttribute('width', '90%');
+		postObject.appendChild(image);
+		var postComments = document.createElement('div');
+		postComments.setAttribute('class', 'post_comments');
+
+		post.appendChild(postHeader);
+		post.appendChild(postObject);
+		post.appendChild(postComments);
+		document.getElementById('received').appendChild(post);
 	},
 
 	/**
