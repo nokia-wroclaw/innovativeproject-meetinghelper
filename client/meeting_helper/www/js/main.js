@@ -4,6 +4,9 @@ var me = {
 	enteredRoom: undefined
 };
 
+var photoEventListener;
+var photoToDisplay;
+
 /**
  * Function from which we demand respond, recall,
  * giving them as parameters functions which need to be recalled
@@ -300,6 +303,11 @@ var main = {
 		load('addNote', true);
 	},
 	
+	goToPhoto: function(photoUrl) {
+		main.photoToDisplay = photoUrl;
+		load('photo', true);
+	},
+	
 	/**
 	 * @function main.addNote
 	 * Submit note and go back to the wall
@@ -312,7 +320,7 @@ var main = {
 	/**
 	 * @function main.enterRoom
 	 * Inform the server that user enter to already joined room.
-	 * Runned on the wall page, after receiving ping answer.
+	 * Ran on the wall page, after receiving ping answer.
 	 */
 	enterRoom: function() {
 		var roomId = window.localStorage.getItem('selectedRoomToEnter');

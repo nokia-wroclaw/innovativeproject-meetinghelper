@@ -149,6 +149,8 @@ var storage = {
 				image.setAttribute('alt', '');
 				image.setAttribute('src', data.data);
 				image.setAttribute('width', '90%');
+				var onClick = "main.goToPhoto('" + data.data + "\')";
+				image.setAttribute('onclick', onClick);
 				postObject.appendChild(image);
 				break;
 			// Add note

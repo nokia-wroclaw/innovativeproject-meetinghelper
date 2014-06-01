@@ -148,6 +148,9 @@ function load(what, ifAction, ifhistoryObj) {
 		case "addNote":
 			$( "#content" ).load( "loadNote.html" );
 			break;
+		case "photo":
+			$( "#content" ).load( "loadPhoto.html" );
+			break;
 	}
 	historyObj.setActualPage(what, ifhistoryObj);
 
