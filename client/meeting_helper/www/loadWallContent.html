@@ -1,4 +1,8 @@
-﻿<div id="bar">
+﻿<script>
+	document.removeEventListener('touchmove', main.photoEventListener, false);
+</script>
+
+<div id="bar">
 				<img alt="logo" height="30" src="img/logo2.png" width="30"/>
 				<span class="meeting_small">Meeting</span><span class="helper_small">Helper</span> 
 				&nbsp;<span id="roomName"></span>
@@ -32,4 +36,5 @@
 		        <div id="received">
 		        	<br>
 		        </div>
+		        <p onclick="main.goToPhoto('img/sonisphere_ticket.jpg')">Go to the photo viewer</p>
 			</div>

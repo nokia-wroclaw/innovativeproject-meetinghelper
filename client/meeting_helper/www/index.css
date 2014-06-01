@@ -28,6 +28,7 @@ body {
     background-color:#7F7F7F;
     background-image:url('img/gradient.png');
 	background-repeat:repeat-x;
+	background-attachment:fixed;
 	
     font-family: 'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
     font-size: 12px;
@@ -125,6 +126,14 @@ body {
 
 #onlineUsers {
 	color: white;
+}
+
+.photoBody {
+}
+
+div.photoCanvas {
+    -webkit-user-drag: none;
+	width: 100%;
 }
 
 #bar {  /* floating bar at the top */
