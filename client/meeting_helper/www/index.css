@@ -86,9 +86,14 @@ body {
 /***************************/
 
 .white_text {
-			color: #FFFFFF;
-			font-weight: bold;
-			font-size: medium;
+	color: #FFFFFF;
+	font-weight: bold;
+	font-size: medium;
+}
+
+.noteText {
+	font-size: large;
+	font-family: Georgia, "Times New Roman", Times, serif;
 }
 
 .post {  /* frame for posts */
@@ -96,11 +101,16 @@ body {
 	background: black;
 	color: white;
 	
+	border-radius: 15px;
+	
 	text-align: left;
 	padding-top: 10px;
 	padding-bottom: 10px;
 	padding-left: 10px;
 	padding-right: 10px;
+	
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 .post_header {

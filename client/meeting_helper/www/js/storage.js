@@ -157,6 +157,7 @@ var storage = {
 			case 'note':
 				var note = document.createElement('p');
 				note.appendChild(document.createTextNode(data.data));
+				note.setAttribute('class', 'noteText');
 				postObject.appendChild(note);
 				break;
 			// Add comment
