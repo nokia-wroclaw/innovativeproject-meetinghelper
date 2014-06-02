@@ -355,6 +355,22 @@ var main = {
 		});
 	},
 
+	/**
+	 * @function main.getRoomUsers
+	 * Download all of room users.
+	 * After success, download rest of data and load wall content.
+	 */
+	getRoomUsers: function() {
+		connection.action.getUsers(function(data) {
+			callback('getRoomUsers' + JSON.stringify(data));
+			storage.getAllOnlineUsers2(data);
+
+			main.getRoomData();
+
+		    load('wallContent', true);
+		});
+	},
+
 	showRoomQrCode: function() {
 		load('qrCode', true);
 	}
@@ -392,7 +408,7 @@ routing.registerAction('qrCode', function() {
 	storage.displayQrCode(storage.getServerAddress() +
 		connectionLinks.get.qrCode +
 		storage.getRoom().meetingID);
-}, true);
+}, 100);
 
 /**
  * @function connection.socket.receive.onEnterRoom
@@ -427,9 +443,7 @@ connection.socket.receive.onUsersOnline = function(data) {
 	callback('onUsersOnline ' + JSON.stringify(data));
 	storage.getAllOnlineUsers(data);
 
-	main.getRoomData();
-
-    load('wallContent', true);
+	main.getRoomUsers();
 };
 
 /**

@@ -129,9 +129,9 @@ var storage = {
 	addPostHeader: function(data) {
 		var postHeader = document.createElement('div');
 		postHeader.setAttribute('class', 'post_header');
-		/*var text = document.createTextNode('#' + Object.keys(dataFromServer).length +
+		var text = document.createTextNode('#' + Object.keys(dataFromServer).length +
 			' by ' + onlineUsers[data.userId].name + ' ' + 'current_time');
-		postHeader.appendChild(text);*/
+		postHeader.appendChild(text);
 		return postHeader;
 	},
 
@@ -331,6 +331,12 @@ var storage = {
 	 */
 	getAllOnlineUsers: function(receivedUsers) {
 		onlineUsers = {};
+		for (var user in receivedUsers)
+		{
+			onlineUsers[receivedUsers[user].userId] = receivedUsers[user];
+		}
+	},
+	getAllOnlineUsers2: function(receivedUsers) {
 		for (var user in receivedUsers)
 		{
 			onlineUsers[receivedUsers[user].userId] = receivedUsers[user];

@@ -396,6 +396,20 @@ var connection = {
 		},
 
 		/**
+		 * @function connection.action.getUsers
+		 * Gets all users which was from actual room.
+		 * @param {Function} callb
+		 * Called after receiving users.
+		 */
+		getUsers: function(callb) {
+			connection.action._base(
+				connection.action.types.get,
+				connectionLinks.get.rooms.users,
+				null,
+				connection.receive.onReceiveUsers(callb));
+		},
+
+		/**
 		 * @function connection.action.getRoomData
 		 * Requests for all room data.
 		 * @param {String} roomId
@@ -538,6 +552,27 @@ var connection = {
 		 */
 		onReceiveRooms: function(callb) {
 			return connection.receive._base(callb);
+		},
+
+		/**
+		 * @function connection.receive.onReceiveUsers
+		 * Called after answer is received.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
+		onReceiveUsers: function(callb) {
+			return connection.receive._base(function(data) {
+				var toReturn = [];
+				for (var i in data) {
+					toReturn.push({
+						userId: data[i].id,
+						type: 'user',
+						name: data[i].name,
+						data: data[i]
+					});
+				}
+				callb(toReturn);
+			});
 		},
 
 		/**
