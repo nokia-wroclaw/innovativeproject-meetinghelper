@@ -103,9 +103,15 @@ module.exports.JoinRoomByCode = function(req, res, next) {
 module.exports.GetUsers = function(req, res, next) {
     var meetingID = req.session.room;
 
-    Meeting.find({where:{MeetingId: meetingID}})
+    Meeting.find({where:{id: meetingID}})
         .then(function(meeting) {
-                res.endSuccess(meeting.getUsers());
+            meeting.getUsers()
+            .then(function(users){
+            users.forEach(function(user) {
+                    user.password ="xxx";
+            })
+                res.endSuccess(users);
+            })
         })
 
 };
