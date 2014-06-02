@@ -371,9 +371,6 @@ routing.registerAction('rooms', function() {
 });
 routing.registerAction('wall', function() {
 	connection.socket.getConnectedUsers();
-	main.getRoomData();
-
-    load('wallContent', true);
 });
 routing.registerAction('wallContent', function() {
 	storage.setRoomName();
@@ -429,7 +426,10 @@ connection.socket.receive.onPing = function() {
 connection.socket.receive.onUsersOnline = function(data) {
 	callback('onUsersOnline ' + JSON.stringify(data));
 	storage.getAllOnlineUsers(data);
-	// add new users
+
+	main.getRoomData();
+
+    load('wallContent', true);
 };
 
 /**
