@@ -1,0 +1,43 @@
+﻿<link rel="stylesheet" type="text/css" href="photo.css">
+
+<script type="text/javascript" src="js/lib/iscroll-zoom.js"></script>
+<script type="text/javascript">
+	
+	var postObject = document.getElementById('scroller');
+	
+	var image = document.createElement('img');
+	image.setAttribute('alt', '');
+	image.setAttribute('src', main.photoToDisplay);
+	image.setAttribute('width', '100%');
+	postObject.appendChild(image);
+	
+	var myScroll;
+	
+	function loaded () {
+		myScroll = new IScroll('#wrapper', {
+			zoom: true,
+			scrollX: true,
+			scrollY: true,
+			mouseWheel: true,
+			wheelAction: 'zoom'
+		});
+	}
+	
+	main.photoEventListener = function (e) { e.preventDefault(); }
+	
+	document.addEventListener('touchmove', main.photoEventListener, false);
+	
+	loaded();
+</script>
+<div id="bar">
+	<span id="logoSmall" onclick="load('about')">
+		<img alt="logo" height="30" src="img/logo2.png" width="30">
+		<span class="meeting_small">Meeting</span><span class="helper_small">Helper</span>
+	</span>	&nbsp;&nbsp;&nbsp;Photo viewer
+</div>
+
+<div id="wrapper">
+	<div id="scroller">
+		<!-- <img width="100%" src="img/sonisphere_ticket.jpg"/> -->
+	</div>
+</div>

@@ -28,6 +28,7 @@ body {
     background-color:#7F7F7F;
     background-image:url('img/gradient.png');
 	background-repeat:repeat-x;
+	background-attachment:fixed;
 	
     font-family: 'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
     font-size: 12px;
@@ -85,10 +86,65 @@ body {
 /***************************/
 
 .white_text {
-			color: #FFFFFF;
-			font-weight: bold;
-			font-size: medium;
-		}
+	color: #FFFFFF;
+	font-weight: bold;
+	font-size: medium;
+}
+
+.noteText {
+	font-size: large;
+	font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+.post {  /* frame for posts */
+	width: 95%;
+	background: black;
+	color: white;
+	
+	border-radius: 15px;
+	
+	text-align: left;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.post_header {
+	padding-bottom: 5px;
+	font-weight: bold;	
+}
+
+.post_object {
+	text-align: center;
+}
+
+.post_comments {
+}
+
+.post_comment {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.commentBox {
+	
+}
+
+#onlineUsers {
+	color: white;
+}
+
+.photoBody {
+}
+
+div.photoCanvas {
+    -webkit-user-drag: none;
+	width: 100%;
+}
 
 #bar {  /* floating bar at the top */
 	height: 40px;
@@ -112,12 +168,11 @@ body {
     text-align: center;
     margin: 0 0 0 0 auto;
     padding-top: 40px;
-    padding-right: 10%;
-    padding-left: 10%;
+    padding-right: 10px;
+    padding-left: 10px;
 }
-#img_cent{
-	
-   
+
+#img_cent {
     margin-top: 20%;
   	height: 100%;
   	text-align: center;
@@ -128,5 +183,4 @@ body {
   	right: 0;
   	top: 0;
   	bottom: 0;
-    }
 }

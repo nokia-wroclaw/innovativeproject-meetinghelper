@@ -33,7 +33,8 @@ var common = {
 		rooms: {
 			all: 'meetings/list',
 			data: 'materials/getAll'
-		}
+		},
+		qrCode: 'qrcode/'
 	},
 
 	post: {

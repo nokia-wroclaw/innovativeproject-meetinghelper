@@ -4,6 +4,9 @@ var me = {
 	enteredRoom: undefined
 };
 
+var photoEventListener;
+var photoToDisplay;
+
 /**
  * Function from which we demand respond, recall,
  * giving them as parameters functions which need to be recalled
@@ -28,13 +31,15 @@ var main = {
 	takePicture: function(quality) {
 		devices.camera.takePicture(quality, function(imageSrc) {
 			connection.file.upload.photo(imageSrc);
-
-			//main.addNewMyData('image', imageSrc);
-			//var image = document.getElementById('myImageCamera');
-			//image.style.display = 'block';
-
-			//image.src = imageSrc/*"data:image/jpeg;base64," + */;
 		});
+	},
+
+	sendNote: function(data) {
+		connection.action.sendNote(data);
+	},
+
+	sendComment: function(materialId, comment) {
+		connection.action.sendComment(materialId, comment);
 	},
 
 	/**
@@ -191,6 +196,8 @@ var main = {
 	register: function(login, password, password2) {
 		connection.action.register(login, password, password2, function(received) {
 			if (received) {//when everything is correct
+				storage.setUserLogin(login);
+				storage.setUserPassword(password);
 				load('login', true);
 			}
 		}, function(data) {//in case of wrong input data or data already exist in database
@@ -287,11 +294,33 @@ var main = {
 	goToOnlineUsers: function() {
 		load('users', true);
 	},
+	
+	/**
+	 * @function main.addNote
+	 * Load note input form
+	 */
+	goToAddNote: function() {
+		load('addNote', true);
+	},
+	
+	goToPhoto: function(photoUrl) {
+		main.photoToDisplay = photoUrl;
+		load('photo', true);
+	},
+	
+	/**
+	 * @function main.addNote
+	 * Submit note and go back to the wall
+	 */
+	submitNote: function(tresc) {
+		main.sendNote(tresc);
+		load('wallContent', true);
+	},
 
 	/**
 	 * @function main.enterRoom
 	 * Inform the server that user enter to already joined room.
-	 * Runned on the wall page, after receiving ping answer.
+	 * Ran on the wall page, after receiving ping answer.
 	 */
 	enterRoom: function() {
 		var roomId = window.localStorage.getItem('selectedRoomToEnter');
@@ -324,6 +353,10 @@ var main = {
 			callback('getRoomData' + JSON.stringify(data));
 			storage.addAllRoomData(data);
 		});
+	},
+
+	showRoomQrCode: function() {
+		load('qrCode', true);
 	}
 };
 
@@ -338,28 +371,28 @@ routing.registerAction('rooms', function() {
 });
 routing.registerAction('wall', function() {
 	connection.socket.getConnectedUsers();
-	main.getRoomData();
-
-    load('wallContent', true);
 });
 routing.registerAction('wallContent', function() {
 	storage.setRoomName();
 
 	storage.displayRoomData();
-	//storage.* - action of setting view after changing view
-	// to set it again
-}, true);
+}, 500);
 routing.registerAction('users', function() {
 	storage.showOnlineUsers();
-}, true);
+}, 500);
 routing.registerAction('login', function() {
-	//storage.initLoginData
-});
+	storage.initLoginData();
+}, 100);
 routing.registerAction('connection', function() {
 	// we can add here any additional connection information
 	// to connection page
 	main.userCallback('Connection failed');
 });
+routing.registerAction('qrCode', function() {
+	storage.displayQrCode(storage.getServerAddress() +
+		connectionLinks.get.qrCode +
+		storage.getRoom().meetingID);
+}, true);
 
 /**
  * @function connection.socket.receive.onEnterRoom
@@ -393,7 +426,10 @@ connection.socket.receive.onPing = function() {
 connection.socket.receive.onUsersOnline = function(data) {
 	callback('onUsersOnline ' + JSON.stringify(data));
 	storage.getAllOnlineUsers(data);
-	// add new users
+
+	main.getRoomData();
+
+    load('wallContent', true);
 };
 
 /**

@@ -421,9 +421,9 @@ var connection = {
 		 */
 		sendNote: function(note, callb) {
 			connection.action._base(
-				connection.action.types.get,
+				connection.action.types.post,
 				connectionLinks.post.note,
-				{note: note},
+				{context: note},
 				connection.receive.onSendNote(callb));
 		},
 
@@ -439,7 +439,7 @@ var connection = {
 		 */
 		sendComment: function(materialId, comment, callb) {
 			connection.action._base(
-				connection.action.types.get,
+				connection.action.types.post,
 				connectionLinks.post.comment,
 				{materialID: materialId, content: comment},
 				connection.receive.onSendComment(callb));

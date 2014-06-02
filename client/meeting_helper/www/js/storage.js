@@ -5,17 +5,17 @@
 /**
  * Hash with stored data received from server.
  */
-var dataFromServer = [];
+var dataFromServer = {};
 
 /**
  * Hash with stored online users data.
  */
-var onlineUsers = [];
+var onlineUsers = {};
 
 /**
  * Hash with stored rooms data.
  */
-var rooms = [];
+var rooms = {};
 
 var actualRoom = undefined;
 
@@ -34,23 +34,24 @@ var storage = {
 	 * Save rooms in rooms array.
 	 * Show stored data on web page in section with id 'serverRooms'.
 	 * @param {Array[Object]} receivedRooms
-	 * Rooms received from server {{Integer} receivedRooms.id, {String} receivedRooms.name, {String} receivedRooms.folderName}.
+	 * Rooms received from server {{Integer} receivedRooms.id,
+	 * 		{String} receivedRooms.name, {String} receivedRooms.folderName}.
 	 */
 	showRooms: function(receivedRooms) {
 	/**
 	 * `roomlist` is an object responsible for storing list of rooms
 	 */
-		var roomList = document.createElement("select");
-		rooms = [];
+		var roomList = document.createElement('select');
+		rooms = {};
 		for (var room in receivedRooms) {
-			rooms.push(receivedRooms[room]);
-			var newOption = document.createElement("option");
-			newOption.setAttribute("value", receivedRooms[room].id);
+			rooms[receivedRooms[room].id] = receivedRooms[room];
+			var newOption = document.createElement('option');
+			newOption.setAttribute('value', receivedRooms[room].id);
 			newOption.appendChild(document.createTextNode(receivedRooms[room].name));
 			roomList.appendChild(newOption);
 		}
-		var serverRooms = document.getElementById("serverRooms");
-		serverRooms.removeChild(serverRooms.getElementsByTagName("select")[0]);
+		var serverRooms = document.getElementById('serverRooms');
+		serverRooms.removeChild(serverRooms.getElementsByTagName('select')[0]);
 		serverRooms.appendChild(roomList);
 	},
 
@@ -61,9 +62,9 @@ var storage = {
 	 * Data about just created room.
 	 */
 	addCreatedRoom: function(room) {
-		var roomList = document.getElementById("serverRooms").getElementsByTagName("select")[0];
-		var newRoom = document.createElement("option");
-		newRoom.setAttribute("value", room.id);
+		var roomList = document.getElementById('serverRooms').getElementsByTagName('select')[0];
+		var newRoom = document.createElement('option');
+		newRoom.setAttribute('value', room.id);
 		newRoom.appendChild(document.createTextNode(room.name));
 		roomList.appendChild(newRoom);
 		roomList.value = room.id;
@@ -76,9 +77,9 @@ var storage = {
 	 * 
 	 */
 	addAllRoomData: function (receivedData) {
-		dataFromServer = [];
+		dataFromServer = {};
 		for (var data in receivedData) {
-			dataFromServer.push(receivedData[data]);
+			dataFromServer[receivedData[data].id] = receivedData[data];
 		}
 	},
 
@@ -93,72 +94,90 @@ var storage = {
 	 * Add new object to array dataFromServer.
 	 * Invoke adding function depends of data type.
 	 * @param {Object} data
-	 * Data received from server {{Integer} data.id, {Integer} data.userId, {String} data.type, {String} data.data}.
+	 * Data received from server {{Integer} data.id, {Integer} data.userId,
+	 * 		{String} data.type, {String} data.data}.
 	 */
 	addNewData: function(data, displayOnly) {
 		if (!displayOnly) {
-			dataFromServer.push(data);
+			dataFromServer[data.id] = data;
 		}
-		switch (data.type) {
-			// Add photo
-			case "photo":
-				storage.addNewPhoto(data);
-				break;
-			// Add note
-			case "note":
-				storage.addNewMessage(data);
-				break;
-			// Add comment
-			case "comment":
-				storage.addNewComment(data);
-				break;
-			// Other option (unknown data)
-			default:
-				alert("Unknown data received");
-		}
+		storage.addPost(data);
 	},
 
 	/**
-	 * @function storage.addNewPhoto
-	 * Add new photo on web page in section with id 'myImageCamera'.
+	 * @function storage.addPost
+	 * Add new photo on web page in section with id 'received'.
 	 * Invoke function adding comment box.
 	 * @param {Object} data
 	 * Data forwarded by storage.addNewData.
 	 */
-	addNewPhoto: function(data) {
-		var image = document.createElement("img");
-		image.setAttribute("alt", "photo");
-		image.setAttribute("style", "display:none;width:90%;margin-left:5%");
-		image.setAttribute("align", "center");
-		image.style.display = "block";
-		image.src = data.data;
-		var element = document.getElementById('myImageCamera');
-		element.appendChild(image);
-		storage.addCommentBox(data.id);
+	addPost: function(data) {
+		var post = document.createElement('div');
+		post.setAttribute('class', 'post');
+		post.setAttribute('id', data.id);
+		post.appendChild(storage.addPostHeader(data));
+		post.appendChild(storage.addPostObject(data));
+		post.appendChild(storage.addPostComments(data));
+		post.appendChild(storage.addCommentBox(data.id));
+		document.getElementById('received').appendChild(post);
 	},
 
 	/**
-	 * @function storage.addNewMessage
-	 * Add new note as paragraph on web page in section with id 'myImageCamera'.
-	 * @param {Object} data
-	 * Data forwarded by storage.addNewData.
+	 * @function storage.addPostHeader
+	 *
 	 */
-	addNewMessage: function(data) {
-		var message = document.createElement("p");
-		message.appendChild(document.createTextNode(data.data));
-		var element = document.getElementById('myImageCamera');
-		element.appendChild(message);
-		storage.addCommentBox(data.id);
+	addPostHeader: function(data) {
+		var postHeader = document.createElement('div');
+		postHeader.setAttribute('class', 'post_header');
+		/*var text = document.createTextNode('#' + Object.keys(dataFromServer).length +
+			' by ' + onlineUsers[data.userId].name + ' ' + 'current_time');
+		postHeader.appendChild(text);*/
+		return postHeader;
 	},
 
 	/**
-	 * @function storage.addNewComment
-	 * Add new comment after data with proper id.
-	 * @param {Object} data
-	 * Data forwarded by storage.addNewData.
+	 * @function storage.addPostObject
+	 *
 	 */
-	addNewComment: function(data) {
-		var comment = document.getElementById(data.id);
+	addPostObject: function(data) {
+		var postObject = document.createElement('div');
+		postObject.setAttribute('class', 'post_object');
+		switch (data.type) {
+			// Add photo
+			case 'photo':
+				var image = document.createElement('img');
+				image.setAttribute('alt', '');
+				image.setAttribute('src', data.data);
+				image.setAttribute('width', '90%');
+				var onClick = "main.goToPhoto('" + data.data + "\')";
+				image.setAttribute('onclick', onClick);
+				postObject.appendChild(image);
+				break;
+			// Add note
+			case 'note':
+				var note = document.createElement('p');
+				note.appendChild(document.createTextNode(data.data));
+				note.setAttribute('class', 'noteText');
+				postObject.appendChild(note);
+				break;
+			// Add comment
+			case 'comment':
+				break;
+			// Other option (unknown data)
+			default:
+				alert('Unknown data received');
+			}
+		return postObject;
+	},
+
+	/**
+	 * @function storage.addPostComments
+	 *
+	 */
+	addPostComments: function(data) {
+		var postComments = document.createElement('div');
+		postComments.setAttribute('class', 'post_comments');
+		return postComments;
 	},
 	
 	/**
@@ -169,12 +188,12 @@ var storage = {
 	 * Id of comment box.
 	 */
 	expandCommentBox: function(id) {
-		var item = document.getElementById(id);
-		item.getElementsByTagName("textarea")[0].setAttribute("rows", "3");
-		item.appendChild(document.createElement("br"));
-		item.appendChild(document.createElement("input"));
-		item.getElementsByTagName("input")[0].setAttribute("type", "submit");
-		item.getElementsByTagName("input")[0].setAttribute("value", "Submit");
+		var formNode = document.getElementById(id).getElementsByTagName('form')[0];
+		formNode.getElementsByTagName('textarea')[0].setAttribute('rows', '3');
+		formNode.appendChild(document.createElement('br'));
+		formNode.appendChild(document.createElement('input'));
+		formNode.getElementsByTagName('input')[0].setAttribute('type', 'submit');
+		formNode.getElementsByTagName('input')[0].setAttribute('value', 'Submit');
 	},
 	
 	/**
@@ -185,10 +204,11 @@ var storage = {
 	 * Id of comment box.
 	 */
 	contractCommentBox: function(id) {
-		var item = document.getElementById(id);
-		item.removeChild(item.getElementsByTagName("br")[0]);
-		item.removeChild(item.getElementsByTagName("input")[0]);
-		item.getElementsByTagName("textarea")[0].setAttribute("rows", "1");
+		var post = document.getElementById(id);
+		var formNode = post.getElementsByTagName('form')[0];
+		formNode.removeChild(formNode.getElementsByTagName('br')[0]);
+		formNode.removeChild(formNode.getElementsByTagName('input')[0]);
+		formNode.getElementsByTagName('textarea')[0].setAttribute('rows', '1');
 	},
 
 	/**
@@ -198,18 +218,20 @@ var storage = {
 	 * Data id which will be assigned as comment box id.
 	 */
 	addCommentBox: function(id) {
-		var formNode = document.createElement("form");
-		formNode.setAttribute("id", id);
-		formNode.setAttribute("method", "post");
-		var textArea = document.createElement("textarea");
-		textArea.setAttribute("cols", "50");
-		textArea.setAttribute("rows", "1");
-		textArea.setAttribute("placeholder", "Enter your comment here ...");
-		textArea.setAttribute("onfocus", "storage.expandCommentBox(" + id + ")");
-		textArea.setAttribute("onblur", "storage.contractCommentBox(" + id + ")");
+		var commentBox = document.createElement('div');
+		commentBox.setAttribute('class', 'commentBox');
+		var formNode = document.createElement('form');
+		formNode.setAttribute('method', 'post');
+		var textArea = document.createElement('textarea');
+		textArea.setAttribute('style', 'width: 90%;margin-left:5%;');
+		textArea.setAttribute('rows', '1');
+		textArea.setAttribute('placeholder', 'Enter your comment here ...');
+		textArea.setAttribute('onfocus', 'storage.expandCommentBox(' + id + ')');
+		textArea.setAttribute('onblur', 'storage.contractCommentBox(' + id + ')');
 		formNode.appendChild(textArea);
-		document.getElementById('myImageCamera').appendChild(formNode);
-		document.getElementById('myImageCamera').appendChild(document.createElement("br"));
+		commentBox.appendChild(document.createElement('br'));
+		commentBox.appendChild(formNode);
+		return commentBox;
 	},
 
 	/**
@@ -229,7 +251,7 @@ var storage = {
 	 * Address of the server to store.
 	 */
 	setServerAddress: function(serverAddress) {
-		window.localStorage.setItem("serverAddress", serverAddress);
+		window.localStorage.setItem('serverAddress', serverAddress);
 	},
 
 	/**
@@ -238,7 +260,7 @@ var storage = {
 	 * @return 
 	 */
 	getServerAddress: function() {
-		return window.localStorage.getItem("serverAddress");
+		return window.localStorage.getItem('serverAddress');
 	},
 
 
@@ -249,7 +271,7 @@ var storage = {
 	 * User login to store.
 	 */
 	setUserLogin: function(login) {
-		window.localStorage.setItem("userLogin", login);
+		window.localStorage.setItem('userLogin', login);
 	},
 
 	/**
@@ -257,7 +279,7 @@ var storage = {
 	 * Get from localStorage login of last used user.
 	 */
 	getUserLogin: function() {
-		return window.localStorage.getItem("userLogin");
+		return window.localStorage.getItem('userLogin');
 	},
 
 	/**
@@ -267,7 +289,7 @@ var storage = {
 	 * User password to store.
 	 */ 
 	setUserPassword: function(password) {
-		window.localStorage.setItem("userPassword", password);
+		window.localStorage.setItem('userPassword', password);
 	},
 
 	/**
@@ -275,17 +297,17 @@ var storage = {
 	 * Get from localStorage password of last used user.
 	 */
 	getUserPassword: function() {
-		return window.localStorage.getItem("userPassword");
+		return window.localStorage.getItem('userPassword');
 	},
 
 	/**
 	 * @function storage.addNewUser
 	 * Add new user who have entered into room.
 	 * @param {Object} data
-	 * New entered user data {{Integer} data.id, {String} data.type, {String} data.data}.
+	 * New entered user data {{Integer} data.userId, {String} data.type, {String} data.data}.
 	 */
 	addNewUser: function(data) {
-		onlineUsers.push(data);
+		onlineUsers[data.userId] = data;
 	},
 
 	/**
@@ -304,13 +326,14 @@ var storage = {
 	 * Get all currently online users in entered room
 	 * and store this data in onlineUsers array.
 	 * @param {Array[Object]} receivedUsers
-	 * Array of currently online users {{Integer} data.id, {String} data.type, {String} data.name, {String} data.data}.
+	 * Array of currently online users {{Integer} data.userId, {String} data.type,
+	 * 		{String} data.name, {String} data.data}.
 	 */
 	getAllOnlineUsers: function(receivedUsers) {
-		onlineUsers = [];
+		onlineUsers = {};
 		for (var user in receivedUsers)
 		{
-			onlineUsers.push(receivedUsers[user]);
+			onlineUsers[receivedUsers[user].userId] = receivedUsers[user];
 		}
 	},
 
@@ -333,8 +356,23 @@ var storage = {
 		actualRoom = room;
 	},
 
+	getRoom: function() {
+		return actualRoom;
+	},
+
 	setRoomName: function() {
 		var roomPlace = document.getElementById('roomName');
 		roomPlace.appendChild(document.createTextNode(actualRoom.name));
+	},
+
+	displayQrCode: function(url) {
+		var element = document.getElementById('myQrCode');
+		element.data = url;
+	},
+
+	initLoginData: function() {
+		console.log(storage.getUserLogin() + ' ' + storage.getUserPassword());
+		document.getElementById('login').value = storage.getUserLogin();
+		document.getElementById('password').value = storage.getUserPassword();
 	}
 };

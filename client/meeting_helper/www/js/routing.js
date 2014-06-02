@@ -92,7 +92,7 @@ var routing = {
 			if (routing.memory[type].delay) {
 				setTimeout(function() {
 					routing.memory[type].action();
-				}, 500);
+				}, routing.memory[type].delay);
 			} else {
 				routing.memory[type].action();
 			}
@@ -142,6 +142,18 @@ function load(what, ifAction, ifhistoryObj) {
 		case "users":
 			$( "#content" ).load( "loadUsers.html" );
 			break;
+		case "qrCode":
+			$( "#content" ).load( "loadQrCode.html" );
+			break;
+		case "addNote":
+			$( "#content" ).load( "loadNote.html" );
+			break;
+		case "photo":
+			$( "#content" ).load( "loadPhoto.html" );
+			break;
+		case "about":
+			$( "#content" ).load( "loadAbout.html" );
+			break;	
 	}
 	historyObj.setActualPage(what, ifhistoryObj);
 

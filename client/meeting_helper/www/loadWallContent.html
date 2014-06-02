@@ -1,9 +1,14 @@
+﻿<script>
+	document.removeEventListener('touchmove', main.photoEventListener, false);
+</script>
+
 <div id="bar">
-	<img alt="logo" height="30" src="img/logo2.png" width="30"/>
-	<span class="meeting_small">Meeting</span><span class="helper_small">Helper</span>
-    &nbsp;&nbsp;&nbsp;Room&nbsp;<div id="roomName"></div>
-    
-    <div class="btn-group">
+	<span id="logoSmall" onclick="load('about')">
+		<img alt="logo" height="30" src="img/logo2.png" width="30">
+		<span class="meeting_small">Meeting</span><span class="helper_small">Helper</span>
+		&nbsp;<span id="roomName"></span>
+	</span>			    
+	<div class="btn-group">
 		<button type="button" class="btn btn-success" onclick="main.takePicture(75)">
 		  <span class="glyphicon glyphicon-camera"></span>
 		</button>
@@ -12,27 +17,24 @@
 		  <span class="glyphicon glyphicon-picture"></span>
 		</button>
 		
-		<button type="button" class="btn btn-default" onclick="main.insertNote()"> <!-- not yet implemented -->
+		<button type="button" class="btn btn-default" onclick="main.goToAddNote()">
 		  <span class="glyphicon glyphicon-font"></span>
 		</button>
-
+	
 		<button type="button" class="btn btn-info" onclick="main.goToOnlineUsers()">
 		  <span class="glyphicon glyphicon-user"></span>
 		</button>
-
-
+	
+		<button type="button" class="btn btn-info" onclick="main.showRoomQrCode()">
+		  <span class="glyphicon glyphicon-qrcode"></span>
+		</button>
+		
 	</div>
-
-    
+			
+			    
 </div>
 <div id="body">
-	<br><br>
-        <div id="myImageCamera">
-            <!--img alt="photo" style="display:none;width:60px;height:60px;"-->
-            <br><br>
-        </div>
-        <div id="received">
-            <!--img alt="received" style="display:none;width:100px;height:100px;"-->
-            <br><br>
-        </div>
+    <div id="received">
+    	<br>
+    </div>
 </div>
