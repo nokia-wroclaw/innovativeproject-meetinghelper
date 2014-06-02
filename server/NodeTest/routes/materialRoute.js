@@ -3,6 +3,7 @@ var Model = require('../models/model.js');
 var Meeting = Model.Meeting;
 var Material = Model.Material;
 var Comment = Model.Comment;
+var im = require('imagemagick');
 
 module.exports.SendFile = function(req, res, next) {
 
@@ -87,6 +88,36 @@ module.exports.DownloadFile = function(req, res, next) {
         .then(function(meeting) {
         var newPath = "events\\"+ meeting.folderName +"\\"+ material.fileName;
         res.sendfile(newPath);
+        });
+    });
+};
+
+module.exports.DownloadFileMiniature = function(req, res, next) {
+    var materialID = req.params.materialID;
+    Material.find({where:{id: materialID}})
+    .then(function(material) {
+        Meeting.find({where:{id: material.MeetingId}})
+        .then(function(meeting) {
+        //var path = ".\\events\\"+ meeting.folderName +"\\"+ material.fileName;
+        var path = __dirname + "\\..\\events\\"+ meeting.folderName +"\\"+ material.fileName;
+        var newPath = __dirname + "\\..\\events\\"+ meeting.folderName +"\\min.jpg";
+
+        if(material.type == "photo"){
+            im.resize({
+                srcPath: path,
+                dstPath: newPath,
+                 width: 128
+            }, function(err, stdout, stderr){
+            if (err)
+                    throw err;
+            res.sendfile(newPath);
+            });
+        }
+        else{
+            res.sendfile(path);
+        }
+
+        
         });
     });
 };

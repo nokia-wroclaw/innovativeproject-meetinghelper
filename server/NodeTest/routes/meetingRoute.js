@@ -100,6 +100,15 @@ module.exports.JoinRoomByCode = function(req, res, next) {
     });
 };
 
+module.exports.GetUsers = function(req, res, next) {
+    var meetingID = req.session.room;
+
+    Meeting.find({where:{MeetingId: meetingID}})
+        .then(function(meeting) {
+                res.endSuccess(meeting.getUsers());
+        })
+
+};
 
 module.exports.EnterMeeting = function(req) {
     var meetingID = req.data.meetingID;

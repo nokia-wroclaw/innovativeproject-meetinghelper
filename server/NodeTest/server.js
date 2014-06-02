@@ -140,6 +140,16 @@ app.post('/api/meetings/joinByCode', user.IsLogin, meeting.JoinRoomByCode);
 */
 app.get('/api/meetings/list', user.IsLogin, meeting.GetRoomsList);
 
+/*
+* Description: Get all users from meeting
+* Requirement: logged, in meeting
+* GET arguments:
+*       - none
+* return:         
+*       - List<users> (object)
+*/
+app.get('/api/meetings/users/getAll', user.IsLogin, meeting.IsRoom, meeting.GetUsers);
+
 
 /*
 * Description: Get qrcode
@@ -225,6 +235,16 @@ app.post('/api/materials/sendFile', user.IsLogin, meeting.IsRoom, material.SendF
 *       - file (file)
 */
 app.get('/api/materials/file/:materialID', user.IsLogin, meeting.IsRoom, material.DownloadFile);
+
+/*
+* Description: Send file to meeting
+* Requirement: logged, in meeting
+* GET arguments:
+*       - materialID(integer)
+* return:         
+*       - file (file)
+*/
+app.get('/api/materials/file/miniature/:materialID', user.IsLogin, material.DownloadFileMiniature);
 
 
 /*
