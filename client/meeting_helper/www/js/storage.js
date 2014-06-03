@@ -353,6 +353,7 @@ var storage = {
 		for (var user in onlineUsers)
 		{
 			var newUser = document.createElement('div');
+			newUser.setAttribute('class', 'user');
 			newUser.appendChild(document.createTextNode(onlineUsers[user].name));
 			users.appendChild(newUser);
 		}

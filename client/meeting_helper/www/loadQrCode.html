@@ -1,3 +1,4 @@
+<link rel="stylesheet" type="text/css" href="index.css" />
 <div id="bar">
 	<span id="logoSmall" onclick="load('about')">
 		<img alt="logo" height="30" src="img/logo2.png" width="30">
@@ -5,7 +6,13 @@
 	</span>	&nbsp;&nbsp;&nbsp;Room QR Code
 </div>
 <div id="body">
-	<br><br>
-    <object id="myQrCode" type="image/svg+xml" data="">
-    </object>
+	<br><span class="white_text">
+	<img alt="qrcode" src="img/qrcode_scan.png" width="50%"><br><br>
+	Scan the following code to enter this room</span><br><br>
+	<div id="roomQrCode">
+	    <object id="myQrCode" type="image/svg+xml" data="">
+	    </object>
+    </div>
+    <br>
+    <br>
 </div>
