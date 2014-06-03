@@ -590,6 +590,7 @@ var connection = {
 							id: data[i].id,
 							userId: data[i].UserId,
 							type: 'photo',
+							date: data[i].createdAt,
 							data: connection.getUrl() + connectionLinks.get.material + data[i].id
 						});
 					} else if (data[i].type === 'note') {
@@ -597,6 +598,7 @@ var connection = {
 							id: data[i].id,
 							userId: data[i].UserId,
 							type: 'note',
+							date: data[i].createdAt,
 							data: data[i].context
 						});
 					}
@@ -990,6 +992,7 @@ var connection = {
 							id: data.material.id,
 							userId: data.material.UserId,
 							type: 'photo',
+							date: data.material.createdAt,
 							data: connection.getUrl() + connectionLinks.get.material + data.material.id
 						});
 					}
@@ -999,6 +1002,7 @@ var connection = {
 							id: data.material.id,
 							userId: data.material.UserId,
 							type: 'note',
+							date: data.material.createdAt,
 							data: data.material.context
 						});
 					}

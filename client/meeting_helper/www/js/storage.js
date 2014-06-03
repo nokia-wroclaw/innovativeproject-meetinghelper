@@ -129,8 +129,12 @@ var storage = {
 	addPostHeader: function(data) {
 		var postHeader = document.createElement('div');
 		postHeader.setAttribute('class', 'post_header');
+		var name = '';
+		if (onlineUsers[data.userId]) {
+			name = onlineUsers[data.userId].name;
+		}
 		var text = document.createTextNode('#' + Object.keys(dataFromServer).length +
-			' by ' + onlineUsers[data.userId].name + ' ' + 'current_time');
+			' by ' + onlineUsers[data.userId].name + ' ' + data.date);
 		postHeader.appendChild(text);
 		return postHeader;
 	},

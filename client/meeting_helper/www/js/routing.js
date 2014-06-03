@@ -88,7 +88,7 @@ var routing = {
 	 * type - current action
 	 */
 	runAction: function(type) {
-		if (routing.memory[type].action) {
+		if (routing.memory[type] && routing.memory[type].action) {
 			if (routing.memory[type].delay) {
 				setTimeout(function() {
 					routing.memory[type].action();
