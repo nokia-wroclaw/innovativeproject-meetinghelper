@@ -374,6 +374,8 @@ var storage = {
 	setRoomName: function() {
 		var roomPlace = document.getElementById('roomName');
 		roomPlace.appendChild(document.createTextNode(actualRoom.name));
+		var roomPlace = document.getElementById('roomId');
+		roomPlace.appendChild(document.createTextNode(actualRoom.meetingID));
 	},
 
 	displayQrCode: function(url) {
