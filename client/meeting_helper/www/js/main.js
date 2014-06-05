@@ -19,7 +19,8 @@ var main = {
 	 * By now it's an alert, but allows easy change.
 	 */
 	userCallback: function(message) {
-		alert(message);
+		//alert(message);
+		devices.toast(message);
 	},
 
 	/**

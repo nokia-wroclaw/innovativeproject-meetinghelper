@@ -35,7 +35,13 @@ client/meeting_helper/hooks
 client/meeting_helper/merges
 client/meeting_helper/node_modules
 client/meeting_helper/platforms
-client/meeting_helper/plugins
+client/meeting_helper/plugins/com.badrit.MacAddress
+client/meeting_helper/plugins/com.phonegap.plugins.barcodescanner
+client/meeting_helper/plugins/org.apache.cordova.camera
+client/meeting_helper/plugins/org.apache.cordova.device-orientation
+client/meeting_helper/plugins/org.apache.cordova.file
+client/meeting_helper/plugins/org.apache.cordova.file-transfer
+
 
 # server
 server/NodeTest/node_modules

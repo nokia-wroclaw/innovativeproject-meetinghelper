@@ -151,6 +151,14 @@ var devices = {
 		}
 	},
 
+	toast: function(text, which) {
+		if (which) {
+			window.Toast.show_long(text);
+		} else {
+			window.Toast.show_short(text);
+		}
+	},
+
 	action: {
 		exitCounter: 0,
 
@@ -165,8 +173,8 @@ var devices = {
 				devices.action.exitCounter++;
 				setTimeout(function() {
 					devices.action.exitCounter = 0;
-				}, 5000);
-				alert('Click once again to close app');
+				}, 3000);
+				devices.toast('Click once again to exit');
 			}
 		}
 	}
