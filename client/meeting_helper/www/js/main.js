@@ -105,6 +105,7 @@ var main = {
 		load('connecting');
 		connection.initUrl(function() {
 			connection.action.home(function(data) {
+				historyObj.addTohistoryObj('connection', false);
 				if (data.id) {
 					historyObj.addTohistoryObj('login');
 					load('rooms', true);
@@ -156,6 +157,7 @@ var main = {
 		connection.setUrl(link, function() {
 			url.value = link;
 
+			historyObj.addTohistoryObj('connection', false);
 			load('login', true);
 		}, function() {
             load('connection', true);

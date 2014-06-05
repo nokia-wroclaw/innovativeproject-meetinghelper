@@ -20,6 +20,8 @@ historyObj = {
 	actualPage: undefined,
 
 	pages: new Array(),
+
+	pagesRunAction: new Array(),
 	
 	/**
 	 * @function setActualPage
@@ -41,11 +43,16 @@ historyObj = {
 	 * @param {function} page
 	 * page to be added to historyObj
 	 */
-	addTohistoryObj: function(page) {
+	addTohistoryObj: function(page, ifRun) {
+		if (ifRun === undefined) {
+			ifRun = true;
+		}
 		if (page) {
 			historyObj.pages.push(page);
+			historyObj.pagesRunAction.push(ifRun);
 		} else if (historyObj.actualPage && historyObj.actualPage !== "wall" && historyObj.actualPage !== "connection" && historyObj.actualPage !== "connecting") {
 			historyObj.pages.push(historyObj.actualPage);
+			historyObj.pagesRunAction.push(ifRun);
 		}
 	},
 	/**
