@@ -84,25 +84,47 @@ var routing = {
 	 * @param {function} action
 	 * action made by user
 	 */
-	registerAction: function(type, action, delay) {
-		routing.memory[type] = {};
-		routing.memory[type].action = action;
-		routing.memory[type].delay = delay;
+	registerAction: function(type, action, delay, id) {
+		if (!routing.memory[type]) {
+			routing.memory[type] = {};
+		}
+		if (id) {
+			routing.memory[type][id] = {};
+			routing.memory[type][id].action = action;
+			routing.memory[type][id].delay = delay;
+		} else {
+			routing.memory[type].deflt = {};
+			routing.memory[type].deflt.action = action;
+			routing.memory[type].deflt.delay = delay;
+		}
 	},
+
 	/**
 	 * @function runAction
 	 * runs action made by user
 	 * @param {function} type
 	 * type - current action
 	 */
-	runAction: function(type) {
-		if (routing.memory[type] && routing.memory[type].action) {
-			if (routing.memory[type].delay) {
-				setTimeout(function() {
-					routing.memory[type].action();
-				}, routing.memory[type].delay);
-			} else {
-				routing.memory[type].action();
+	runAction: function(type, id) {
+		if (id) {
+			if (routing.memory[type] && routing.memory[type][id] && routing.memory[type][id].action) {
+				if (routing.memory[type][id].delay) {
+					setTimeout(function() {
+						routing.memory[type][id].action();
+					}, routing.memory[type][id].delay);
+				} else {
+					routing.memory[type][id].action();
+				}
+			}
+		} else {
+			if (routing.memory[type] && routing.memory[type].deflt && routing.memory[type].deflt.action) {
+				if (routing.memory[type].deflt.delay) {
+					setTimeout(function() {
+						routing.memory[type].deflt.action();
+					}, routing.memory[type].deflt.delay);
+				} else {
+					routing.memory[type].deflt.action();
+				}
 			}
 		}
 	}
@@ -113,7 +135,7 @@ var routing = {
 	 * @param {function} what
 	 * defines current user case
 	 * @param {function} ifAction
-	 * checks if user had made an action
+	 * checks if user had made an action or is action id
 	 * @param {function} ifhistoryObj
 	 * checks if page was used before
 	 */
@@ -165,7 +187,9 @@ function load(what, ifAction, ifhistoryObj) {
 	}
 	historyObj.setActualPage(what, ifhistoryObj);
 
-	if (ifAction) {
+	if (ifAction === true) {
 		routing.runAction(what);
+	} else if (ifAction) {
+		routing.runAction(what, ifAction);
 	}
 }

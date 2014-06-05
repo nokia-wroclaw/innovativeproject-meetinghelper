@@ -106,7 +106,7 @@ var main = {
 		load('connecting');
 		connection.initUrl(function() {
 			connection.action.home(function(data) {
-				historyObj.addTohistoryObj('connection', false);
+				historyObj.addTohistoryObj('connection');
 				if (data.id) {
 					historyObj.addTohistoryObj('login');
 					load('rooms', true);
@@ -115,7 +115,7 @@ var main = {
 				}
 			});
         }, function() {
-            load('connection');
+            load('connection', true);
         });
 	},
 	 
@@ -158,10 +158,10 @@ var main = {
 		connection.setUrl(link, function() {
 			url.value = link;
 
-			historyObj.addTohistoryObj('connection', false);
+			historyObj.addTohistoryObj('connection');
 			load('login', true);
 		}, function() {
-            load('connection', true);
+            load('connection', 'connectionFailed');
 		});
 	},
 
@@ -423,8 +423,14 @@ routing.registerAction('connection', function() {
 	storage.getServerAddresses(function() {
 		storage.displayServerAddresses();
 	});
+}, 100);
+routing.registerAction('connection', function() {
 	main.userCallback('Connection failed');
-});
+
+	storage.getServerAddresses(function() {
+		storage.displayServerAddresses();
+	});
+}, 100, 'connectionFailed');
 routing.registerAction('qrCode', function() {
 	storage.displayQrCode(storage.getServerAddress() +
 		connectionLinks.get.qrCode +
