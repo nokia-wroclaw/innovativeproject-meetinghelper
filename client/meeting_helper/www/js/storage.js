@@ -430,3 +430,4 @@ var storage = {
 		addresses.innerHTML = value;
 	}
 };
+storage.getServerAddresses();

@@ -82,9 +82,7 @@ var connection = {
 	 */
 	initUrl: function(success, failure) {
 		connection.state = connection.states.unknown_host;
-		if (!connection.url) {
-			connection.url = storage.getServerAddress();
-		}
+		connection.url = connection.getUrl();
 		if (!connection.url) {
 			connection.url = common.defaultUrl;
 		}
@@ -113,7 +111,7 @@ var connection = {
 
 		connection.checkConnection(url, function() {
 			connection.url = url;
-			storage.setServerAddress(url);
+			storage.setServerAddress(url.replace('api/', ''));
 			if (success) {
 				success();
 			}
@@ -128,7 +126,7 @@ var connection = {
 	 */
 	getUrl: function() {
 		if (!connection.url) {
-			connection.url = storage.getServerAddress();
+			connection.url = storage.getServerAddress() + 'api/';
 		}
 		return connection.url;
 	},
@@ -163,7 +161,7 @@ var connection = {
 		connection.action.ping(url, function(result) {
 			if (result === connectionAnswers.ping) {
 				answer(connection.states.established, success);
-				storage.addServerAddress(url);
+				storage.addServerAddress(url.replace('api/', ''));
 			} else {
 				answer(connection.states.wrong_host, failure);
 			}
