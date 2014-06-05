@@ -357,7 +357,7 @@ var main = {
 	scanRoomQrCode: function() {
 		// scan
 		devices.qrCode.scan(function(roomId) {
-			main.joinRoomById(roomId);
+			main.joinRoomByCode(roomId);
 		});
 	},
 
@@ -424,7 +424,7 @@ routing.registerAction('connection', function() {
 routing.registerAction('qrCode', function() {
 	storage.displayQrCode(storage.getServerAddress() +
 		connectionLinks.get.qrCode +
-		storage.getRoom().meetingID);
+		storage.getRoom().accessCode);
 }, 100);
 
 /**

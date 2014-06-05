@@ -382,6 +382,22 @@ var connection = {
 		},
 
 		/**
+		 * @function connection.action.joinRoomByCode
+		 * Joins specified room.
+		 * @param {String} roomCode
+		 * Code of room to join.
+		 * @param {Function} callb
+		 * Called after joining room properly.
+		 */
+		joinRoomByCode: function(roomCode, callb) {
+			connection.action._base(
+				connection.action.types.post,
+				connectionLinks.post.rooms.joinByCode,
+				{accessCode: roomCode},
+				connection.receive.onJoinRoom(callb));
+		},
+
+		/**
 		 * @function connection.action.getRooms
 		 * Gets all rooms which was recently entered by user.
 		 * @param {Function} callb
