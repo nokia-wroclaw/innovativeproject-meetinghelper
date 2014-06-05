@@ -84,8 +84,9 @@ var storage = {
 	},
 
 	displayRoomData: function() {
+		var next = 1;
 		for (var data in dataFromServer) {
-			storage.addNewData(dataFromServer[data], true);
+			storage.addNewData(dataFromServer[data], true, next++);
 		}
 	},
 
@@ -97,11 +98,11 @@ var storage = {
 	 * Data received from server {{Integer} data.id, {Integer} data.userId,
 	 * 		{String} data.type, {String} data.data}.
 	 */
-	addNewData: function(data, displayOnly) {
+	addNewData: function(data, displayOnly, id) {
 		if (!displayOnly) {
 			dataFromServer[data.id] = data;
 		}
-		storage.addPost(data);
+		storage.addPost(data, id);
 	},
 
 	/**
@@ -111,11 +112,11 @@ var storage = {
 	 * @param {Object} data
 	 * Data forwarded by storage.addNewData.
 	 */
-	addPost: function(data) {
+	addPost: function(data, id) {
 		var post = document.createElement('div');
 		post.setAttribute('class', 'post');
 		post.setAttribute('id', data.id);
-		post.appendChild(storage.addPostHeader(data));
+		post.appendChild(storage.addPostHeader(data, id));
 		post.appendChild(storage.addPostObject(data));
 		post.appendChild(storage.addPostComments(data));
 		post.appendChild(storage.addCommentBox(data.id));
@@ -126,14 +127,15 @@ var storage = {
 	 * @function storage.addPostHeader
 	 *
 	 */
-	addPostHeader: function(data) {
+	addPostHeader: function(data, id) {
 		var postHeader = document.createElement('div');
 		postHeader.setAttribute('class', 'post_header');
 		var name = '';
 		if (onlineUsers[data.userId]) {
 			name = onlineUsers[data.userId].name;
 		}
-		var text = document.createTextNode('#' + Object.keys(dataFromServer).length +
+		if (!id) id = Object.keys(dataFromServer).length;
+		var text = document.createTextNode('#' + id +
 			' by ' + onlineUsers[data.userId].name + ' ' + data.date);
 		postHeader.appendChild(text);
 		return postHeader;
