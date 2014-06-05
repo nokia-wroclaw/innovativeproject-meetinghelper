@@ -62,8 +62,9 @@ historyObj = {
 	back: function() {
 		if (historyObj.pages.length > 0) {
 			var route = historyObj.pages.pop();
+			var ifRunAction = historyObj.pagesRunAction.pop();
 			if (route) {
-				load(route, true, true);
+				load(route, ifRunAction, true);
 			}
 		} else if (historyObj.pages.length === 0 && contains(window.location.href, "wall.html")) {
 			load("rooms", true, true);
