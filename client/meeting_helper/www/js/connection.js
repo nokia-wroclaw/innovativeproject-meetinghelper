@@ -163,6 +163,7 @@ var connection = {
 		connection.action.ping(url, function(result) {
 			if (result === connectionAnswers.ping) {
 				answer(connection.states.established, success);
+				storage.addServerAddress(url);
 			} else {
 				answer(connection.states.wrong_host, failure);
 			}

@@ -19,6 +19,8 @@ var rooms = {};
 
 var actualRoom = undefined;
 
+var serverAddresses = [];
+
 /**
  * Function which save downloaded data from server in tables
  * and present them for users.
@@ -386,8 +388,45 @@ var storage = {
 	},
 
 	initLoginData: function() {
-		console.log(storage.getUserLogin() + ' ' + storage.getUserPassword());
 		document.getElementById('login').value = storage.getUserLogin();
 		document.getElementById('password').value = storage.getUserPassword();
+	},
+
+	addServerAddress: function(address) {
+		for (var addr in serverAddresses) {
+			if (address === serverAddresses[addr]) {
+				return;
+			}
+		}
+		window.localStorage.setItem('serverAddress' + serverAddresses.length, address);
+		serverAddresses.push(address);
+	},
+
+	getServerAddresses: function(callb) {
+		serverAddresses = [];
+		var serverAddress;
+		var id = 0;
+		do {
+			serverAddress = window.localStorage.getItem('serverAddress' + id++);
+			if (serverAddress) {
+				serverAddresses.push(serverAddress);
+			}
+		} while(serverAddress);
+
+		if (callb) {
+			callb(serverAddresses);
+		}
+	},
+
+	displayServerAddresses: function() {
+		var value = '';
+		if (serverAddresses.length > 0) {
+			value += serverAddresses[0];
+			for (var i = 1; i < serverAddresses.length; i++) {
+				value += ' ' + serverAddresses[i];
+			}
+		}
+		var addresses = document.getElementById('serverAddresses');
+		addresses.innerHTML = value;
 	}
 };

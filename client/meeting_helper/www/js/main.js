@@ -420,8 +420,9 @@ routing.registerAction('login', function() {
 	storage.initLoginData();
 }, 100);
 routing.registerAction('connection', function() {
-	// we can add here any additional connection information
-	// to connection page
+	storage.getServerAddresses(function() {
+		storage.displayServerAddresses();
+	});
 	main.userCallback('Connection failed');
 });
 routing.registerAction('qrCode', function() {
