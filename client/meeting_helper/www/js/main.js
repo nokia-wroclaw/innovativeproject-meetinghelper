@@ -229,7 +229,6 @@ var main = {
 		});
 	},
 
-
 	/**
 	 * @function main.joinRoom
 	 * Join and enter to current room
@@ -239,11 +238,11 @@ var main = {
 	 */
 	joinRoom: function(room, callb) {
 		if (room) {
-			connection.action.joinRoom(room.id, function(received) {
-				if (received) {
-					storage.addCreatedRoom(room);
+			connection.action.joinRoom(room.id, function(receivedRoom) {
+				if (receivedRoom) {
+					storage.addCreatedRoom(receivedRoom);
 					if (callb) {
-						callb(received);
+						callb(receivedRoom);
 					}
 				}
 			});
@@ -257,9 +256,27 @@ var main = {
 	 * ID of selected room
 	 */
 	joinRoomById: function(roomId) {
-		main.joinRoom({id: roomId, name: 'already typed room'}, function(answer) {
+		main.joinRoom({id: roomId}, function(receivedRoom) {
 			main.goToWall();
 		});
+	},
+
+	/**
+	 * @function main.joinRoomByCode
+	 * Join and enter to room
+	 * @param {int} roomCode
+	 * Code of room
+	 * @param {} callb
+	 */
+	joinRoomByCode: function(roomCode) {
+		if (roomCode) {
+			connection.action.joinRoomByCode(roomCode, function(receivedRoom) {
+				if (receivedRoom) {
+					storage.addCreatedRoom(receivedRoom);
+					main.goToWall();
+				}
+			});
+		}
 	},
 
 	/**

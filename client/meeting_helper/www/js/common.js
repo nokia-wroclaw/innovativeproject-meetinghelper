@@ -44,7 +44,8 @@ var common = {
 		register: 'register',
 		rooms: {
 			create: 'meetings/create/',
-			join: 'meetings/join/'
+			join: 'meetings/join/',
+			joinByCode: 'meetings/joinByCode/'
 		},
 		file: 'materials/sendFile',
 		note: 'materials/sendNote',
