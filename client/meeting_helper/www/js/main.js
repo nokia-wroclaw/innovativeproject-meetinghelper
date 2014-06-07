@@ -6,6 +6,7 @@ var me = {
 
 var photoEventListener;
 var photoToDisplay;
+var goToElementVisibile = false;
 
 /**
  * Function from which we demand respond, recall,
@@ -393,6 +394,25 @@ var main = {
 
 	showRoomQrCode: function() {
 		load('qrCode', true);
+	},
+	
+	toggleGoToElement: function() {
+		if(goToElementVisibile == true)
+		{
+			document.getElementById('goToElement').style.display = 'none';
+			goToElementVisibile = false;
+		}
+		else
+		{
+			document.getElementById('goToElement').style.display = 'block';
+			goToElementVisibile = true;
+		}
+	},
+	
+	goToElement: function(id) {
+		document.getElementById(id).scrollIntoView();
+		document.getElementById('elementID').value = '';
+		main.toggleGoToElement();
 	}
 };
 

@@ -117,7 +117,8 @@ var storage = {
 	addPost: function(data, id) {
 		var post = document.createElement('div');
 		post.setAttribute('class', 'post');
-		post.setAttribute('id', data.id);
+		if (!id) id = Object.keys(dataFromServer).length;
+		post.setAttribute('id', id);
 		post.appendChild(storage.addPostHeader(data, id));
 		post.appendChild(storage.addPostObject(data));
 		post.appendChild(storage.addPostComments(data));

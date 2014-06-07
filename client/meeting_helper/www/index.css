@@ -246,3 +246,7 @@ div.photoCanvas {
   	top: 0;
   	bottom: 0;
 }
+
+#goToElement {
+	display: none;
+}
