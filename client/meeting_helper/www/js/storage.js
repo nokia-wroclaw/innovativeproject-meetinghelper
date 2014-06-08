@@ -386,8 +386,6 @@ var storage = {
 	displayAccessCode: function() {
 		var code = document.getElementById('accessCode');
 		code.appendChild(document.createTextNode(actualRoom.accessCode));
-		var roomPlace2 = document.getElementById('roomId');
-		roomPlace2.appendChild(document.createTextNode(actualRoom.meetingID+':'));
 	},
 
 	//displayQrCode: function(url) {

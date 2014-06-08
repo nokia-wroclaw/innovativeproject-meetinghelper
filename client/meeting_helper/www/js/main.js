@@ -452,7 +452,7 @@ routing.registerAction('connection', function() {
 	});
 }, 100, 'connectionFailed');
 routing.registerAction('qrCode', function() {
-	
+	storage.setRoomName();
 	storage.displayAccessCode();
 	
 	//var qrUrl = storage.getServerAddress() + connectionLinks.get.qrCode + storage.getRoom().accessCode;
