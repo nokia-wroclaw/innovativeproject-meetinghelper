@@ -6,6 +6,7 @@ var me = {
 
 var photoEventListener;
 var photoToDisplay;
+var goToElementVisibile = false;
 
 /**
  * Function from which we demand respond, recall,
@@ -393,6 +394,25 @@ var main = {
 
 	showRoomQrCode: function() {
 		load('qrCode', true);
+	},
+	
+	toggleGoToElement: function() {
+		if(goToElementVisibile == true)
+		{
+			document.getElementById('goToElement').style.display = 'none';
+			goToElementVisibile = false;
+		}
+		else
+		{
+			document.getElementById('goToElement').style.display = 'block';
+			goToElementVisibile = true;
+		}
+	},
+	
+	goToElement: function(id) {
+		document.getElementById(id).scrollIntoView();
+		document.getElementById('elementID').value = '';
+		main.toggleGoToElement();
 	}
 };
 
@@ -432,9 +452,12 @@ routing.registerAction('connection', function() {
 	});
 }, 100, 'connectionFailed');
 routing.registerAction('qrCode', function() {
-	storage.displayQrCode(storage.getServerAddress() +
-		connectionLinks.get.qrCode +
-		storage.getRoom().accessCode);
+	
+	storage.displayAccessCode();
+	
+	//var qrUrl = storage.getServerAddress() + connectionLinks.get.qrCode + storage.getRoom().accessCode;
+	//storage.displayQrCode(qrUrl);
+	
 }, 100);
 
 /**

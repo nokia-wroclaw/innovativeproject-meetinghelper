@@ -1,21 +1,21 @@
 /**
  * Script for switching contents
  */
-	/**
-	 * @function routing.contains
-	 * checks if current URL is the same
-	 * @param {function} bigger
-	 * current URL
-	 * @param {function} fragment
-	 * defines page to check if is the same
-	 */
+/**
+ * @function routing.contains
+ * checks if current URL is the same
+ * @param {function} bigger
+ * current URL
+ * @param {function} fragment
+ * defines page to check if is the same
+ */
 var contains = function(bigger, fragment) {
 	return bigger.indexOf(fragment) != -1;
 };
 
-	 /**
-	* Defines current navigation between sites
-	*/
+ /**
+* Defines current navigation between sites
+*/
 historyObj = {
 	actualPage: undefined,
 
@@ -73,9 +73,9 @@ historyObj = {
 		}
 	}
 };
-	/**
-	* Reacts when action is made by user
-	*/
+/**
+* Reacts when action is made by user
+*/
 var routing = {
 	memory: {},
 	/**
@@ -129,16 +129,16 @@ var routing = {
 		}
 	}
 };
-	/**
-	 * @function load
-	 * loads content that is set to current user action
-	 * @param {function} what
-	 * defines current user case
-	 * @param {function} ifAction
-	 * checks if user had made an action or is action id
-	 * @param {function} ifhistoryObj
-	 * checks if page was used before
-	 */
+/**
+ * @function load
+ * loads content that is set to current user action
+ * @param {function} what
+ * defines current user case
+ * @param {function} ifAction
+ * checks if user had made an action or is action id
+ * @param {function} ifhistoryObj
+ * checks if page was used before
+ */
 function load(what, ifAction, ifhistoryObj) {
 	if (what === "rooms" && contains(window.location.href, "wall.html")) {
 		// when we were on wall and want to load rooms page

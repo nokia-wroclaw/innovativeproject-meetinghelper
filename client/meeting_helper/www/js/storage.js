@@ -49,7 +49,7 @@ var storage = {
 			rooms[receivedRooms[room].id] = receivedRooms[room];
 			var newOption = document.createElement('option');
 			newOption.setAttribute('value', receivedRooms[room].id);
-			newOption.appendChild(document.createTextNode(receivedRooms[room].name));
+			newOption.appendChild(document.createTextNode('#'+receivedRooms[room].id+': '+receivedRooms[room].name));
 			roomList.appendChild(newOption);
 		}
 		var serverRooms = document.getElementById('serverRooms');
@@ -117,7 +117,8 @@ var storage = {
 	addPost: function(data, id) {
 		var post = document.createElement('div');
 		post.setAttribute('class', 'post');
-		post.setAttribute('id', data.id);
+		if (!id) id = Object.keys(dataFromServer).length;
+		post.setAttribute('id', id);
 		post.appendChild(storage.addPostHeader(data, id));
 		post.appendChild(storage.addPostObject(data));
 		post.appendChild(storage.addPostComments(data));
@@ -379,13 +380,22 @@ var storage = {
 		var roomPlace = document.getElementById('roomName');
 		roomPlace.appendChild(document.createTextNode(actualRoom.name));
 		var roomPlace2 = document.getElementById('roomId');
-		roomPlace2.appendChild(document.createTextNode(actualRoom.accessCode));
+		roomPlace2.appendChild(document.createTextNode(actualRoom.meetingID+':'));
+	},
+	
+	displayAccessCode: function() {
+		var code = document.getElementById('accessCode');
+		code.appendChild(document.createTextNode(actualRoom.accessCode));
+		var roomPlace2 = document.getElementById('roomId');
+		roomPlace2.appendChild(document.createTextNode(actualRoom.meetingID+':'));
 	},
 
-	displayQrCode: function(url) {
-		var element = document.getElementById('myQrCode');
-		element.data = url;
-	},
+	//displayQrCode: function(url) {
+	//	//var element = document.getElementById('myQrCode');
+	//	//element.data = url;
+	//	
+	//	
+	//},
 
 	initLoginData: function() {
 		document.getElementById('login').value = storage.getUserLogin();
