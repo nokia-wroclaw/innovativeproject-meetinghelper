@@ -154,6 +154,20 @@ body {
 	background-color: white;
 	border-radius: 15px;
 	text-align: center;
+	padding-top: 10px;
+	padding-bottom: 10px;
+
+}
+
+#accessCode {
+	background-color: white;
+	border-radius: 15px;
+	text-align: center;
+	font-size: x-large;
+	color: black;
+	font-family: "Courier New", Courier, monospace;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
 #onlineUsers {

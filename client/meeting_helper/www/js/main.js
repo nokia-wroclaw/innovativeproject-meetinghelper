@@ -452,9 +452,12 @@ routing.registerAction('connection', function() {
 	});
 }, 100, 'connectionFailed');
 routing.registerAction('qrCode', function() {
-	storage.displayQrCode(storage.getServerAddress() +
-		connectionLinks.get.qrCode +
-		storage.getRoom().accessCode);
+	
+	storage.displayAccessCode();
+	
+	//var qrUrl = storage.getServerAddress() + connectionLinks.get.qrCode + storage.getRoom().accessCode;
+	//storage.displayQrCode(qrUrl);
+	
 }, 100);
 
 /**

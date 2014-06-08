@@ -1,18 +1,28 @@
-<link rel="stylesheet" type="text/css" href="index.css" />
+﻿<link rel="stylesheet" type="text/css" href="index.css" />
 <div id="bar">
 	<span id="logoSmall" onclick="load('about')">
 		<img alt="logo" height="30" src="img/logo2.png" width="30">
 		<span class="meeting_small">Meeting</span><span class="helper_small">Helper</span>
-	</span>	&nbsp;&nbsp;&nbsp;Room QR Code
+	</span>	&nbsp;&nbsp;&nbsp;Room Access
 </div>
 <div id="body">
 	<br><span class="white_text">
 	<img alt="qrcode" src="img/qrcode_scan.png" width="50%"><br><br>
-	Scan the following code to enter this room</span><br><br>
+	Scan the following QR code or use the access code to enter into this room</span><br><br>
 	<div id="roomQrCode">
-	    <object id="myQrCode" type="image/svg+xml" data="">
-	    </object>
     </div>
     <br>
+    <div id="accessCode">    
+    </div>
+	<br>
     <br>
 </div>
+
+<script>
+	var qrUrl = storage.getServerAddress() + connectionLinks.get.qrCode + storage.getRoom().accessCode;
+
+	$('#roomQrCode').qrcode({
+				render: "image",
+				text: storage.getRoom().accessCode
+			});
+</script>
