@@ -4,6 +4,7 @@ var Meeting = Model.Meeting;
 var Material = Model.Material;
 var Comment = Model.Comment;
 var im = require('imagemagick');
+var Dictionary = require('../dictionary/dictionary.js');
 
 module.exports.SendFile = function(req, res, next) {
 
@@ -163,7 +164,7 @@ module.exports.GetComment = function(req, res, next) {
     var userID = req.session.user;
     var materialID = req.param.materialID;
     Material.find({where:{id : materialID}})
-    .then(function(materials) {
+    .then(function(material) {
         if(material)
            res.endSuccess(material.getComments());
         else
@@ -179,8 +180,11 @@ module.exports.GetAllComments = function(req, res, next) {
         if(materials){
             for (var i = 0; i < materials.length; i++) {
                 var temp = materials[i].getComments();
-                if(temp)
-                    arrayComment.push(temp);
+                if(temp) {
+                    for (var k in temp) {
+                        arrayComment.push(temp[k]);
+                    }
+                }
             }
             res.endSuccess(arrayComment); 
         }
