@@ -162,31 +162,27 @@ module.exports.Comment = function(req, res, next) {
 
 module.exports.GetComment = function(req, res, next) {
     var userID = req.session.user;
-    var materialID = req.param.materialID;
-    Material.find({where:{id : materialID}})
-    .then(function(material) {
-        if(material)
-           res.endSuccess(material.getComments());
-        else
-            res.endError(Dictionary.materialNotFind); 
+    var materialID = req.params.materialID;
+    Comment.findAll({where:{MaterialId : materialID}})
+    .then(function(comments) {
+           res.endSuccess(comments);
     });
 };
 
 module.exports.GetAllComments = function(req, res, next) {
     var meetingID = req.session.room;
-    var arrayComment = [];
+    var array = [];
     Material.findAll({where:{MeetingId : meetingID}})
     .then(function(materials) {
         if(materials){
-            for (var i = 0; i < materials.length; i++) {
-                var temp = materials[i].getComments();
-                if(temp) {
-                    for (var k in temp) {
-                        arrayComment.push(temp[k]);
-                    }
-                }
+            for(var i=0; i<materials.length;i++) {
+                 array.push(materials[i].id);  
             }
-            res.endSuccess(arrayComment); 
+
+            Comment.findAll({where:{MaterialId : array}})
+            .then(function(comments){
+                res.endSuccess(comments); 
+            })
         }
         else
             res.endError(Dictionary.materialNotFind); 
