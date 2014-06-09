@@ -75,7 +75,7 @@ module.exports.JoinRoom = function(req, res, next) {
             return user.addMeeting(meeting)
             .then(function() {
                 req.session.room = meetingID;
-                res.endSuccess(true);
+                res.endSuccess(meeting);
             })
         })
         
@@ -93,7 +93,7 @@ module.exports.JoinRoomByCode = function(req, res, next) {
             return user.addMeeting(meeting)
             .then(function() {
                 req.session.room = meeting.Id;
-                res.endSuccess(true);
+                res.endSuccess(meeting);
             })
         })
         
@@ -134,7 +134,7 @@ module.exports.EnterMeeting = function(req) {
                 req.session.room = meetingID;
                 req.session.save();
                 req.io.join(meetingID);
-                req.io.emit('joined', {meetingID: meetingID, name: access.name});
+                req.io.emit('joined', {meetingID: meetingID, name: access.name, accessCode: access.accessCode});
             }
         })
     });

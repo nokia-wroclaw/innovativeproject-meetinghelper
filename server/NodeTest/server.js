@@ -116,7 +116,7 @@ app.post('/api/meetings/create', user.IsLogin, meeting.CreateRoom);
 * POST arguments:
 *       - meetingID (integer)
 * return:         
-*       - result (boolean)
+*       - meeting (object)
 */
 app.post('/api/meetings/join', user.IsLogin, meeting.JoinRoom);
 
@@ -126,7 +126,7 @@ app.post('/api/meetings/join', user.IsLogin, meeting.JoinRoom);
 * POST arguments:
 *       - accessCode (string)
 * return:         
-*       - result (boolean)
+*       - meeting (object)
 */
 app.post('/api/meetings/joinByCode', user.IsLogin, meeting.JoinRoomByCode);
 

@@ -1,25 +1,27 @@
 /**
  * Script for switching contents
  */
-	/**
-	 * @function routing.contains
-	 * checks if current URL is the same
-	 * @param {function} bigger
-	 * current URL
-	 * @param {function} fragment
-	 * defines page to check if is the same
-	 */
+/**
+ * @function routing.contains
+ * checks if current URL is the same
+ * @param {function} bigger
+ * current URL
+ * @param {function} fragment
+ * defines page to check if is the same
+ */
 var contains = function(bigger, fragment) {
 	return bigger.indexOf(fragment) != -1;
 };
 
-	 /**
-	* Defines current navigation between sites
-	*/
+ /**
+* Defines current navigation between sites
+*/
 historyObj = {
 	actualPage: undefined,
 
 	pages: new Array(),
+
+	pagesRunAction: new Array(),
 	
 	/**
 	 * @function setActualPage
@@ -41,11 +43,16 @@ historyObj = {
 	 * @param {function} page
 	 * page to be added to historyObj
 	 */
-	addTohistoryObj: function(page) {
+	addTohistoryObj: function(page, ifRun) {
+		if (ifRun === undefined) {
+			ifRun = true;
+		}
 		if (page) {
 			historyObj.pages.push(page);
+			historyObj.pagesRunAction.push(ifRun);
 		} else if (historyObj.actualPage && historyObj.actualPage !== "wall" && historyObj.actualPage !== "connection" && historyObj.actualPage !== "connecting") {
 			historyObj.pages.push(historyObj.actualPage);
+			historyObj.pagesRunAction.push(ifRun);
 		}
 	},
 	/**
@@ -55,8 +62,9 @@ historyObj = {
 	back: function() {
 		if (historyObj.pages.length > 0) {
 			var route = historyObj.pages.pop();
+			var ifRunAction = historyObj.pagesRunAction.pop();
 			if (route) {
-				load(route, true, true);
+				load(route, ifRunAction, true);
 			}
 		} else if (historyObj.pages.length === 0 && contains(window.location.href, "wall.html")) {
 			load("rooms", true, true);
@@ -65,9 +73,9 @@ historyObj = {
 		}
 	}
 };
-	/**
-	* Reacts when action is made by user
-	*/
+/**
+* Reacts when action is made by user
+*/
 var routing = {
 	memory: {},
 	/**
@@ -76,39 +84,61 @@ var routing = {
 	 * @param {function} action
 	 * action made by user
 	 */
-	registerAction: function(type, action, delay) {
-		routing.memory[type] = {};
-		routing.memory[type].action = action;
-		routing.memory[type].delay = delay;
+	registerAction: function(type, action, delay, id) {
+		if (!routing.memory[type]) {
+			routing.memory[type] = {};
+		}
+		if (id) {
+			routing.memory[type][id] = {};
+			routing.memory[type][id].action = action;
+			routing.memory[type][id].delay = delay;
+		} else {
+			routing.memory[type].deflt = {};
+			routing.memory[type].deflt.action = action;
+			routing.memory[type].deflt.delay = delay;
+		}
 	},
+
 	/**
 	 * @function runAction
 	 * runs action made by user
 	 * @param {function} type
 	 * type - current action
 	 */
-	runAction: function(type) {
-		if (routing.memory[type].action) {
-			if (routing.memory[type].delay) {
-				setTimeout(function() {
-					routing.memory[type].action();
-				}, routing.memory[type].delay);
-			} else {
-				routing.memory[type].action();
+	runAction: function(type, id) {
+		if (id) {
+			if (routing.memory[type] && routing.memory[type][id] && routing.memory[type][id].action) {
+				if (routing.memory[type][id].delay) {
+					setTimeout(function() {
+						routing.memory[type][id].action();
+					}, routing.memory[type][id].delay);
+				} else {
+					routing.memory[type][id].action();
+				}
+			}
+		} else {
+			if (routing.memory[type] && routing.memory[type].deflt && routing.memory[type].deflt.action) {
+				if (routing.memory[type].deflt.delay) {
+					setTimeout(function() {
+						routing.memory[type].deflt.action();
+					}, routing.memory[type].deflt.delay);
+				} else {
+					routing.memory[type].deflt.action();
+				}
 			}
 		}
 	}
 };
-	/**
-	 * @function load
-	 * loads content that is set to current user action
-	 * @param {function} what
-	 * defines current user case
-	 * @param {function} ifAction
-	 * checks if user had made an action
-	 * @param {function} ifhistoryObj
-	 * checks if page was used before
-	 */
+/**
+ * @function load
+ * loads content that is set to current user action
+ * @param {function} what
+ * defines current user case
+ * @param {function} ifAction
+ * checks if user had made an action or is action id
+ * @param {function} ifhistoryObj
+ * checks if page was used before
+ */
 function load(what, ifAction, ifhistoryObj) {
 	if (what === "rooms" && contains(window.location.href, "wall.html")) {
 		// when we were on wall and want to load rooms page
@@ -157,7 +187,9 @@ function load(what, ifAction, ifhistoryObj) {
 	}
 	historyObj.setActualPage(what, ifhistoryObj);
 
-	if (ifAction) {
+	if (ifAction === true) {
 		routing.runAction(what);
+	} else if (ifAction) {
+		routing.runAction(what, ifAction);
 	}
 }

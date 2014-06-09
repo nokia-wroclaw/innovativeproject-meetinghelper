@@ -1,4 +1,5 @@
 ﻿<link rel="stylesheet" type="text/css" href="index.css" />
+
 <div id="bar" style="left: 0; top: 0px">
 	<span id="logoSmall" onclick="load('about')">
 		<img alt="logo" height="30" src="img/logo2.png" width="30">
@@ -7,27 +8,31 @@
 	&nbsp;&nbsp;&nbsp;Rooms
 </div>
 <div id="body">
-	<img alt="Rooms icon" width="40%" src="img/rooms.png">
+	<img alt="Rooms icon" width="50%" src="img/rooms.png">
 	<br><br>
-	<span class="white_text">available rooms</span><br>
+	<span class="white_text">Enter to existing room or create new one<br></span><br>
 	<br>
-	<div id="serverRooms">
-		<select></select>
+	<div>
+		<span id="serverRooms">
+			<select>
+			</select>
+		</span>
+		<button type="button" class="btn btn-default btn-lg" onclick="main.getRooms()">
+			<span class="glyphicon glyphicon-refresh"></span>
+		</button>
+
 	</div>
 	<br>
 	
 	<div class="btn-group btn-group-lg">
 		<!-- Wchodzi do nowego pokoju -->
 		<button type="button" class="btn btn-success" onclick="main.goToWall()"><span class="glyphicon glyphicon-share-alt"></span>Enter</button>
-		<button type="button" class="btn btn-default" onclick="main.getRooms()">
-		  <span class="glyphicon glyphicon-refresh"></span> Refresh
-		</button>
+        <button type="button" class="btn btn-default" onclick="main.scanRoomQrCode()"><span class="glyphicon glyphicon-qrcode"></span>&nbsp;Scan</button>
 	</div>
 	<br>
 	<br>
 	<div class="btn-group btn-group-lg">
 	  <!-- DoÅ‚Ä…cza i wchodzi do nowego zeskanowanego pokoju -->
-	  <button type="button" class="btn btn-default" onclick="main.scanRoomQrCode()"><span class="glyphicon glyphicon-qrcode"></span>&nbsp;Scan</button>
 	</div>
 
 	<br>
@@ -47,10 +52,10 @@
 	<br>
 	
 	<div class="input-group">
-	  <span class="input-group-addon">Room ID</span>
+	  <span class="input-group-addon">Access code</span>
       <input type="text" id="roomId" class="form-control">
       <span class="input-group-btn">
-        <button class="btn btn-default" type="button" onclick="main.joinRoomById(document.getElementById('roomId').value)">
+        <button class="btn btn-default" type="button" onclick="main.joinRoomByCode(document.getElementById('roomId').value)">
 			<span class="glyphicon glyphicon-share-alt"></span>&nbsp;Enter
 		</button>
       </span>

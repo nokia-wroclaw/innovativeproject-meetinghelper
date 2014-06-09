@@ -82,9 +82,7 @@ var connection = {
 	 */
 	initUrl: function(success, failure) {
 		connection.state = connection.states.unknown_host;
-		if (!connection.url) {
-			connection.url = storage.getServerAddress();
-		}
+		connection.url = connection.getUrl();
 		if (!connection.url) {
 			connection.url = common.defaultUrl;
 		}
@@ -113,7 +111,7 @@ var connection = {
 
 		connection.checkConnection(url, function() {
 			connection.url = url;
-			storage.setServerAddress(url);
+			storage.setServerAddress(url.replace('api/', ''));
 			if (success) {
 				success();
 			}
@@ -128,7 +126,7 @@ var connection = {
 	 */
 	getUrl: function() {
 		if (!connection.url) {
-			connection.url = storage.getServerAddress();
+			connection.url = storage.getServerAddress() + 'api/';
 		}
 		return connection.url;
 	},
@@ -163,6 +161,7 @@ var connection = {
 		connection.action.ping(url, function(result) {
 			if (result === connectionAnswers.ping) {
 				answer(connection.states.established, success);
+				storage.addServerAddress(url.replace('api/', ''));
 			} else {
 				answer(connection.states.wrong_host, failure);
 			}
@@ -382,6 +381,22 @@ var connection = {
 		},
 
 		/**
+		 * @function connection.action.joinRoomByCode
+		 * Joins specified room.
+		 * @param {String} roomCode
+		 * Code of room to join.
+		 * @param {Function} callb
+		 * Called after joining room properly.
+		 */
+		joinRoomByCode: function(roomCode, callb) {
+			connection.action._base(
+				connection.action.types.post,
+				connectionLinks.post.rooms.joinByCode,
+				{accessCode: roomCode},
+				connection.receive.onJoinRoom(callb));
+		},
+
+		/**
 		 * @function connection.action.getRooms
 		 * Gets all rooms which was recently entered by user.
 		 * @param {Function} callb
@@ -393,6 +408,20 @@ var connection = {
 				connectionLinks.get.rooms.all,
 				null,
 				connection.receive.onReceiveRooms(callb));
+		},
+
+		/**
+		 * @function connection.action.getUsers
+		 * Gets all users which was from actual room.
+		 * @param {Function} callb
+		 * Called after receiving users.
+		 */
+		getUsers: function(callb) {
+			connection.action._base(
+				connection.action.types.get,
+				connectionLinks.get.rooms.users,
+				null,
+				connection.receive.onReceiveUsers(callb));
 		},
 
 		/**
@@ -409,6 +438,22 @@ var connection = {
 				connectionLinks.get.rooms.data,
 				null,
 				connection.receive.onReceiveRoomData(callb));
+		},
+
+		/**
+		 * @function connection.action.getRoomData
+		 * Requests for all room data.
+		 * @param {String} roomId
+		 * Id of room to get data.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
+		getRoomComments: function(callb) {
+			connection.action._base(
+				connection.action.types.get,
+				connectionLinks.get.rooms.comments,
+				null,
+				connection.receive.onReceiveRoomComments(callb));
 		},
 
 		/**
@@ -541,6 +586,27 @@ var connection = {
 		},
 
 		/**
+		 * @function connection.receive.onReceiveUsers
+		 * Called after answer is received.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
+		onReceiveUsers: function(callb) {
+			return connection.receive._base(function(data) {
+				var toReturn = [];
+				for (var i in data) {
+					toReturn.push({
+						userId: data[i].id,
+						type: 'user',
+						name: data[i].name,
+						data: data[i]
+					});
+				}
+				callb(toReturn);
+			});
+		},
+
+		/**
 		 * @function connection.receive.onReceiveRoomData
 		 * Called after answer is received.
 		 * @param {Function} callb
@@ -555,6 +621,7 @@ var connection = {
 							id: data[i].id,
 							userId: data[i].UserId,
 							type: 'photo',
+							date: data[i].createdAt,
 							data: connection.getUrl() + connectionLinks.get.material + data[i].id
 						});
 					} else if (data[i].type === 'note') {
@@ -562,9 +629,31 @@ var connection = {
 							id: data[i].id,
 							userId: data[i].UserId,
 							type: 'note',
+							date: data[i].createdAt,
 							data: data[i].context
 						});
 					}
+				}
+				callb(toReturn);
+			});
+		},
+
+		/**
+		 * @function connection.receive.onReceiveRoomData
+		 * Called after answer is received.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
+		onReceiveRoomComments: function(callb) {
+			return connection.receive._base(function(data) {
+				var toReturn = [];
+				for (var i in data) {
+					toReturn.push({
+						materialId: data[i].MaterialId,
+						userId: data[i].UserId,
+						type: 'comment',
+						data: data[i].name
+					});
 				}
 				callb(toReturn);
 			});
@@ -955,6 +1044,7 @@ var connection = {
 							id: data.material.id,
 							userId: data.material.UserId,
 							type: 'photo',
+							date: data.material.createdAt,
 							data: connection.getUrl() + connectionLinks.get.material + data.material.id
 						});
 					}
@@ -964,6 +1054,7 @@ var connection = {
 							id: data.material.id,
 							userId: data.material.UserId,
 							type: 'note',
+							date: data.material.createdAt,
 							data: data.material.context
 						});
 					}

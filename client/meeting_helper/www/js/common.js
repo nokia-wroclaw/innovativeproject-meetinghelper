@@ -32,7 +32,9 @@ var common = {
 		user: 'user/',
 		rooms: {
 			all: 'meetings/list',
-			data: 'materials/getAll'
+			users: 'meetings/users/getAll',
+			data: 'materials/getAll',
+			comments: 'materials/comments/getAll'
 		},
 		qrCode: 'qrcode/'
 	},
@@ -43,7 +45,8 @@ var common = {
 		register: 'register',
 		rooms: {
 			create: 'meetings/create/',
-			join: 'meetings/join/'
+			join: 'meetings/join/',
+			joinByCode: 'meetings/joinByCode/'
 		},
 		file: 'materials/sendFile',
 		note: 'materials/sendNote',

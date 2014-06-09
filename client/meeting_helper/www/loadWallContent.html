@@ -1,4 +1,6 @@
-﻿<script>
+﻿<link rel="stylesheet" type="text/css" href="index.css" />
+
+<script>
 	document.removeEventListener('touchmove', main.photoEventListener, false);
 </script>
 
@@ -6,19 +8,23 @@
 	<span id="logoSmall" onclick="load('about')">
 		<img alt="logo" height="30" src="img/logo2.png" width="30">
 		<span class="meeting_small">Meeting</span><span class="helper_small">Helper</span>
-		&nbsp;<span id="roomName"></span>
+		&nbsp;#<span id="roomId"></span>&nbsp;<span id="roomName"></span>
 	</span>			    
 	<div class="btn-group">
 		<button type="button" class="btn btn-success" onclick="main.takePicture(75)">
 		  <span class="glyphicon glyphicon-camera"></span>
 		</button>
 	
-		<button type="button" class="btn btn-default" onclick="main.loadPicture()">
+		<button type="button" class="btn btn-success" onclick="main.loadPicture()">
 		  <span class="glyphicon glyphicon-picture"></span>
 		</button>
 		
-		<button type="button" class="btn btn-default" onclick="main.goToAddNote()">
+		<button type="button" class="btn btn-success" onclick="main.goToAddNote()">
 		  <span class="glyphicon glyphicon-font"></span>
+		</button>
+		
+		<button type="button" class="btn btn-default" onclick="main.toggleGoToElement()">
+		  <span class="glyphicon glyphicon-hand-right"></span>
 		</button>
 	
 		<button type="button" class="btn btn-info" onclick="main.goToOnlineUsers()">
@@ -29,6 +35,19 @@
 		  <span class="glyphicon glyphicon-qrcode"></span>
 		</button>
 		
+	</div>
+	<div id="goToElement">
+		<div class="input-group">
+	  <span class="input-group-addon">Go to post ID</span>
+	  <input type="text" id="elementID" class="form-control">
+	  <span class="input-group-btn">
+        <button class="btn btn-default" type="button" onclick="main.goToElement(document.getElementById('elementID').value)">
+			<span class="glyphicon glyphicon-share-alt"></span>&nbsp;Go
+		</button>
+      </span>
+
+	</div>
+
 	</div>
 			
 			    

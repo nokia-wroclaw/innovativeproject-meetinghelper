@@ -20,6 +20,7 @@
     -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
 }
 
+/* this is for <body> tag */
 body {
     -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
     -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
@@ -30,15 +31,10 @@ body {
 	background-repeat:repeat-x;
 	background-attachment:fixed;
 	
+	text-align: center;
+	
     font-family: 'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
     font-size: 12px;
-    
-    width: 100%;
-    height: 100%;
-    
-    margin: 0px;
-    padding: 0px;
-
 }
 
 /******************************************
@@ -47,7 +43,10 @@ body {
 #content {
 	width: 100%;
 	height: 100%;
-	margin: 0 0 0 0 auto;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
 	text-align: center;
 	vertical-align: middle;
 }
@@ -97,6 +96,108 @@ body {
 }
 
 .post {  /* frame for posts */
+	width: 100%;
+	background: black;
+	color: white;
+	
+	border-radius: 15px;
+	
+	text-align: center;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.post_header {
+	text-align: left;
+	padding-bottom: 5px;
+	font-weight: bold;
+}
+
+.post_object {
+	text-align: center;
+}
+
+.post_comments {
+}
+
+.post_comment {
+	text-align: left;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.commentBox {
+	color: black;
+	text-align: center;
+}
+
+#serverRooms select {
+	width: 60%;
+	padding-left: 10px;
+	font-size: large;
+	border: 0;
+	height: 38px;
+
+	background-color: white;
+	
+	border-radius: 5px;
+}
+
+#roomQrCode {
+	width: 100%;
+	color: black;
+	background-color: white;
+	border-radius: 15px;
+	text-align: center;
+	padding-top: 10px;
+	padding-bottom: 10px;
+
+}
+
+#accessCode {
+	background-color: white;
+	border-radius: 15px;
+	text-align: center;
+	font-size: x-large;
+	color: black;
+	font-family: "Courier New", Courier, monospace;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+#onlineUsers {
+	width: 100%
+	color: black;
+	font-size: large;
+}
+
+.user {
+	width: 100%;
+	color: white;
+	
+	border-radius: 15px;
+	
+	text-align: center;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	
+	margin-top: 10px;
+	margin-bottom: 10px;
+
+	background-color: black; 
+	background-image: url('img/user2.png'); 
+	background-repeat: no-repeat;
+	background-position: 20px 5px;
+}
+
+.photoBody {
 	width: 95%;
 	background: black;
 	color: white;
@@ -111,34 +212,8 @@ body {
 	
 	margin-top: 10px;
 	margin-bottom: 10px;
-}
 
-.post_header {
-	padding-bottom: 5px;
-	font-weight: bold;	
-}
 
-.post_object {
-	text-align: center;
-}
-
-.post_comments {
-}
-
-.post_comment {
-	padding-top: 5px;
-	padding-bottom: 5px;
-}
-
-.commentBox {
-	
-}
-
-#onlineUsers {
-	color: white;
-}
-
-.photoBody {
 }
 
 div.photoCanvas {
@@ -166,10 +241,11 @@ div.photoCanvas {
 	height: auto;
 	vertical-align: middle;
     text-align: center;
-    margin: 0 0 0 0 auto;
+    
     padding-top: 40px;
-    padding-right: 10px;
     padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 0px;
 }
 
 #img_cent {
@@ -183,4 +259,8 @@ div.photoCanvas {
   	right: 0;
   	top: 0;
   	bottom: 0;
+}
+
+#goToElement {
+	display: none;
 }

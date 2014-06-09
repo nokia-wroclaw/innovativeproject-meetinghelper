@@ -19,6 +19,8 @@ var rooms = {};
 
 var actualRoom = undefined;
 
+var serverAddresses = [];
+
 /**
  * Function which save downloaded data from server in tables
  * and present them for users.
@@ -47,7 +49,7 @@ var storage = {
 			rooms[receivedRooms[room].id] = receivedRooms[room];
 			var newOption = document.createElement('option');
 			newOption.setAttribute('value', receivedRooms[room].id);
-			newOption.appendChild(document.createTextNode(receivedRooms[room].name));
+			newOption.appendChild(document.createTextNode('#'+receivedRooms[room].id+': '+receivedRooms[room].name));
 			roomList.appendChild(newOption);
 		}
 		var serverRooms = document.getElementById('serverRooms');
@@ -84,8 +86,9 @@ var storage = {
 	},
 
 	displayRoomData: function() {
+		var next = 1;
 		for (var data in dataFromServer) {
-			storage.addNewData(dataFromServer[data], true);
+			storage.addNewData(dataFromServer[data], true, next++);
 		}
 	},
 
@@ -97,11 +100,11 @@ var storage = {
 	 * Data received from server {{Integer} data.id, {Integer} data.userId,
 	 * 		{String} data.type, {String} data.data}.
 	 */
-	addNewData: function(data, displayOnly) {
+	addNewData: function(data, displayOnly, id) {
 		if (!displayOnly) {
 			dataFromServer[data.id] = data;
 		}
-		storage.addPost(data);
+		storage.addPost(data, id);
 	},
 
 	/**
@@ -111,11 +114,12 @@ var storage = {
 	 * @param {Object} data
 	 * Data forwarded by storage.addNewData.
 	 */
-	addPost: function(data) {
+	addPost: function(data, id) {
 		var post = document.createElement('div');
 		post.setAttribute('class', 'post');
-		post.setAttribute('id', data.id);
-		post.appendChild(storage.addPostHeader(data));
+		if (!id) id = Object.keys(dataFromServer).length;
+		post.setAttribute('id', id);
+		post.appendChild(storage.addPostHeader(data, id));
 		post.appendChild(storage.addPostObject(data));
 		post.appendChild(storage.addPostComments(data));
 		post.appendChild(storage.addCommentBox(data.id));
@@ -126,12 +130,17 @@ var storage = {
 	 * @function storage.addPostHeader
 	 *
 	 */
-	addPostHeader: function(data) {
+	addPostHeader: function(data, id) {
 		var postHeader = document.createElement('div');
 		postHeader.setAttribute('class', 'post_header');
-		/*var text = document.createTextNode('#' + Object.keys(dataFromServer).length +
-			' by ' + onlineUsers[data.userId].name + ' ' + 'current_time');
-		postHeader.appendChild(text);*/
+		var name = '';
+		if (onlineUsers[data.userId]) {
+			name = onlineUsers[data.userId].name;
+		}
+		if (!id) id = Object.keys(dataFromServer).length;
+		var text = document.createTextNode('#' + id +
+			' by ' + onlineUsers[data.userId].name + ' ' + data.date);
+		postHeader.appendChild(text);
 		return postHeader;
 	},
 
@@ -336,6 +345,12 @@ var storage = {
 			onlineUsers[receivedUsers[user].userId] = receivedUsers[user];
 		}
 	},
+	getAllOnlineUsers2: function(receivedUsers) {
+		for (var user in receivedUsers)
+		{
+			onlineUsers[receivedUsers[user].userId] = receivedUsers[user];
+		}
+	},
 
 	/**
 	 * @function storage.showOnlineUsers
@@ -347,6 +362,7 @@ var storage = {
 		for (var user in onlineUsers)
 		{
 			var newUser = document.createElement('div');
+			newUser.setAttribute('class', 'user');
 			newUser.appendChild(document.createTextNode(onlineUsers[user].name));
 			users.appendChild(newUser);
 		}
@@ -363,16 +379,63 @@ var storage = {
 	setRoomName: function() {
 		var roomPlace = document.getElementById('roomName');
 		roomPlace.appendChild(document.createTextNode(actualRoom.name));
+		var roomPlace2 = document.getElementById('roomId');
+		roomPlace2.appendChild(document.createTextNode(actualRoom.meetingID+':'));
+	},
+	
+	displayAccessCode: function() {
+		var code = document.getElementById('accessCode');
+		code.appendChild(document.createTextNode(actualRoom.accessCode));
 	},
 
-	displayQrCode: function(url) {
-		var element = document.getElementById('myQrCode');
-		element.data = url;
-	},
+	//displayQrCode: function(url) {
+	//	//var element = document.getElementById('myQrCode');
+	//	//element.data = url;
+	//	
+	//	
+	//},
 
 	initLoginData: function() {
-		console.log(storage.getUserLogin() + ' ' + storage.getUserPassword());
 		document.getElementById('login').value = storage.getUserLogin();
 		document.getElementById('password').value = storage.getUserPassword();
+	},
+
+	addServerAddress: function(address) {
+		for (var addr in serverAddresses) {
+			if (address === serverAddresses[addr]) {
+				return;
+			}
+		}
+		window.localStorage.setItem('serverAddress' + serverAddresses.length, address);
+		serverAddresses.push(address);
+	},
+
+	getServerAddresses: function(callb) {
+		serverAddresses = [];
+		var serverAddress;
+		var id = 0;
+		do {
+			serverAddress = window.localStorage.getItem('serverAddress' + id++);
+			if (serverAddress) {
+				serverAddresses.push(serverAddress);
+			}
+		} while(serverAddress);
+
+		if (callb) {
+			callb(serverAddresses);
+		}
+	},
+
+	displayServerAddresses: function() {
+		var value = '';
+		if (serverAddresses.length > 0) {
+			value += serverAddresses[0];
+			for (var i = 1; i < serverAddresses.length; i++) {
+				value += ' ' + serverAddresses[i];
+			}
+		}
+		var addresses = document.getElementById('serverAddresses');
+		addresses.innerHTML = value;
 	}
 };
+storage.getServerAddresses();

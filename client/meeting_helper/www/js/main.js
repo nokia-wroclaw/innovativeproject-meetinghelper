@@ -6,6 +6,7 @@ var me = {
 
 var photoEventListener;
 var photoToDisplay;
+var goToElementVisibile = false;
 
 /**
  * Function from which we demand respond, recall,
@@ -19,7 +20,8 @@ var main = {
 	 * By now it's an alert, but allows easy change.
 	 */
 	userCallback: function(message) {
-		alert(message);
+		//alert(message);
+		devices.toast(message);
 	},
 
 	/**
@@ -105,6 +107,7 @@ var main = {
 		load('connecting');
 		connection.initUrl(function() {
 			connection.action.home(function(data) {
+				historyObj.addTohistoryObj('connection');
 				if (data.id) {
 					historyObj.addTohistoryObj('login');
 					load('rooms', true);
@@ -113,7 +116,7 @@ var main = {
 				}
 			});
         }, function() {
-            load('connection');
+            load('connection', true);
         });
 	},
 	 
@@ -156,9 +159,10 @@ var main = {
 		connection.setUrl(link, function() {
 			url.value = link;
 
+			historyObj.addTohistoryObj('connection');
 			load('login', true);
 		}, function() {
-            load('connection', true);
+            load('connection', 'connectionFailed');
 		});
 	},
 
@@ -229,7 +233,6 @@ var main = {
 		});
 	},
 
-
 	/**
 	 * @function main.joinRoom
 	 * Join and enter to current room
@@ -239,11 +242,11 @@ var main = {
 	 */
 	joinRoom: function(room, callb) {
 		if (room) {
-			connection.action.joinRoom(room.id, function(received) {
-				if (received) {
-					storage.addCreatedRoom(room);
+			connection.action.joinRoom(room.id, function(receivedRoom) {
+				if (receivedRoom) {
+					storage.addCreatedRoom(receivedRoom);
 					if (callb) {
-						callb(received);
+						callb(receivedRoom);
 					}
 				}
 			});
@@ -257,9 +260,27 @@ var main = {
 	 * ID of selected room
 	 */
 	joinRoomById: function(roomId) {
-		main.joinRoom({id: roomId, name: 'already typed room'}, function(answer) {
+		main.joinRoom({id: roomId}, function(receivedRoom) {
 			main.goToWall();
 		});
+	},
+
+	/**
+	 * @function main.joinRoomByCode
+	 * Join and enter to room
+	 * @param {int} roomCode
+	 * Code of room
+	 * @param {} callb
+	 */
+	joinRoomByCode: function(roomCode) {
+		if (roomCode) {
+			connection.action.joinRoomByCode(roomCode, function(receivedRoom) {
+				if (receivedRoom) {
+					storage.addCreatedRoom(receivedRoom);
+					main.goToWall();
+				}
+			});
+		}
 	},
 
 	/**
@@ -340,7 +361,7 @@ var main = {
 	scanRoomQrCode: function() {
 		// scan
 		devices.qrCode.scan(function(roomId) {
-			main.joinRoomById(roomId);
+			main.joinRoomByCode(roomId);
 		});
 	},
 
@@ -348,15 +369,66 @@ var main = {
 	 * @function main.getRoomData
 	 * Download all of current room data
 	 */
-	getRoomData: function() {
+	getRoomData: function(callb) {
 		connection.action.getRoomData(function(data) {
 			callback('getRoomData' + JSON.stringify(data));
 			storage.addAllRoomData(data);
+			if (callb) {
+				callb();
+			}
+		});
+	},
+
+	/**
+	 * @function main.getRoomData
+	 * Download all of current room data
+	 */
+	getRoomComments: function() {
+		connection.action.getRoomComments(function(data) {
+			callback('getRoomComments' + JSON.stringify(data));
+			//storage.addAllRoomData(data);
+		});
+	},
+
+	/**
+	 * @function main.getRoomUsers
+	 * Download all of room users.
+	 * After success, download rest of data and load wall content.
+	 */
+	getRoomUsers: function() {
+		connection.action.getUsers(function(data) {
+			callback('getRoomUsers' + JSON.stringify(data));
+			storage.getAllOnlineUsers2(data);
+
+			main.getRoomData(function() {
+				main.getRoomComments();
+			});
+
+		    load('wallContent', true);
 		});
 	},
 
 	showRoomQrCode: function() {
 		load('qrCode', true);
+	},
+	
+	toggleGoToElement: function() {
+		if(goToElementVisibile == true)
+		{
+			document.getElementById('goToElement').style.display = 'none';
+			goToElementVisibile = false;
+		}
+		else
+		{
+			document.getElementById('goToElement').style.display = 'block';
+			goToElementVisibile = true;
+		}
+	},
+	
+	goToElement: function(id) {
+		document.getElementById(id).scrollIntoView();
+		document.getElementById('elementID').value = '';
+		main.toggleGoToElement();
 	}
 };
 
@@ -384,15 +456,25 @@ routing.registerAction('login', function() {
 	storage.initLoginData();
 }, 100);
 routing.registerAction('connection', function() {
-	// we can add here any additional connection information
-	// to connection page
+	storage.getServerAddresses(function() {
+		storage.displayServerAddresses();
+	});
+}, 100);
+routing.registerAction('connection', function() {
 	main.userCallback('Connection failed');
-});
+
+	storage.getServerAddresses(function() {
+		storage.displayServerAddresses();
+	});
+}, 100, 'connectionFailed');
 routing.registerAction('qrCode', function() {
-	storage.displayQrCode(storage.getServerAddress() +
-		connectionLinks.get.qrCode +
-		storage.getRoom().meetingID);
-}, true);
+	storage.setRoomName();
+	storage.displayAccessCode();
+	
+	//var qrUrl = storage.getServerAddress() + connectionLinks.get.qrCode + storage.getRoom().accessCode;
+	//storage.displayQrCode(qrUrl);
+	
+}, 100);
 
 /**
  * @function connection.socket.receive.onEnterRoom
@@ -427,9 +509,7 @@ connection.socket.receive.onUsersOnline = function(data) {
 	callback('onUsersOnline ' + JSON.stringify(data));
 	storage.getAllOnlineUsers(data);
 
-	main.getRoomData();
-
-    load('wallContent', true);
+	main.getRoomUsers();
 };
 
 /**
