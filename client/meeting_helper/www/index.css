@@ -131,6 +131,9 @@ body {
 	padding-bottom: 5px;
 }
 
+.comment_header {
+}
+
 .commentBox {
 	color: black;
 	text-align: center;
@@ -171,7 +174,7 @@ body {
 }
 
 #onlineUsers {
-	width: 100%
+	width: 100%;
 	color: black;
 	font-size: large;
 }

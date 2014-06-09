@@ -8,14 +8,19 @@
 var dataFromServer = {};
 
 /**
- * Hash with stored online users data.
+ * Hash with stored online users ever connected to room data.
  */
-var onlineUsers = {};
+var allOnlineUsers = {};
 
 /**
  * Hash with stored rooms data.
  */
 var rooms = {};
+
+/**
+ * Hash with stored current online users data.
+ */
+var currentOnlineUsers = {};
 
 var actualRoom = undefined;
 
@@ -122,7 +127,7 @@ var storage = {
 		post.appendChild(storage.addPostHeader(data, id));
 		post.appendChild(storage.addPostObject(data));
 		post.appendChild(storage.addPostComments(data));
-		post.appendChild(storage.addCommentBox(data.id));
+		post.appendChild(storage.addCommentBox(id));
 		document.getElementById('received').appendChild(post);
 	},
 
@@ -133,13 +138,9 @@ var storage = {
 	addPostHeader: function(data, id) {
 		var postHeader = document.createElement('div');
 		postHeader.setAttribute('class', 'post_header');
-		var name = '';
-		if (onlineUsers[data.userId]) {
-			name = onlineUsers[data.userId].name;
-		}
 		if (!id) id = Object.keys(dataFromServer).length;
 		var text = document.createTextNode('#' + id +
-			' by ' + onlineUsers[data.userId].name + ' ' + data.date);
+			' by ' + allOnlineUsers[data.userId].name + ' ' + data.date);
 		postHeader.appendChild(text);
 		return postHeader;
 	},
@@ -169,9 +170,6 @@ var storage = {
 				note.setAttribute('class', 'noteText');
 				postObject.appendChild(note);
 				break;
-			// Add comment
-			case 'comment':
-				break;
 			// Other option (unknown data)
 			default:
 				alert('Unknown data received');
@@ -199,10 +197,6 @@ var storage = {
 	expandCommentBox: function(id) {
 		var formNode = document.getElementById(id).getElementsByTagName('form')[0];
 		formNode.getElementsByTagName('textarea')[0].setAttribute('rows', '3');
-		formNode.appendChild(document.createElement('br'));
-		formNode.appendChild(document.createElement('input'));
-		formNode.getElementsByTagName('input')[0].setAttribute('type', 'submit');
-		formNode.getElementsByTagName('input')[0].setAttribute('value', 'Submit');
 	},
 	
 	/**
@@ -215,8 +209,8 @@ var storage = {
 	contractCommentBox: function(id) {
 		var post = document.getElementById(id);
 		var formNode = post.getElementsByTagName('form')[0];
-		formNode.removeChild(formNode.getElementsByTagName('br')[0]);
-		formNode.removeChild(formNode.getElementsByTagName('input')[0]);
+		//formNode.removeChild(formNode.getElementsByTagName('br')[0]);
+		//formNode.removeChild(formNode.getElementsByTagName('button')[0]);
 		formNode.getElementsByTagName('textarea')[0].setAttribute('rows', '1');
 	},
 
@@ -238,9 +232,72 @@ var storage = {
 		textArea.setAttribute('onfocus', 'storage.expandCommentBox(' + id + ')');
 		textArea.setAttribute('onblur', 'storage.contractCommentBox(' + id + ')');
 		formNode.appendChild(textArea);
+		formNode.appendChild(document.createElement('br'));
+		formNode.appendChild(storage.addSubmitButton(id));
 		commentBox.appendChild(document.createElement('br'));
 		commentBox.appendChild(formNode);
 		return commentBox;
+	},
+
+	/**
+	 *
+	 */
+	addSubmitButton: function(id) {
+		var submitButton = document.createElement('button');
+		submitButton.setAttribute('class', 'btn btn-default');
+		submitButton.setAttribute('type', 'button');
+		submitButton.setAttribute('onclick', 'storage.sendComment(' + id + ')');
+		var tmp = document.createElement('span');
+		tmp.setAttribute('class', 'glyphicon glyphicon-share-alt');
+		submitButton.appendChild(tmp);
+		tmp = document.createTextNode(' Submit');
+		submitButton.appendChild(tmp);
+		return submitButton;
+	},
+
+	/**
+	 *
+	 */
+	sendComment: function(id) {
+		var formNode = document.getElementById(id).getElementsByTagName('form')[0];
+		var comment = formNode.getElementsByTagName('textarea')[0].value;
+		formNode.getElementsByTagName('textarea')[0].value = '';
+		main.sendComment(id, comment);
+	},
+
+	/**
+	 *
+	 */
+	addNewComment: function(data) {
+		var post = document.getElementById(data.materialId);
+		var postComments = post.getElementsByTagName('div')[2];
+		var comment = document.createElement('div');
+		comment.setAttribute('class', 'post_comment');
+		comment.appendChild(storage.addCommentHeader(data));
+		comment.appendChild(document.createTextNode(data.data));
+		postComments.appendChild(comment);
+	},
+
+	/**
+	 *
+	 */
+	addAllRoomComments: function(data) {
+		alert(JSON.stringify(data));
+		for (var comment in data) {
+			storage.addNewComment(data[comment]);
+		}
+	},
+
+	/**
+	 *
+	 */
+	addCommentHeader: function(data) {
+		var commentHeader = document.createElement('div');
+		commentHeader.setAttribute('class', 'comment_header');
+		var text = document.createTextNode('by ' + allOnlineUsers[data.userId].name
+			/*+ ' at ' + 'time'*//*data.date*/);
+		commentHeader.appendChild(text);
+		return commentHeader;
 	},
 
 	/**
@@ -249,7 +306,8 @@ var storage = {
 	 * Send this value to main.selectRoomToEnter
 	 */
 	getSelectedRoomToEnter: function() {
-		var roomToEnter = document.getElementById('serverRooms').getElementsByTagName('select')[0].value;
+		var roomToEnter = document.getElementById('serverRooms')
+			.getElementsByTagName('select')[0].value;
 		return roomToEnter;
 	},
 	
@@ -316,7 +374,8 @@ var storage = {
 	 * New entered user data {{Integer} data.userId, {String} data.type, {String} data.data}.
 	 */
 	addNewUser: function(data) {
-		onlineUsers[data.userId] = data;
+		allOnlineUsers[data.userId] = data;
+		currentOnlineUsers[data.userId] = data;
 	},
 
 	/**
@@ -326,7 +385,7 @@ var storage = {
 	 * Data of deleted user.
 	 */
 	deleteUser: function(data) {
-		delete onlineUsers[data.userId];
+		delete currentOnlineUsers[data.userId];
 	},
 
 	/**
@@ -339,16 +398,18 @@ var storage = {
 	 * 		{String} data.name, {String} data.data}.
 	 */
 	getAllOnlineUsers: function(receivedUsers) {
-		onlineUsers = {};
-		for (var user in receivedUsers)
-		{
-			onlineUsers[receivedUsers[user].userId] = receivedUsers[user];
+		for (var user in receivedUsers) {
+			allOnlineUsers[receivedUsers[user].userId] = receivedUsers[user];
 		}
 	},
-	getAllOnlineUsers2: function(receivedUsers) {
-		for (var user in receivedUsers)
-		{
-			onlineUsers[receivedUsers[user].userId] = receivedUsers[user];
+
+	/**
+	 *
+	 */
+	getCurrentOnlineUsers: function(receivedUsers) {
+		currentOnlineUsers = {};
+		for (var user in receivedUsers) {
+			currentOnlineUsers[receivedUsers[user].userId] = receivedUsers[user];
 		}
 	},
 
@@ -359,11 +420,10 @@ var storage = {
 	 */
 	showOnlineUsers: function() {
 		var users = document.getElementById('onlineUsers');
-		for (var user in onlineUsers)
-		{
+		for (var user in currentOnlineUsers) {
 			var newUser = document.createElement('div');
 			newUser.setAttribute('class', 'user');
-			newUser.appendChild(document.createTextNode(onlineUsers[user].name));
+			newUser.appendChild(document.createTextNode(currentOnlineUsers[user].name));
 			users.appendChild(newUser);
 		}
 	},

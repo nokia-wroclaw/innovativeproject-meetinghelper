@@ -386,7 +386,7 @@ var main = {
 	getRoomComments: function() {
 		connection.action.getRoomComments(function(data) {
 			callback('getRoomComments' + JSON.stringify(data));
-			//storage.addAllRoomData(data);
+			storage.addAllRoomComments(data);
 		});
 	},
 
@@ -398,7 +398,7 @@ var main = {
 	getRoomUsers: function() {
 		connection.action.getUsers(function(data) {
 			callback('getRoomUsers' + JSON.stringify(data));
-			storage.getAllOnlineUsers2(data);
+			storage.getAllOnlineUsers(data);
 
 			main.getRoomData(function() {
 				main.getRoomComments();
@@ -507,7 +507,7 @@ connection.socket.receive.onPing = function() {
  */
 connection.socket.receive.onUsersOnline = function(data) {
 	callback('onUsersOnline ' + JSON.stringify(data));
-	storage.getAllOnlineUsers(data);
+	storage.getCurrentOnlineUsers(data);
 
 	main.getRoomUsers();
 };
@@ -566,6 +566,7 @@ connection.socket.receive.onNewNote = function(data) {
  */
 connection.socket.receive.onNewComment = function(data) {
 	callback('onNewComment: ' + JSON.stringify(data));
-	storage.addNewData(data);
+	JSON.stringify(data);
+	storage.addNewComment(data);
     // add new comment
 };
