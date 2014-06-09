@@ -271,16 +271,24 @@ app.post('/api/materials/sendNote', user.IsLogin, meeting.IsRoom, material.SendN
 app.post('/api/materials/comments/add', user.IsLogin, meeting.IsRoom, material.Comment);
 
 /*
+* Description: get comments for rooms
+* Requirement: logged, in meeting
+* GET arguments: none
+* return:         
+*       - comment[] (object)
+*/
+app.get('/api/materials/comments/getAll', user.IsLogin, meeting.IsRoom, material.GetAllComments);
+
+
+/*
 * Description: get comments for material
 * Requirement: logged, in meeting
 * GET arguments:
 *       - materialID(integer)
-*       - content(string)
 * return:         
 *       - comment (object)
 */
 app.get('/api/materials/comments/:materialID', user.IsLogin, meeting.IsRoom, material.GetComment);
-
 
 
 

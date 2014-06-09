@@ -98,9 +98,10 @@ module.exports.DownloadFileMiniature = function(req, res, next) {
     .then(function(material) {
         Meeting.find({where:{id: material.MeetingId}})
         .then(function(meeting) {
-        //var path = ".\\events\\"+ meeting.folderName +"\\"+ material.fileName;
-        var path = __dirname + "\\..\\events\\"+ meeting.folderName +"\\"+ material.fileName;
-        var newPath = __dirname + "\\..\\events\\"+ meeting.folderName +"\\min.jpg";
+        var path = "events\\"+ meeting.folderName +"\\"+ material.fileName;
+        var newpath = "events\\"+ meeting.folderName +"\\m_"+ material.fileName;
+        //var path = __dirname + "\\..\\events\\"+ meeting.folderName +"\\"+ material.fileName;
+        //var newPath = __dirname + "\\..\\events\\"+ meeting.folderName +"\\min.jpg";
 
         if(material.type == "photo"){
             im.resize({
@@ -165,6 +166,24 @@ module.exports.GetComment = function(req, res, next) {
     .then(function(materials) {
         if(material)
            res.endSuccess(material.getComments());
+        else
+            res.endError(Dictionary.materialNotFind); 
+    });
+};
+
+module.exports.GetAllComments = function(req, res, next) {
+    var meetingID = req.session.room;
+    var arrayComment = [];
+    Material.findAll({where:{MeetingId : meetingID}})
+    .then(function(materials) {
+        if(materials){
+            for (var i = 0; i < materials.length; i++) {
+                var temp = materials[i].getComments();
+                if(temp)
+                    arrayComment.push(temp);
+            }
+            res.endSuccess(arrayComment); 
+        }
         else
             res.endError(Dictionary.materialNotFind); 
     });
