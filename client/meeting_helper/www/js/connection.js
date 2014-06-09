@@ -441,6 +441,22 @@ var connection = {
 		},
 
 		/**
+		 * @function connection.action.getRoomData
+		 * Requests for all room data.
+		 * @param {String} roomId
+		 * Id of room to get data.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
+		getRoomComments: function(callb) {
+			connection.action._base(
+				connection.action.types.get,
+				connectionLinks.get.rooms.comments,
+				null,
+				connection.receive.onReceiveRoomComments(callb));
+		},
+
+		/**
 		 * @function connection.action.sendNote
 		 * Sends to server note to be displayed on wall.
 		 * @param {String} note
@@ -617,6 +633,27 @@ var connection = {
 							data: data[i].context
 						});
 					}
+				}
+				callb(toReturn);
+			});
+		},
+
+		/**
+		 * @function connection.receive.onReceiveRoomData
+		 * Called after answer is received.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
+		onReceiveRoomComments: function(callb) {
+			return connection.receive._base(function(data) {
+				var toReturn = [];
+				for (var i in data) {
+					toReturn.push({
+						materialId: data[i].MaterialId,
+						userId: data[i].UserId,
+						type: 'comment',
+						data: data[i].name
+					});
 				}
 				callb(toReturn);
 			});

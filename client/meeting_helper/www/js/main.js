@@ -369,10 +369,24 @@ var main = {
 	 * @function main.getRoomData
 	 * Download all of current room data
 	 */
-	getRoomData: function() {
+	getRoomData: function(callb) {
 		connection.action.getRoomData(function(data) {
 			callback('getRoomData' + JSON.stringify(data));
 			storage.addAllRoomData(data);
+			if (callb) {
+				callb();
+			}
+		});
+	},
+
+	/**
+	 * @function main.getRoomData
+	 * Download all of current room data
+	 */
+	getRoomComments: function() {
+		connection.action.getRoomComments(function(data) {
+			callback('getRoomComments' + JSON.stringify(data));
+			//storage.addAllRoomData(data);
 		});
 	},
 
@@ -386,7 +400,9 @@ var main = {
 			callback('getRoomUsers' + JSON.stringify(data));
 			storage.getAllOnlineUsers2(data);
 
-			main.getRoomData();
+			main.getRoomData(function() {
+				main.getRoomComments();
+			});
 
 		    load('wallContent', true);
 		});
