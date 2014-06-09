@@ -282,7 +282,6 @@ var storage = {
 	 *
 	 */
 	addAllRoomComments: function(data) {
-		alert(JSON.stringify(data));
 		for (var comment in data) {
 			storage.addNewComment(data[comment]);
 		}
