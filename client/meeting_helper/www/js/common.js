@@ -28,6 +28,7 @@ var common = {
  		home: '',
 		ping: 'ping',
 		photos: 'getPhotos',
+		comments: 'materials/comments/',
 		material: 'materials/file/',
 		user: 'user/',
 		rooms: {

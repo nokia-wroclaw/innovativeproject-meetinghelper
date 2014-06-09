@@ -457,6 +457,22 @@ var connection = {
 		},
 
 		/**
+		 * @function connection.action.getRoomData
+		 * Requests for all room data.
+		 * @param {String} roomId
+		 * Id of room to get data.
+		 * @param {Function} callb
+		 * Called with received data.
+		 */
+		getComments: function(materialId, callb) {
+			connection.action._base(
+				connection.action.types.get,
+				connectionLinks.get.comments + materialId,
+				null,
+				connection.receive.onReceiveRoomComments(callb));
+		},
+
+		/**
 		 * @function connection.action.sendNote
 		 * Sends to server note to be displayed on wall.
 		 * @param {String} note
