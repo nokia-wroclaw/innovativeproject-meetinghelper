@@ -124,8 +124,8 @@ var storage = {
 		var post = document.createElement('div');
 		post.setAttribute('class', 'post');
 		if (!id) id = Object.keys(dataFromServer).length;
-		post.setAttribute('id', id);
-		post.appendChild(storage.addPostHeader(data, data.id));
+		post.setAttribute('id', data.id);
+		post.appendChild(storage.addPostHeader(data, id));
 		post.appendChild(storage.addPostObject(data));
 		post.appendChild(storage.addPostComments(data));
 		post.appendChild(storage.addCommentBox(data.id));
