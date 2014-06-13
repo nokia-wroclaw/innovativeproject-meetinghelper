@@ -54,7 +54,8 @@ var storage = {
 			rooms[receivedRooms[room].id] = receivedRooms[room];
 			var newOption = document.createElement('option');
 			newOption.setAttribute('value', receivedRooms[room].id);
-			newOption.appendChild(document.createTextNode('#'+receivedRooms[room].id+': '+receivedRooms[room].name));
+			newOption.appendChild(document.createTextNode('#' + receivedRooms[room].id
+				+ ': ' + receivedRooms[room].name));
 			roomList.appendChild(newOption);
 		}
 		var serverRooms = document.getElementById('serverRooms');
@@ -123,11 +124,11 @@ var storage = {
 		var post = document.createElement('div');
 		post.setAttribute('class', 'post');
 		if (!id) id = Object.keys(dataFromServer).length;
-		post.setAttribute('id', id);
+		post.setAttribute('id', data.id);
 		post.appendChild(storage.addPostHeader(data, id));
 		post.appendChild(storage.addPostObject(data));
 		post.appendChild(storage.addPostComments(data));
-		post.appendChild(storage.addCommentBox(id));
+		post.appendChild(storage.addCommentBox(data.id));
 		document.getElementById('received').appendChild(post);
 	},
 
@@ -209,8 +210,6 @@ var storage = {
 	contractCommentBox: function(id) {
 		var post = document.getElementById(id);
 		var formNode = post.getElementsByTagName('form')[0];
-		//formNode.removeChild(formNode.getElementsByTagName('br')[0]);
-		//formNode.removeChild(formNode.getElementsByTagName('button')[0]);
 		formNode.getElementsByTagName('textarea')[0].setAttribute('rows', '1');
 	},
 
@@ -282,7 +281,6 @@ var storage = {
 	 *
 	 */
 	addAllRoomComments: function(data) {
-		alert(JSON.stringify(data));
 		for (var comment in data) {
 			storage.addNewComment(data[comment]);
 		}
@@ -440,20 +438,13 @@ var storage = {
 		var roomPlace = document.getElementById('roomName');
 		roomPlace.appendChild(document.createTextNode(actualRoom.name));
 		var roomPlace2 = document.getElementById('roomId');
-		roomPlace2.appendChild(document.createTextNode(actualRoom.meetingID+':'));
+		roomPlace2.appendChild(document.createTextNode(actualRoom.meetingID + ':'));
 	},
 	
 	displayAccessCode: function() {
 		var code = document.getElementById('accessCode');
 		code.appendChild(document.createTextNode(actualRoom.accessCode));
 	},
-
-	//displayQrCode: function(url) {
-	//	//var element = document.getElementById('myQrCode');
-	//	//element.data = url;
-	//	
-	//	
-	//},
 
 	initLoginData: function() {
 		document.getElementById('login').value = storage.getUserLogin();
