@@ -175,7 +175,7 @@ var main = {
 	 * user password
 	 */
 	login: function(login, password) {
-		connection.action.login(login, password, function(received) {
+		connection.action.login(login, CryptoJS.MD5(password), function(received) {
 			if (received.name === login) {//when everything is correct
 				me.id = received.id;
 				storage.setUserLogin(login);
