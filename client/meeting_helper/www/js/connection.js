@@ -319,7 +319,7 @@ var connection = {
 			connection.action._base(
 				connection.action.types.post,
 				connectionLinks.post.login,
-				{login: login, password: password},
+				{login: login, password: CryptoJS.MD5(password)},
 				connection.receive.onLogin(callb),
 				errorCallb);
 		},
@@ -340,7 +340,7 @@ var connection = {
 				connection.action._base(
 					connection.action.types.post,
 					connectionLinks.post.register,
-					{login: login, password: password},
+					{login: login, password: CryptoJS.MD5(password)},
 					connection.receive.onRegister(callb),
 					errorCallb);
 			} else {
