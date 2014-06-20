@@ -297,8 +297,10 @@ var storage = {
 	addCommentHeader: function(data) {
 		var commentHeader = document.createElement('div');
 		commentHeader.setAttribute('class', 'comment_header');
+		var creationDate = data.date.substr(0, 19);
+		creationDate = creationDate.replace(/T/g, " ");
 		var text = document.createTextNode('by ' + allOnlineUsers[data.userId].name
-			/*+ ' at ' + 'time'*//*data.date*/);
+			+ ' at time: ' + creationDate);
 		commentHeader.appendChild(text);
 		return commentHeader;
 	},

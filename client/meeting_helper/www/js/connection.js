@@ -668,6 +668,7 @@ var connection = {
 						materialId: data[i].MaterialId,
 						userId: data[i].UserId,
 						type: 'comment',
+						date: data[i].createdAt,
 						data: data[i].name
 					});
 				}
@@ -1090,6 +1091,7 @@ var connection = {
 						materialId: data.comment.MaterialId,
 						userId: data.comment.UserId,
 						type: 'comment',
+						date: data.comment.createdAt,
 						data: data.comment.name
 					});
 				}
