@@ -221,17 +221,19 @@ var main = {
 	 * Name of the room which user want to createElement
 	 */
 	createRoom: function(roomName) {
-		main.selectRoomToEnter();
-		connection.action.createRoom(roomName, function(received) {
-			main.joinRoom(received, function(answer) {
-				callback(answer);
-				if (answer) {
-					main.userCallback('Room successfully created');
-				} else {
-					main.userCallback('Creating room failed');
-				}
+		if(roomName != '') {
+			main.selectRoomToEnter();
+			connection.action.createRoom(roomName, function(received) {
+				main.joinRoom(received, function(answer) {
+					callback(answer);
+					if (answer) {
+						main.userCallback('Room successfully created');
+					} else {
+						main.userCallback('Creating room failed');
+					}
+				});
 			});
-		});
+		}
 	},
 
 	/**
@@ -343,10 +345,12 @@ var main = {
 	 * @function main.addNote
 	 * Submit note and go back to the wall
 	 */
-	addNote: function(tresc) {		
-		main.sendNote(tresc);
-		document.getElementById('noteTextField').value = '';
-		main.toggleAddNote();
+	addNote: function(tresc) {
+		if(tresc != '') {
+			main.sendNote(tresc);
+			document.getElementById('noteTextField').value = '';
+			main.toggleAddNote();
+		}
 	},
 
 	/**

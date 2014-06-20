@@ -261,8 +261,10 @@ var storage = {
 	sendComment: function(id) {
 		var formNode = document.getElementById(id).getElementsByTagName('form')[0];
 		var comment = formNode.getElementsByTagName('textarea')[0].value;
-		formNode.getElementsByTagName('textarea')[0].value = '';
-		main.sendComment(id, comment);
+		if(comment != '') {
+			formNode.getElementsByTagName('textarea')[0].value = '';
+			main.sendComment(id, comment);
+		}
 	},
 
 	/**
