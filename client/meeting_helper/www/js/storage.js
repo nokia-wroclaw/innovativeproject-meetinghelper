@@ -140,6 +140,7 @@ var storage = {
 		var postHeader = document.createElement('div');
 		postHeader.setAttribute('class', 'post_header');
 		if (!id) id = Object.keys(dataFromServer).length;
+		postHeader.setAttribute('id', 'element'+id);
 		var text = document.createTextNode('#' + id +
 			' by ' + allOnlineUsers[data.userId].name + ' ' + data.date);
 		postHeader.appendChild(text);

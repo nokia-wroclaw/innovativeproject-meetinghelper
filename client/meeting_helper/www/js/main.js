@@ -7,6 +7,7 @@ var me = {
 var photoEventListener;
 var photoToDisplay;
 var goToElementVisibile = false;
+var addNoteVisibile = false;
 
 /**
  * Function from which we demand respond, recall,
@@ -317,11 +318,20 @@ var main = {
 	},
 	
 	/**
-	 * @function main.addNote
-	 * Load note input form
+	 * @function main.toggleAddNote
+	 * Load note input panel
 	 */
-	goToAddNote: function() {
-		load('addNote', true);
+	toggleAddNote: function() {
+		if(addNoteVisibile == true)
+		{
+			document.getElementById('addNote').style.display = 'none';
+			addNoteVisibile = false;
+		}
+		else
+		{
+			document.getElementById('addNote').style.display = 'block';
+			addNoteVisibile = true;
+		}
 	},
 	
 	goToPhoto: function(photoUrl) {
@@ -333,9 +343,10 @@ var main = {
 	 * @function main.addNote
 	 * Submit note and go back to the wall
 	 */
-	submitNote: function(tresc) {
+	addNote: function(tresc) {		
 		main.sendNote(tresc);
-		load('wallContent', true);
+		document.getElementById('noteTextField').value = '';
+		main.toggleAddNote();
 	},
 
 	/**
@@ -426,7 +437,7 @@ var main = {
 	},
 	
 	goToElement: function(id) {
-		document.getElementById(id).scrollIntoView();
+		document.getElementById('element'+id).scrollIntoView();
 		document.getElementById('elementID').value = '';
 		main.toggleGoToElement();
 	}

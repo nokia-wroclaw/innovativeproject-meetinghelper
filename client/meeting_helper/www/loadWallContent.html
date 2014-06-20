@@ -19,7 +19,7 @@
 		  <span class="glyphicon glyphicon-picture"></span>
 		</button>
 		
-		<button type="button" class="btn btn-success" onclick="main.goToAddNote()">
+		<button type="button" class="btn btn-success" onclick="main.toggleAddNote()">
 		  <span class="glyphicon glyphicon-font"></span>
 		</button>
 		
@@ -36,22 +36,39 @@
 		</button>
 		
 	</div>
+	<div id="addNote">
+		<br>
+		<img alt="Note icon" height="50px" src="img/note.png"> <span class="white_text">Post a text note</span>
+		<br>
+		<br>
+		<div class="input-group">
+		  <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
+		  <input type="text" id="noteTextField" class="form-control">
+		</div>
+		
+		<br>
+		
+        <button class="btn btn-success" type="button" onclick="main.addNote(document.getElementById('noteTextField').value)">
+			<span class="glyphicon glyphicon-ok"></span>&nbsp;Submit!
+		</button>
+		
+		<br>
+		&nbsp;
+	</div>
+
 	<div id="goToElement">
 		<div class="input-group">
-	  <span class="input-group-addon">Go to post ID</span>
-	  <input type="text" id="elementID" class="form-control">
-	  <span class="input-group-btn">
-        <button class="btn btn-default" type="button" onclick="main.goToElement(document.getElementById('elementID').value)">
-			<span class="glyphicon glyphicon-share-alt"></span>&nbsp;Go
-		</button>
-      </span>
-
-	</div>
-
-	</div>
-			
-			    
+		  <span class="input-group-addon">Go to post ID</span>
+		  <input type="text" id="elementID" class="form-control">
+		  <span class="input-group-btn">
+	        <button class="btn btn-default" type="button" onclick="main.goToElement(document.getElementById('elementID').value)">
+				<span class="glyphicon glyphicon-share-alt"></span>&nbsp;Go
+			</button>
+	      </span>
+		</div>
+	</div>  
 </div>
+
 <div id="body">
     <div id="received">
     	<br>
