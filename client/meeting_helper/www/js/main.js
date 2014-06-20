@@ -8,6 +8,7 @@ var photoEventListener;
 var photoToDisplay;
 var goToElementVisibile = false;
 var addNoteVisibile = false;
+var serverHistoryVisible = false;
 
 /**
  * Function from which we demand respond, recall,
@@ -336,6 +337,19 @@ var main = {
 		}
 	},
 	
+	toggleServerHistory: function() {
+		if(serverHistoryVisible == true)
+		{
+			document.getElementById('serverAddresses').style.display = 'none';
+			serverHistoryVisible = false;
+		}
+		else
+		{
+			document.getElementById('serverAddresses').style.display = 'block';
+			serverHistoryVisible = true;
+		}
+	},
+	
 	goToPhoto: function(photoUrl) {
 		main.photoToDisplay = photoUrl;
 		load('photo', true);
@@ -444,6 +458,10 @@ var main = {
 		document.getElementById('element'+id).scrollIntoView();
 		document.getElementById('elementID').value = '';
 		main.toggleGoToElement();
+	},
+	
+	selectServerAddress: function(address) {
+		document.getElementById('url').value = address;
 	}
 };
 

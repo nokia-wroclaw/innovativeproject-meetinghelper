@@ -20,11 +20,16 @@
 	<div class="input-group">
 	  <span class="input-group-addon">address</span>
 	  <input type="text" id="url" class="form-control" value="">
+	  <span class="input-group-btn">
+        <button type="button" class="btn btn-success" onclick="main.setUrl(document.getElementById('url').value)">
+		  <span class="glyphicon glyphicon-flash"></span> Connect
+		</button>
+      </span>
 	</div>
 	<br>
-	<button type="button" class="btn btn-default btn-lg btn-success" onclick="main.setUrl(document.getElementById('url').value)">
-	  <span class="glyphicon glyphicon-flash"></span> Connect
-	</button>
-	<br><br><br>
-	<div id="serverAddresses"></div>
+	<div id="serverHistory">
+		<span class="white_text" onclick="main.toggleServerHistory()">History</span>
+		<div id="serverAddresses" class="white_text"></div>
+	</div>
+	<br>
 </div>

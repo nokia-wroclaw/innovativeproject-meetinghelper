@@ -483,9 +483,11 @@ var storage = {
 	displayServerAddresses: function() {
 		var value = '';
 		if (serverAddresses.length > 0) {
-			value += serverAddresses[0];
+			var onClickValue = "main.selectServerAddress('"+serverAddresses[0]+"')";
+			value += '<div class="serverAddress" onclick="'+onClickValue+'">'+serverAddresses[0]+'</div><br><br>';
 			for (var i = 1; i < serverAddresses.length; i++) {
-				value += ' ' + serverAddresses[i];
+				onClickValue = "main.selectServerAddress('"+serverAddresses[i]+"')";
+				value += '<div class="serverAddress" onclick='+onClickValue+'>'+serverAddresses[i]+'</div><br><br>';
 			}
 		}
 		var addresses = document.getElementById('serverAddresses');
