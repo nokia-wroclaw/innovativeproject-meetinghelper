@@ -141,8 +141,10 @@ var storage = {
 		postHeader.setAttribute('class', 'post_header');
 		if (!id) id = Object.keys(dataFromServer).length;
 		postHeader.setAttribute('id', 'element'+id);
+		var creationDate = data.date.substr(0, 19);
+		creationDate = creationDate.replace(/T/g, " ");
 		var text = document.createTextNode('#' + id +
-			' by ' + allOnlineUsers[data.userId].name + ' ' + data.date);
+			' by ' + allOnlineUsers[data.userId].name + ' ' + creationDate);
 		postHeader.appendChild(text);
 		return postHeader;
 	},
