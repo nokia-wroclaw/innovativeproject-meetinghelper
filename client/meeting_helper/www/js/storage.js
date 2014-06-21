@@ -7,6 +7,8 @@
  */
 var dataFromServer = {};
 
+var comments = {};
+
 /**
  * Hash with stored online users ever connected to room data.
  */
@@ -285,9 +287,20 @@ var storage = {
 	/**
 	 *
 	 */
-	addAllRoomComments: function(data) {
-		for (var comment in data) {
-			storage.addNewComment(data[comment]);
+	addAllRoomComments: function(receivedData) {
+		comments = {};
+		var next = 1;
+		for (var comment in receivedData) {
+			comments[next++] = receivedData[comment];
+		}
+	},
+
+	/**
+	 *
+	 */
+	displayComments: function() {
+		for (var comment in comments) {
+			storage.addNewComment(comments[comment]);
 		}
 	},
 

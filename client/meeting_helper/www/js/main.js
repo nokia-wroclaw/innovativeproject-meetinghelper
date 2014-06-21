@@ -481,6 +481,7 @@ routing.registerAction('wallContent', function() {
 	storage.setRoomName();
 
 	storage.displayRoomData();
+	storage.displayComments();
 }, 500);
 routing.registerAction('users', function() {
 	storage.showOnlineUsers();
@@ -599,7 +600,6 @@ connection.socket.receive.onNewNote = function(data) {
  */
 connection.socket.receive.onNewComment = function(data) {
 	callback('onNewComment: ' + JSON.stringify(data));
-	JSON.stringify(data);
 	storage.addNewComment(data);
     // add new comment
 };
